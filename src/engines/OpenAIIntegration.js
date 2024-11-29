@@ -18,7 +18,7 @@ module.exports = {
                   "content": prompt
                 }
               ],
-              "max_tokens": process.env.MAX_TOKENS
+              "max_tokens": 4096
             }),
         {'headers': {
           'Authorization': `Bearer `+ process.env.OPENAI_API_KEY,

@@ -61,6 +61,8 @@ module.exports = {
         const substituicoes = this.prepareSubstituicoes(parametros, resultadoGlobal);
         const promptConteudo = this.replacePlaceholders(prompt.conteudo, substituicoes);
 
+        console.log(promptConteudo);
+        
         const resultado = await LLMIntegration.processPrompt(promptConteudo, prompt.engine, prompt.modelo);
 
         for (const [key, value] of Object.entries(resultado)) {

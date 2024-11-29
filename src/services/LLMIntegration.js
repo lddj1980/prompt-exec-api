@@ -11,13 +11,13 @@ module.exports = {
 
       switch (engine.toLowerCase()) {
         case 'openai':
-          //integrationClass = OpenAIIntegration;
+          integrationClass = OpenAIIntegration;
           break;
         case 'dall-e':
-          //integrationClass = DallEIntegration;
+          integrationClass = DallEIntegration;
           break;
         case 'gemini':
-          //integrationClass = GeminiIntegration;
+          integrationClass = GeminiIntegration;
           break;
         default:
           throw new Error(`Engine não suportada: ${engine}`);

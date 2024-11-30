@@ -20,12 +20,25 @@ module.exports = {
         const substituicoes = this.prepareSubstituicoes(parametros, resultadoGlobal);
         const promptConteudo = this.replacePlaceholders(prompt.conteudo, substituicoes);
 
+        console.log('segue prompt:');
+        console.log(promptConteudo);
+
         const resultado = await LLMIntegration.processPrompt(promptConteudo, prompt.engine, prompt.modelo);
 
+        // Processar o resultado para adicionar ao resultadoGlobal
         for (const [key, value] of Object.entries(resultado)) {
-          resultadoGlobal[key] = value;
+          if (Array.isArray(value)) {
+            // Se o valor é um array, incluir cada elemento no formato "key.index"
+            value.forEach((item, index) => {
+              resultadoGlobal[`${key}.${index}`] = item;
+            });
+          } else {
+            // Caso contrário, adicionar diretamente
+            resultadoGlobal[key] = value;
+          }
         }
 
+        
         await PromptResultadoRepository.insertPromptResultado(solicitacao.id, prompt.id, JSON.stringify(resultado));
       }
 
@@ -61,14 +74,23 @@ module.exports = {
         const substituicoes = this.prepareSubstituicoes(parametros, resultadoGlobal);
         const promptConteudo = this.replacePlaceholders(prompt.conteudo, substituicoes);
 
-        console.log(promptConteudo);
-        
         const resultado = await LLMIntegration.processPrompt(promptConteudo, prompt.engine, prompt.modelo);
 
-        for (const [key, value] of Object.entries(resultado)) {
-          resultadoGlobal[key] = value;
-        }
+        console.log('segue prompt:');
+        console.log(promptConteudo);
 
+        // Processar o resultado para adicionar ao resultadoGlobal
+        for (const [key, value] of Object.entries(resultado)) {
+          if (Array.isArray(value)) {
+            // Se o valor é um array, incluir cada elemento no formato "key.index"
+            value.forEach((item, index) => {
+              resultadoGlobal[`${key}.${index}`] = item;
+            });
+          } else {
+            // Caso contrário, adicionar diretamente
+            resultadoGlobal[key] = value;
+          }
+        }
         await PromptResultadoRepository.insertPromptResultado(solicitacao.id, prompt.id, JSON.stringify(resultado));
       }
 

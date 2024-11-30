@@ -14,32 +14,24 @@ module.exports = {
 
       const prompts = await PromptRepository.getPromptsBySolicitacao(solicitacao.id);
       const resultadoGlobal = {};
-      var resultadoBd = {};
-      
+      const resultadoBd = {};
+
       for (const prompt of prompts) {
         const parametros = await ParametroRepository.getParametrosByPrompt(prompt.id);
         const substituicoes = this.prepareSubstituicoes(parametros, resultadoGlobal);
         const promptConteudo = this.replacePlaceholders(prompt.conteudo, substituicoes);
 
-        console.log('segue prompt:');
+        console.log('Segue prompt:');
         console.log(promptConteudo);
 
         const resultado = await LLMIntegration.processPrompt(promptConteudo, prompt.engine, prompt.modelo);
-        resultadoBd = {...resultadoBd,...resultado};
-        // Processar o resultado para adicionar ao resultadoGlobal
-        for (const [key, value] of Object.entries(resultado)) {
-          if (Array.isArray(value)) {
-            // Se o valor é um array, incluir cada elemento no formato "key.index"
-            value.forEach((item, index) => {
-              resultadoGlobal[`${key}.${index}`] = item;
-            });
-          } else {
-            // Caso contrário, adicionar diretamente
-            resultadoGlobal[key] = value;
-          }
-        }
 
-        
+        // Atualizar resultadoBd com o resultado atual
+        Object.assign(resultadoBd, resultado);
+
+        // Processar recursivamente os resultados para o resultadoGlobal
+        this.processNestedResult(resultadoGlobal, resultado);
+
         await PromptResultadoRepository.insertPromptResultado(solicitacao.id, prompt.id, JSON.stringify(resultado));
       }
 
@@ -47,6 +39,31 @@ module.exports = {
     } catch (error) {
       console.error('Erro no processamento:', error);
       await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'erro');
+    }
+  },
+
+  processNestedResult(resultadoGlobal, resultado, prefix = '') {
+    for (const [key, value] of Object.entries(resultado)) {
+      const prefixedKey = prefix ? `${prefix}.${key}` : key;
+
+      if (Array.isArray(value)) {
+        // Se for um array, processar cada item com índice
+        value.forEach((item, index) => {
+          if (typeof item === 'object' && item !== null) {
+            // Se o item for um objeto, chamar recursivamente
+            this.processNestedResult(resultadoGlobal, item, `${prefixedKey}.${index}`);
+          } else {
+            // Se o item não for objeto, adicionar diretamente
+            resultadoGlobal[`${prefixedKey}.${index}`] = item;
+          }
+        });
+      } else if (typeof value === 'object' && value !== null) {
+        // Se for um objeto, chamar recursivamente
+        this.processNestedResult(resultadoGlobal, value, prefixedKey);
+      } else {
+        // Caso contrário, adicionar diretamente
+        resultadoGlobal[prefixedKey] = value;
+      }
     }
   },
 
@@ -77,21 +94,12 @@ module.exports = {
 
         const resultado = await LLMIntegration.processPrompt(promptConteudo, prompt.engine, prompt.modelo);
 
-        console.log('segue prompt:');
+        console.log('Segue prompt:');
         console.log(promptConteudo);
 
-        // Processar o resultado para adicionar ao resultadoGlobal
-        for (const [key, value] of Object.entries(resultado)) {
-          if (Array.isArray(value)) {
-            // Se o valor é um array, incluir cada elemento no formato "key.index"
-            value.forEach((item, index) => {
-              resultadoGlobal[`${key}.${index}`] = item;
-            });
-          } else {
-            // Caso contrário, adicionar diretamente
-            resultadoGlobal[key] = value;
-          }
-        }
+        // Processar recursivamente os resultados para o resultadoGlobal
+        this.processNestedResult(resultadoGlobal, resultado);
+
         await PromptResultadoRepository.insertPromptResultado(solicitacao.id, prompt.id, JSON.stringify(resultado));
       }
 

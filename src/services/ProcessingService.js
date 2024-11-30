@@ -14,7 +14,8 @@ module.exports = {
 
       const prompts = await PromptRepository.getPromptsBySolicitacao(solicitacao.id);
       const resultadoGlobal = {};
-
+      var resultadoBd = {};
+      
       for (const prompt of prompts) {
         const parametros = await ParametroRepository.getParametrosByPrompt(prompt.id);
         const substituicoes = this.prepareSubstituicoes(parametros, resultadoGlobal);
@@ -24,7 +25,7 @@ module.exports = {
         console.log(promptConteudo);
 
         const resultado = await LLMIntegration.processPrompt(promptConteudo, prompt.engine, prompt.modelo);
-
+        resultadoBd = {...resultadoBd,...resultado};
         // Processar o resultado para adicionar ao resultadoGlobal
         for (const [key, value] of Object.entries(resultado)) {
           if (Array.isArray(value)) {
@@ -42,7 +43,7 @@ module.exports = {
         await PromptResultadoRepository.insertPromptResultado(solicitacao.id, prompt.id, JSON.stringify(resultado));
       }
 
-      await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'concluido', JSON.stringify(resultadoGlobal));
+      await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'concluido', JSON.stringify(resultadoBd));
     } catch (error) {
       console.error('Erro no processamento:', error);
       await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'erro');

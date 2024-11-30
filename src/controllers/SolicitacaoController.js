@@ -70,9 +70,7 @@ module.exports = {
         return res.status(404).json({ error: 'Solicitação não encontrada.' });
       }
 
-      res.status(200).json({
-        resultado_dados: JSON.parse(solicitacao.resultado_dados || '{}'),
-      });
+      res.status(200).json(solicitacao.resultado_dados || '{}');
     } catch (error) {
       console.error('Erro ao buscar resultado:', error);
       res.status(500).json({ error: 'Erro interno do servidor.' });

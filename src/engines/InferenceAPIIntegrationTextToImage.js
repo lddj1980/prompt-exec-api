@@ -1,5 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
+const ImageRepoAPI = require('../services/ImageRepoService'); // Certifique-se de ajustar o caminho para o arquivo da classe ImageRepoAPI
 
 module.exports = {
   async process(prompt, model) {
@@ -24,7 +25,20 @@ module.exports = {
       if (response.status === 200) {
 
         const base64Image = Buffer.from(response.data, 'binary').toString('base64');
-        return {"imageBase64":base64Image}; // Processa a resposta da API
+        // Instancia o repositório de imagens
+        const imageRepoAPI = new ImageRepoAPI();
+
+        // Salva a imagem no repositório de imagens
+        console.log('Enviando imagem gerada para o Image Repo...');
+        const savedImage = await imageRepoAPI.createImage(
+          base64Image,        // Conteúdo em Base64
+          {},           // Metadados da imagem
+          '.jpg',          // Extensão do arquivo
+          '73c6f20e-441e-4739-b42c-10c262138fdd',             // Chave da API do Image Repo
+          1,        // Configuração do FTP
+          true                // Define que o conteúdo está em Base64
+        );
+        return savedImage; // Processa a resposta da API
       } else {
         throw new Error(`Erro ao processar com Inference API: ${response.statusText}`);
       }

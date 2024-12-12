@@ -24,9 +24,7 @@ module.exports = {
       if (response.status === 200) {
 
         const base64Image = Buffer.from(response.data, 'binary').toString('base64');
-     
-           
-        return extrairJSON(response.data); // Processa a resposta da API
+        return {"imageBase64":base64Image}; // Processa a resposta da API
       } else {
         throw new Error(`Erro ao processar com Inference API: ${response.statusText}`);
       }
@@ -36,17 +34,3 @@ module.exports = {
     }
   }
 };
-
-function extrairJSON(resposta) {
-  // Exibir a resposta completa para debug
-  console.log('Resposta gerada...');
-  console.log(resposta);
-
-  try {
-    // Retorna a resposta diretamente se já estiver em formato JSON
-    return resposta;
-  } catch (error) {
-    console.error('Erro ao processar a resposta:', error);
-    return null;
-  }
-}

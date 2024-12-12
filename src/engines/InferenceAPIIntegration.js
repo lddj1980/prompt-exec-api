@@ -1,0 +1,46 @@
+const axios = require('axios');
+
+module.exports = {
+  async process(prompt, model) {
+    try {
+      // Monta o endpoint da Inference API com o modelo fornecido
+      const endpoint = `https://api-inference.huggingface.co/models/${model}`;
+
+      // Faz a requisição para a Inference API
+      const response = await axios.post(
+        endpoint, 
+        { inputs: prompt }, // Entrada esperada pela Inference API
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`, // Token de API do Hugging Face
+            'Content-type': 'application/json'
+          }
+        }
+      );
+
+      // Verifica o status da resposta
+      if (response.status === 200) {
+        return extrairJSON(response.data); // Processa a resposta da API
+      } else {
+        throw new Error(`Erro ao processar com Inference API: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Erro na integração com Inference API:', error);
+      throw error;
+    }
+  }
+};
+
+function extrairJSON(resposta) {
+  // Exibir a resposta completa para debug
+  console.log('Resposta gerada...');
+  console.log(resposta);
+
+  try {
+    // Retorna a resposta diretamente se já estiver em formato JSON
+    return resposta;
+  } catch (error) {
+    console.error('Erro ao processar a resposta:', error);
+    return null;
+  }
+}

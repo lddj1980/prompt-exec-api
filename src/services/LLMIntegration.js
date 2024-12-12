@@ -1,6 +1,7 @@
 const OpenAIIntegration = require('../engines/OpenAIIntegration');
 const DallEIntegration = require('../engines/DallEIntegration');
 const GeminiIntegration = require('../engines/GeminiIntegration');
+const InferenceAPIIntegration = require('../engines/InferenceAPIIntegration');
 
 module.exports = {
   async processPrompt(prompt, engine, model) {
@@ -17,6 +18,9 @@ module.exports = {
           integrationClass = DallEIntegration;
           break;
         case 'gemini':
+          integrationClass = GeminiIntegration;
+          break;
+        case 'inferenceapi':
           integrationClass = GeminiIntegration;
           break;
         default:

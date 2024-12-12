@@ -27,6 +27,7 @@ module.exports = {
 
         // Passo 2: Converter para Base64
         const base64Image = Buffer.from(response.data,'binary').toString('base64');
+        console.log('tamanho do arquivo:'+calculateBase64Size(base64Image));
         
         // Instancia o repositório de imagens
         const imageRepoAPI = new ImageRepoAPI();
@@ -48,6 +49,20 @@ module.exports = {
     } catch (error) {
       console.error('Erro na integração com Inference API:', error);
       throw error;
+    }
+    
+    
+    function calculateBase64Size(base64String) {
+      // Remove o prefixo "data:image/png;base64," ou outros cabeçalhos, se existirem
+      const base64 = base64String.split(',').pop();
+
+      // Conta os caracteres de preenchimento '='
+      const padding = (base64.match(/=/g) || []).length;
+
+      // Calcula o tamanho em bytes
+      const sizeInBytes = (base64.length * 3) / 4 - padding;
+
+      return sizeInBytes;
     }
   }
 };

@@ -22,7 +22,8 @@ module.exports = {
           prompt.conteudo,
           prompt.engine,
           prompt.modelo,
-          index + 1
+          index + 1,
+          prompt.parametros_modelo
         );
 
         if (prompt.parametros && Array.isArray(prompt.parametros)) {

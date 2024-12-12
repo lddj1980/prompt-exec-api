@@ -4,7 +4,7 @@ const GeminiIntegration = require('../engines/GeminiIntegration');
 const InferenceAPIIntegrationTextToImage = require('../engines/InferenceAPIIntegrationTextToImage');
 
 module.exports = {
-  async processPrompt(prompt, engine, model) {
+  async processPrompt(prompt, engine, model, parametrosModelo={}) {
     try {
       console.log(`Processando com ${engine} - ${model}`);
 
@@ -27,7 +27,7 @@ module.exports = {
           throw new Error(`Engine não suportada: ${engine}`);
       }
       console.log(integrationClass);
-      return await integrationClass.process(prompt, model);
+      return await integrationClass.process(prompt, model, parametrosModelo);
     } catch (error) {
       console.error(`Erro na integração com ${engine}:`, error);
       throw error;

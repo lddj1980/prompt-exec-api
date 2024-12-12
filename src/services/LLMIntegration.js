@@ -21,12 +21,12 @@ module.exports = {
           integrationClass = GeminiIntegration;
           break;
         case 'inferenceapi':
-          integrationClass = GeminiIntegration;
+          integrationClass = InferenceAPIIntegration;
           break;
         default:
           throw new Error(`Engine não suportada: ${engine}`);
       }
-
+      console.log(integrationClass);
       return await integrationClass.process(prompt, model);
     } catch (error) {
       console.error(`Erro na integração com ${engine}:`, error);

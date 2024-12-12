@@ -3,6 +3,7 @@ const axios = require('axios');
 module.exports = {
   async process(prompt, model) {
     try {
+      console.log('aqui chegou');
       // Monta o endpoint da Inference API com o modelo fornecido
       const endpoint = `https://api-inference.huggingface.co/models/${model}`;
 

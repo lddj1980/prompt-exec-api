@@ -3,7 +3,7 @@ const fs = require('fs');
 const ImageRepoAPI = require('../services/ImageRepoService'); // Certifique-se de ajustar o caminho para o arquivo da classe ImageRepoAPI
 const sharp = require('sharp');
 module.exports = {
-  async process(prompt, model,modelParameters={}) {
+  async process(prompt, model,modelParameters=null) {
     try {
       console.log('aqui chegou');
       // Monta o endpoint da Inference API com o modelo fornecido

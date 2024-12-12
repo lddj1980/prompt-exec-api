@@ -14,24 +14,22 @@ const axiosInstance = axios.create({
 });
 
 module.exports = {
-  async process(prompt, model, modelParameters = {}) {
+  async process(prompt, model, modelParameters = null) {
     try {
       console.log('Aqui chegou');
       // Monta o endpoint da Inference API com o modelo fornecido
       const endpoint = `https://api-inference.huggingface.co/models/${model}`;
 
+      const request = modelParameters ? {inputs: prompt, parameters: modelParameters} : {inputs: prompt};
       // Faz a requisição para a Inference API usando axiosInstance
       const response = await axiosInstance.post(
         endpoint,
+        request,
         {
-          inputs: prompt,
-          parameters: modelParameters, // Inclui parâmetros adicionais, se fornecidos
-        },
-        {
-          responseType: 'arraybuffer', // Necessário para lidar com binários como imagens ou áudio
+          responseType: 'arraybuffer', // Necessário para lidar com binários como imagens
         }
       );
-
+      
       // Verifica o status da resposta
       if (response.status === 200) {
         // Passo 2: Converter para Base64

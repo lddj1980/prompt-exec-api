@@ -17,23 +17,16 @@ module.exports = {
           headers: {
             Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`, // Token de API do Hugging Face
             'Content-type': 'application/json'
-          }
+          },
+          responseType:'arraybuffer'
         }
       );
 
       // Verifica o status da resposta
       if (response.status === 200) {
 
-        // Passo 1: Opcionalmente, comprimir/redimensionar a imagem
-        const compressedBuffer = await sharp(response.data)
-          .resize({ width: 1024 }) // Ajusta a largura para 1024px
-          .jpeg({ quality: 80 }) // Converte para JPEG com qualidade de 80%
-          .toBuffer();
-
-        console.log('Imagem comprimida com sucesso.');
-
         // Passo 2: Converter para Base64
-        const base64Image = compressedBuffer.toString('base64');
+        const base64Image = Buffer.from(response.data,'binary').toString('base64');
         
         // Instancia o repositório de imagens
         const imageRepoAPI = new ImageRepoAPI();

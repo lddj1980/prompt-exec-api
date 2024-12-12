@@ -7,8 +7,7 @@ const pool = mysql.createPool({
   database: 'promptexec',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0,
-  reconnect: true
+  queueLimit: 0
 });
 
 module.exports = pool;

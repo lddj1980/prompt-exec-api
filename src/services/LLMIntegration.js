@@ -2,6 +2,8 @@ const OpenAIIntegration = require('../engines/OpenAIIntegration');
 const DallEIntegration = require('../engines/DallEIntegration');
 const GeminiIntegration = require('../engines/GeminiIntegration');
 const InferenceAPIIntegrationTextToImage = require('../engines/InferenceAPIIntegrationTextToImage');
+const InferenceAPIIntegrationTextGeneration = require('../engines/InferenceAPIIntegrationTextGeneration');
+const InferenceAPIIntegrationTextToAudio = require('../engines/InferenceAPIIntegrationTextGeneration');
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo={}) {
@@ -22,6 +24,9 @@ module.exports = {
           break;
         case 'inferenceapi-text-to-image':
           integrationClass = InferenceAPIIntegrationTextToImage;
+          break;
+        case 'inferenceapi-text-generation':
+          integrationClass = InferenceAPIIntegrationTextGeneration;
           break;
         default:
           throw new Error(`Engine não suportada: ${engine}`);

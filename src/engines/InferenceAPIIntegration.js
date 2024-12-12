@@ -1,4 +1,5 @@
 const axios = require('axios');
+const fs = require('fs');
 
 module.exports = {
   async process(prompt, model) {
@@ -21,6 +22,10 @@ module.exports = {
 
       // Verifica o status da resposta
       if (response.status === 200) {
+
+        const base64Image = Buffer.from(response.data, 'binary').toString('base64');
+     
+           
         return extrairJSON(response.data); // Processa a resposta da API
       } else {
         throw new Error(`Erro ao processar com Inference API: ${response.statusText}`);

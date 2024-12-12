@@ -3,7 +3,7 @@ const DallEIntegration = require('../engines/DallEIntegration');
 const GeminiIntegration = require('../engines/GeminiIntegration');
 const InferenceAPIIntegrationTextToImage = require('../engines/InferenceAPIIntegrationTextToImage');
 const InferenceAPIIntegrationTextGeneration = require('../engines/InferenceAPIIntegrationTextGeneration');
-const InferenceAPIIntegrationTextToAudio = require('../engines/InferenceAPIIntegrationTextGeneration');
+const InferenceAPIIntegrationTextToAudio = require('../engines/InferenceAPIIntegrationTextToAudio');
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo={}) {
@@ -28,6 +28,9 @@ module.exports = {
         case 'inferenceapi-text-generation':
           integrationClass = InferenceAPIIntegrationTextGeneration;
           break;
+        case 'inferenceapi-text-to-audio':
+          integrationClass = InferenceAPIIntegrationTextToAudio;
+          break;          
         default:
           throw new Error(`Engine não suportada: ${engine}`);
       }

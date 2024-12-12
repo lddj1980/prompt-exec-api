@@ -5,7 +5,7 @@ class ImageRepoAPI {
    * Inicializa a integração com o serviço de criação de imagens.
    * @param {string} baseURL - A URL base da API do Image Repo.
    */
-  constructor(baseURL = 'https://image-repo-api.glitch.me/api/images') {
+  constructor(baseURL = 'https://image-repo-iota.vercel.app/api/images') {
     this.baseURL = baseURL;
   }
 

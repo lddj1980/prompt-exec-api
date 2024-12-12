@@ -2,7 +2,7 @@ const axios = require('axios');
 
 module.exports = {
   
-  async process(prompt, model) {
+  async process(prompt, model,modelParameters={}) {
     try {
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions', // Endpoint da API

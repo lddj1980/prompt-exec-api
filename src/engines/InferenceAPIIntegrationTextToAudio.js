@@ -10,6 +10,7 @@ const axiosInstance = axios.create({
   headers: {
     Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`, // Token de API do Hugging Face
     'Content-Type': 'application/json',
+    'x-wait-for-model': 'true'
   },
 });
 

@@ -1,38 +1,27 @@
-const axios = require('axios'); // Importa axios
+const axios = require('axios');
+const FormData = require('form-data');
+const fs = require('fs');
+const qs = require('querystring');
 
 module.exports = {
   /**
-   * Processa um comando CURL contido na variável "prompt" e o executa usando axios.
-   * @param {string} prompt - O comando CURL a ser processado.
-   * @param {string} model - Parâmetro ignorado.
-   * @param {object} modelParameters - Parâmetro ignorado.
-   * @returns {Promise<object>} - A resposta da execução do comando CURL.
+   * Processa manualmente um comando CURL e executa usando axios.
+   * @param {string} curlCommand - O comando CURL a ser processado.
+   * @returns {Promise<object>} - A resposta da requisição executada.
    */
-  async process(prompt, model, modelParameters = {}) {
+  async process(curlCommand) {
     try {
-      console.log('Comando CURL recebido:', prompt);
+      console.log('Comando CURL recebido:', curlCommand);
 
-      // Carrega o curlconverter dinamicamente (importação ESM)
-      const { toNode } = await import('curlconverter');
+      // Parseia o comando CURL
+      const config = parseCurlCommand(curlCommand);
+      console.log('Configuração gerada para axios:', config);
 
-      // Converte o comando CURL para código Node.js usando curlconverter
-      const nodeCode = toNode(prompt);
-
-      // Extrai os parâmetros necessários (método, URL, headers e corpo) do código gerado
-      const config = extrairConfiguracao(nodeCode);
-
-      console.log('Configuração convertida:', config);
-
-      // Executa a requisição HTTP com axios usando os parâmetros extraídos
-      const response = await axios({
-        method: config.method || 'get',
-        url: config.url,
-        headers: config.headers,
-        data: config.data,
-      });
-
+      // Executa a requisição com axios
+      const response = await axios(config);
       console.log('Resposta da requisição:', response.data);
-      return response.data; // Retorna os dados da resposta
+
+      return response.data;
     } catch (error) {
       console.error('Erro ao processar o comando CURL:', error.message);
       throw error;
@@ -41,24 +30,70 @@ module.exports = {
 };
 
 /**
- * Extrai as configurações (método, URL, headers e body) do código gerado pelo curlconverter.
- * @param {string} nodeCode - Código Node.js gerado pelo curlconverter.
- * @returns {object} - Configurações necessárias para o axios.
+ * Função para parsear o comando CURL e gerar uma configuração compatível com axios.
+ * @param {string} curlCommand - O comando CURL a ser parseado.
+ * @returns {object} - Configuração para axios.
  */
-function extrairConfiguracao(nodeCode) {
-  try {
-    // Função dinâmica para extrair os parâmetros do código convertido
-    const func = new Function(`const axios = require('axios'); ${nodeCode}; return config;`);
-    const config = func();
+function parseCurlCommand(curlCommand) {
+  const config = { headers: {} };
+  let formData = null;
 
-    return {
-      method: config.method || 'get',
-      url: config.url,
-      headers: config.headers || {},
-      data: config.data || null,
-    };
-  } catch (error) {
-    console.error('Erro ao extrair configuração do código convertido:', error.message);
-    throw error;
+  // Extrai o método HTTP (padrão: GET)
+  config.method = /-X\s+(\w+)/.test(curlCommand)
+    ? curlCommand.match(/-X\s+(\w+)/)[1].toLowerCase()
+    : 'get';
+
+  // Extrai a URL
+  const urlMatch = curlCommand.match(/(?:^|\s)(https?:\/\/[^\s'"]+)/);
+  if (urlMatch) config.url = urlMatch[1];
+  else throw new Error('URL não encontrada no comando CURL.');
+
+  // Extrai headers (-H)
+  const headerMatches = curlCommand.match(/-H\s+["']?([^"']+)["']?/g) || [];
+  headerMatches.forEach((header) => {
+    const [key, value] = header.replace(/-H\s+/, '').split(/:\s*/);
+    config.headers[key] = value;
+  });
+
+  // Extrai dados do corpo (--data ou --data-urlencode)
+  const dataMatch = curlCommand.match(/--data(?:-urlencode)?\s+['"]?([^'"]+)['"]?/);
+  if (dataMatch) {
+    if (config.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
+      config.data = qs.stringify(dataMatch[1]);
+    } else {
+      config.data = dataMatch[1];
+    }
   }
+
+  // Processa upload de arquivos (-F ou --form)
+  const formMatches = curlCommand.match(/-F\s+["']?([^"' ]+)["']?/g);
+  if (formMatches) {
+    formData = new FormData();
+    formMatches.forEach((field) => {
+      const [key, value] = field.replace('-F ', '').split('=');
+      if (value.startsWith('@')) {
+        // Adiciona arquivos ao form
+        const filePath = value.substring(1);
+        formData.append(key, fs.createReadStream(filePath));
+      } else {
+        formData.append(key, value);
+      }
+    });
+    config.data = formData;
+    config.headers = { ...config.headers, ...formData.getHeaders() };
+  }
+
+  // Autenticação básica (-u)
+  const authMatch = curlCommand.match(/-u\s+([^:]+):([^ ]+)/);
+  if (authMatch) {
+    config.auth = {
+      username: authMatch[1],
+      password: authMatch[2],
+    };
+  }
+
+  // Configuração de redirecionamento (-L)
+  if (curlCommand.includes('-L')) config.maxRedirects = 5;
+
+  return config;
 }

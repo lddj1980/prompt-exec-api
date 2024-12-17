@@ -44,16 +44,21 @@ function parseCurlCommand(curlCommand) {
     : 'get';
 
   // Extrai a URL
-  const urlMatch = curlCommand.match(/(?:^|\s)(https?:\/\/[^\s'"]+)/);
-  if (urlMatch) config.url = urlMatch[1];
-  else throw new Error('URL não encontrada no comando CURL.');
+  // Atualiza a regex para capturar URLs com aspas simples ou duplas
+  const urlMatch = curlCommand.match(/(?:^|\s)['"]?(https?:\/\/[^\s'"]+)['"]?/);
+  if (urlMatch) {
+    config.url = urlMatch[1];
+  } else {
+    throw new Error('URL não encontrada no comando CURL.');
+  }
 
-  // Extrai headers (-H)
   const headerMatches = curlCommand.match(/-H\s+["']?([^"']+)["']?/g) || [];
   headerMatches.forEach((header) => {
-    const [key, value] = header.replace(/-H\s+/, '').split(/:\s*/);
-    config.headers[key] = value;
+    const cleanHeader = header.replace(/-H\s+/, '').replace(/^['"]|['"]$/g, ''); // Remove aspas extras
+    const [key, value] = cleanHeader.split(/:\s*/);
+    config.headers[key.trim()] = value.trim();
   });
+
 
   // Extrai dados do corpo (--data ou --data-urlencode)
   const dataMatch = curlCommand.match(/--data(?:-urlencode)?\s+['"]?([^'"]+)['"]?/);

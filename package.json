@@ -15,11 +15,6 @@
     "form-data": "^4.0.0",
     "querystring": "^0.2.1"
   },
-  "overrides": {
-    "glob": "^9.0.0",
-    "inflight": "^1.1.0",
-    "tree-sitter": "^0.22.0"
-  },
   "engines": {
     "node": "14.x"
   },

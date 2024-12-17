@@ -1,5 +1,4 @@
-const axios = require('axios');
-const { toNode } = require('curlconverter'); // Importa a biblioteca curlconverter
+const axios = require('axios'); // Importa axios
 
 module.exports = {
   /**
@@ -12,6 +11,9 @@ module.exports = {
   async process(prompt, model, modelParameters = {}) {
     try {
       console.log('Comando CURL recebido:', prompt);
+
+      // Carrega o curlconverter dinamicamente (importação ESM)
+      const { toNode } = await import('curlconverter');
 
       // Converte o comando CURL para código Node.js usando curlconverter
       const nodeCode = toNode(prompt);

@@ -6,10 +6,10 @@ const InferenceAPIIntegrationTextGeneration = require('../engines/InferenceAPIIn
 const InferenceAPIIntegrationTextToAudio = require('../engines/InferenceAPIIntegrationTextToAudio');
 const InferenceAPIIntegrationTextToSpeech = require('../engines/InferenceAPIIntegrationTextToSpeech');
 const CURLIntegration = require('../engines/CURLIntegration');
-
+const FreePikTextToImageIntegration = require('../engines/FreePikTextToImageIntegration');
 
 module.exports = {
-  async processPrompt(prompt, engine, model, parametrosModelo=null) {
+  async processPrompt(prompt, engine, model, parametrosModelo) {
     try {
       console.log(`Processando com ${engine} - ${model}`);
 
@@ -36,6 +36,9 @@ module.exports = {
           break; 
         case 'inferenceapi-text-to-speech':
           integrationClass = InferenceAPIIntegrationTextToSpeech;
+          break;           
+        case 'freepikapi-text-to-image':
+          integrationClass = FreePikTextToImageIntegration;
           break;           
         case 'curl':
           integrationClass = CURLIntegration;

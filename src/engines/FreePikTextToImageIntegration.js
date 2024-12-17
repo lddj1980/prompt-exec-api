@@ -32,12 +32,10 @@ module.exports = {
       const endpoint = 'https://api.freepik.com/v1/ai/text-to-image';
 
       // Faz a requisição para a API
-      const response = await axiosInstance.post(endpoint, payload, {
-        responseType: 'arraybuffer', // Retorno em binário (imagem)
-      });
+      const response = await axiosInstance.post(endpoint, payload);
 
       console.log(response.data);
-      if (response.status === 200 && response.data) {
+      if (response.status === 200 && response.data.data) {
         console.log('Imagens geradas com sucesso!');
 
         // Itera sobre as imagens retornadas

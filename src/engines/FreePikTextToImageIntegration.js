@@ -36,30 +36,47 @@ module.exports = {
         responseType: 'arraybuffer', // Retorno em binário (imagem)
       });
 
-      if (response.status === 200) {
-        console.log('Imagem gerada com sucesso!');
+      console.log(response.data);
+      if (response.status === 200 && response.data) {
+        console.log('Imagens geradas com sucesso!');
 
-        // Converte o binário em Base64
-        const base64Image = Buffer.from(response.data, 'binary').toString('base64');
-        console.log('Tamanho da imagem (Base64):', this.calculateBase64Size(base64Image));
-
-        // Salva a imagem no repositório
-        console.log('Enviando imagem para o repositório de imagens...');
+        // Itera sobre as imagens retornadas
         const imageRepoAPI = new ImageRepoAPI();
-        const savedImage = await imageRepoAPI.createImage(
-          base64Image, // Conteúdo em Base64
-          {}, // Metadados adicionais
-          '.jpg', // Extensão do arquivo
-          '73c6f20e-441e-4739-b42c-10c262138fdd', // Chave da API do Image Repo
-          1, // Configuração do FTP
-          true // Conteúdo em Base64
-        );
+        const savedImages = [];
 
-        console.log('Imagem salva com sucesso no repositório!');
-        return savedImage;
+        for (let index = 0; index < response.data.data.length; index++) {
+            const image = response.data.data[index];
+
+            // Valida se a imagem não possui conteúdo NSFW
+            if (image.has_nsfw) {
+              console.warn(`Imagem ${index + 1} foi identificada como NSFW e será ignorada.`);
+              continue;
+            }
+
+            // Converte a imagem Base64 para o formato esperado pelo repositório
+            const base64Image = image.base64;
+            console.log(`Imagem ${index + 1} processada (tamanho Base64: ${this.calculateBase64Size(base64Image)} bytes)`);
+
+          // Salva a imagem no repositório
+            console.log(`Enviando imagem ${index + 1} para o repositório de imagens...`);
+            const savedImage = await imageRepoAPI.createImage(
+              base64Image, // Conteúdo em Base64
+              {}, // Metadados adicionais
+              '.jpg', // Extensão do arquivo
+              '73c6f20e-441e-4739-b42c-10c262138fdd', // Chave da API do Image Repo
+              1, // Configuração do FTP
+              true // Conteúdo em Base64
+            );
+
+            savedImages.push(savedImage);
+        }
+
+        console.log('Todas as imagens válidas foram salvas com sucesso!');
+        return savedImages; // Retorna as imagens salvas
       } else {
-        throw new Error(`Erro na geração de imagem: ${response.statusText}`);
+         throw new Error('Resposta inválida ou mal formatada da API Freepik.');
       }
+      
     } catch (error) {
       console.error('Erro ao integrar com a API Freepik:', error.message);
 

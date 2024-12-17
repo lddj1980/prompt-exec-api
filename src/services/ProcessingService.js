@@ -24,7 +24,7 @@ module.exports = {
         console.log('Segue prompt:');
         console.log(promptConteudo);
 
-        const resultado = await PromptProcessorService.processPrompt(promptConteudo, prompt.engine, prompt.modelo,JSON.parse(prompt.parametros_modelo));
+        const resultado = await PromptProcessorService.processPrompt(promptConteudo, prompt.engine, prompt.modelo,prompt.parametros_modelo);
 
         // Atualizar resultadoBd com o resultado atual
         Object.assign(resultadoBd, resultado);
@@ -92,7 +92,7 @@ module.exports = {
         const substituicoes = this.prepareSubstituicoes(parametros, resultadoGlobal);
         const promptConteudo = this.replacePlaceholders(prompt.conteudo, substituicoes);
 
-        const resultado = await PromptProcessorService.processPrompt(promptConteudo, prompt.engine, prompt.modelo, JSON.parse(prompt.parametros_modelo));
+        const resultado = await PromptProcessorService.processPrompt(promptConteudo, prompt.engine, prompt.modelo, prompt.parametros_modelo);
 
         console.log('Segue prompt:');
         console.log(promptConteudo);

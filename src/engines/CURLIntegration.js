@@ -1,64 +1,62 @@
 const axios = require('axios');
+const { toNode } = require('curlconverter'); // Importa a biblioteca curlconverter
 
 module.exports = {
-  
-  async process(prompt, model,modelParameters={}) {
+  /**
+   * Processa um comando CURL contido na variável "prompt" e o executa usando axios.
+   * @param {string} prompt - O comando CURL a ser processado.
+   * @param {string} model - Parâmetro ignorado.
+   * @param {object} modelParameters - Parâmetro ignorado.
+   * @returns {Promise<object>} - A resposta da execução do comando CURL.
+   */
+  async process(prompt, model, modelParameters = {}) {
     try {
-      const response = await axios.post(
-        'https://api.openai.com/v1/chat/completions', // Endpoint da API
-        JSON.stringify({
-              "model": model, // Modelo ChatGPT
-              "messages": [
-                {
-                  "role": "system", 
-                  "content": "Você é um assistente útil."
-                },
-                {
-                  "role": "user", 
-                  "content": prompt
-                }
-              ],
-              "max_tokens": 4096
-            }),
-        {'headers': {
-          'Authorization': `Bearer `+ process.env.OPENAI_API_KEY,
-          'Content-type': 'application/json'
-        }}
-      );
+      console.log('Comando CURL recebido:', prompt);
 
-      if (response.status === 200) {
-        return extrairJSON(response.data.choices[0].message.content.trim());
-      } else {
-        throw new Error(`Erro ao processar com Gemini: ${response.statusText}`);
-      }
+      // Converte o comando CURL para código Node.js usando curlconverter
+      const nodeCode = toNode(prompt);
+
+      // Extrai os parâmetros necessários (método, URL, headers e corpo) do código gerado
+      const config = extrairConfiguracao(nodeCode);
+
+      console.log('Configuração convertida:', config);
+
+      // Executa a requisição HTTP com axios usando os parâmetros extraídos
+      const response = await axios({
+        method: config.method || 'get',
+        url: config.url,
+        headers: config.headers,
+        data: config.data,
+      });
+
+      console.log('Resposta da requisição:', response.data);
+      return response.data; // Retorna os dados da resposta
     } catch (error) {
-      console.error('Erro na integração com Gemini:', error);
+      console.error('Erro ao processar o comando CURL:', error.message);
       throw error;
     }
-  }
+  },
 };
 
-function extrairJSON(resposta) {
-    // Exibir a resposta completa para debug
-    console.log('resposta gerada...');
-    console.log(resposta);
+/**
+ * Extrai as configurações (método, URL, headers e body) do código gerado pelo curlconverter.
+ * @param {string} nodeCode - Código Node.js gerado pelo curlconverter.
+ * @returns {object} - Configurações necessárias para o axios.
+ */
+function extrairConfiguracao(nodeCode) {
+  try {
+    // Função dinâmica para extrair os parâmetros do código convertido
+    const func = new Function(`const axios = require('axios'); ${nodeCode}; return config;`);
+    const config = func();
 
-    // Definir o padrão regex para capturar o conteúdo entre ```json e ```
-    const regex = /```json\s*([\s\S]*?)\s*```/;
-    const match = resposta.match(regex);
-
-    if (match && match[1]) {
-        try {
-            // Converte a string JSON capturada para um objeto JavaScript
-            const jsonString = match[1].trim(); // Remove espaços em branco extras
-            console.log('teste');
-            console.log(jsonString);
-            return JSON.parse(jsonString);
-        } catch (error) {
-            console.error('Erro ao fazer o parse do JSON:', error);
-            return null;
-        }
-    } else {
-        return JSON.parse(resposta);
-    }
+    return {
+      method: config.method || 'get',
+      url: config.url,
+      headers: config.headers || {},
+      data: config.data || null,
+    };
+  } catch (error) {
+    console.error('Erro ao extrair configuração do código convertido:', error.message);
+    throw error;
+  }
 }

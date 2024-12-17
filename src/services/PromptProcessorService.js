@@ -5,6 +5,8 @@ const InferenceAPIIntegrationTextToImage = require('../engines/InferenceAPIInteg
 const InferenceAPIIntegrationTextGeneration = require('../engines/InferenceAPIIntegrationTextGeneration');
 const InferenceAPIIntegrationTextToAudio = require('../engines/InferenceAPIIntegrationTextToAudio');
 const InferenceAPIIntegrationTextToSpeech = require('../engines/InferenceAPIIntegrationTextToSpeech');
+const CURLIntegration = require('../engines/CURLIntegration');
+
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo=null) {
@@ -34,6 +36,9 @@ module.exports = {
           break; 
         case 'inferenceapi-text-to-speech':
           integrationClass = InferenceAPIIntegrationTextToSpeech;
+          break;           
+        case 'curl':
+          integrationClass = CURLIntegration;
           break;           
         default:
           throw new Error(`Engine não suportada: ${engine}`);

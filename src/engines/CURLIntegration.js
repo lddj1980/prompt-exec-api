@@ -44,7 +44,6 @@ function parseCurlCommand(curlCommand) {
     : 'get';
 
   // Extrai a URL
-  // Atualiza a regex para capturar URLs com aspas simples ou duplas
   const urlMatch = curlCommand.match(/(?:^|\s)['"]?(https?:\/\/[^\s'"]+)['"]?/);
   if (urlMatch) {
     config.url = urlMatch[1];
@@ -52,21 +51,36 @@ function parseCurlCommand(curlCommand) {
     throw new Error('URL não encontrada no comando CURL.');
   }
 
+  // Extrai os cabeçalhos
   const headerMatches = curlCommand.match(/-H\s+["']?([^"']+)["']?/g) || [];
   headerMatches.forEach((header) => {
-    const cleanHeader = header.replace(/-H\s+/, '').replace(/^['"]|['"]$/g, ''); // Remove aspas extras
+    const cleanHeader = header.replace(/-H\s+/, '').replace(/^['"]|['"]$/g, '');
     const [key, value] = cleanHeader.split(/:\s*/);
     config.headers[key.trim()] = value.trim();
   });
 
-
   // Extrai dados do corpo (--data ou --data-urlencode)
   const dataMatch = curlCommand.match(/--data(?:-urlencode)?\s+['"]?([^'"]+)['"]?/);
   if (dataMatch) {
-    if (config.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
-      config.data = qs.stringify(dataMatch[1]);
+    const rawData = dataMatch[1];
+    console.log('raw:'+rawData);
+    // Trata o caso de Content-Type JSON
+    if (config.headers['Content-Type'] === 'application/json') {
+      try {
+        // Remover caracteres problemáticos e ajustar o JSON
+        const sanitizedData = rawData
+          .replace(/\\n/g, '') // Remove quebras de linha
+          .replace(/\\t/g, '') // Remove tabulações
+          .replace(/'/g, '"'); // Substitui aspas simples por aspas duplas
+
+        config.data = JSON.parse(sanitizedData); // Converte para objeto JSON
+      } catch (error) {
+        console.error('JSON inválido detectado no --data:', rawData);
+        throw new Error('Falha ao processar o JSON fornecido em --data.');
+      }
     } else {
-      config.data = dataMatch[1];
+      // Se não for JSON, passa como string
+      config.data = rawData;
     }
   }
 
@@ -102,3 +116,4 @@ function parseCurlCommand(curlCommand) {
 
   return config;
 }
+

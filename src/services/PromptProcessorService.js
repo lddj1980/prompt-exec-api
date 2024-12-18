@@ -15,6 +15,8 @@ const WhatsappIntegration = require('../engines/WhatsappIntegration');
 const TelegramIntegration = require('../engines/TelegramIntegration');
 const CarouselIntegration = require('../engines/CarouselIntegration');
 const ImageRepoIntegration = require('../engines/ImageRepoIntegration');
+const HtmlToImageIntegration = require('../engines/HtmlToImageIntegration');
+
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo) {
@@ -72,7 +74,10 @@ module.exports = {
         case 'image-repo':
           integrationClass = ImageRepoIntegration;
           break;
-        case 'curl':
+        case 'html-to-image':
+          integrationClass = HtmlToImageIntegration;
+          break;
+       case 'curl':
           integrationClass = CURLIntegration;
           break;           
         default:

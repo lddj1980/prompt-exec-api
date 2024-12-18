@@ -1,4 +1,4 @@
-const ImageRepoAPI = require('../services/ImageRepoAPI'); // Ajuste o caminho para a classe ImageRepoAPI
+const ImageRepoService = require('../services/ImageRepoService'); // Ajuste o caminho para a classe ImageRepoAPI
 
 module.exports = {
   async process(prompt, model, modelParameters) {
@@ -13,7 +13,7 @@ module.exports = {
       }
 
       // Instancia o serviço ImageRepoAPI
-      const imageRepoAPI = new ImageRepoAPI(modelParameters.baseURL);
+      const imageRepoAPI = new ImageRepoService(modelParameters.baseURL);
 
       // Decide qual funcionalidade usar com base nos parâmetros
       if (modelParameters.action === 'createImage') {

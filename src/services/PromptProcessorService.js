@@ -11,7 +11,7 @@ const WritterAIIntegration = require('../engines/WritterAIIntegration');
 const BrainstormAIIntegration = require('../engines/BrainstormAIIntegration');
 const WordpressIntegration = require('../engines/WordpressIntegration');
 const InstagramIntegration = require('../engines/InstagramIntegration');
-
+const WhatsappIntegration = require('../engines/WhatsappIntegration');
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo) {
@@ -56,7 +56,10 @@ module.exports = {
           break;          
         case 'instagram':
           integrationClass = InstagramIntegration;
-          break;          
+          break;    
+        case 'whatsapp':
+          integrationClass = WhatsappIntegration;
+          break;              
         case 'curl':
           integrationClass = CURLIntegration;
           break;           

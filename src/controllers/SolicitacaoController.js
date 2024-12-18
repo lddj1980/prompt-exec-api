@@ -178,9 +178,9 @@ module.exports = {
     }
   },
 
-  /**
+/**
  * @swagger
- * /solicitacoes/{protocoloUid}/resultado:
+ * /api/v1/solicitacoes/{protocoloUid}/resultado:
  *   get:
  *     summary: Obtém o resultado da solicitação
  *     description: Retorna o resultado processado da solicitação.
@@ -207,12 +207,18 @@ module.exports = {
  *           application/json:
  *             schema:
  *               type: object
- *               additionalProperties: true
+ *               properties:
+ *                 resultado:
+ *                   type: string
+ *                   description: Resultado da solicitação em formato JSON.
+ *               example:
+ *                 resultado: "{\"data\": {\"key\": \"value\"}}"
  *       404:
  *         description: Solicitação não encontrada.
  *       500:
  *         description: Erro interno do servidor.
  */
+
   async getResultado(req, res) {
     try {
       const { protocoloUid } = req.params;

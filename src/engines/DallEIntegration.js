@@ -26,6 +26,11 @@ module.exports = {
       
       if (response.status === 200 && response.data.data) {
          
+          console.log('Imagens geradas com sucesso!');
+          // Itera sobre as imagens retornadas
+          const imageRepoAPI = new ImageRepoAPI();
+          const savedImages = [];
+        
           for (let index = 0; index < response.data.data.length; index++) {
               const imageUrl = response.data.data[index].url;
 

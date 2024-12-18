@@ -8,6 +8,7 @@ const InferenceAPIIntegrationTextToSpeech = require('../engines/InferenceAPIInte
 const CURLIntegration = require('../engines/CURLIntegration');
 const FreePikTextToImageIntegration = require('../engines/FreePikTextToImageIntegration');
 const WritterAIIntegration = require('../engines/WritterAIIntegration');
+const BrainstormAIIntegration = require('../engines/BrainstormAIIntegration');
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo) {
@@ -43,6 +44,9 @@ module.exports = {
           break;      
         case 'writter-ai':
           integrationClass = WritterAIIntegration;
+          break;
+        case 'brainstorm-ai':
+          integrationClass = BrainstormAIIntegration;
           break;
         case 'curl':
           integrationClass = CURLIntegration;

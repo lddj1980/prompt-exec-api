@@ -119,7 +119,7 @@ module.exports = {
   },
 
   replacePlaceholders(content, substituicoes) {
-    return content.replace(/\{\{(.*?)\}\}/g, (_, key) => substituicoes[key.trim()] || '');
+    return content ? content.replace(/\{\{(.*?)\}\}/g, (_, key) => substituicoes[key.trim()] || '') : null;
   },
 
   async loadResultadosGlobais(solicitacaoId) {

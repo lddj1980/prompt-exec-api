@@ -13,6 +13,8 @@ const WordpressIntegration = require('../engines/WordpressIntegration');
 const InstagramIntegration = require('../engines/InstagramIntegration');
 const WhatsappIntegration = require('../engines/WhatsappIntegration');
 const TelegramIntegration = require('../engines/TelegramIntegration');
+const CarouselIntegration = require('../engines/CarouselIntegration');
+const ImageRepoIntegration = require('../engines/ImageRepoIntegration');
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo) {
@@ -63,7 +65,13 @@ module.exports = {
           break; 
         case 'telegram':
           integrationClass = TelegramIntegration;
+          break; 
+        case 'carousel':
+          integrationClass = CarouselIntegration;
           break;           
+        case 'image-repo':
+          integrationClass = ImageRepoIntegration;
+          break;
         case 'curl':
           integrationClass = CURLIntegration;
           break;           

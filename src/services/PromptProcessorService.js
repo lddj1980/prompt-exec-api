@@ -12,6 +12,7 @@ const BrainstormAIIntegration = require('../engines/BrainstormAIIntegration');
 const WordpressIntegration = require('../engines/WordpressIntegration');
 const InstagramIntegration = require('../engines/InstagramIntegration');
 const WhatsappIntegration = require('../engines/WhatsappIntegration');
+const TelegramIntegration = require('../engines/TelegramIntegration');
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo) {
@@ -59,7 +60,10 @@ module.exports = {
           break;    
         case 'whatsapp':
           integrationClass = WhatsappIntegration;
-          break;              
+          break; 
+        case 'telegram':
+          integrationClass = TelegramIntegration;
+          break;           
         case 'curl':
           integrationClass = CURLIntegration;
           break;           

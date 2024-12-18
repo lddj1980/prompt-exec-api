@@ -59,31 +59,41 @@ function parseCurlCommand(curlCommand) {
     config.headers[key.trim()] = value.trim();
   });
 
-  // Extrai dados do corpo (--data ou --data-urlencode)
-  const dataMatch = curlCommand.match(/--data(?:-urlencode)?\s+['"]?([^'"]+)['"]?/);
+  
+  
+  // Expressão regular para capturar o conteúdo do --data
+  const dataRegex = /--data\s+(['"])([\s\S]*?)\1/;
+
+  // Executa a regex no comando CURL
+  const dataMatch = curlCommand.match(dataRegex);
+
+  console.log(dataMatch);
+  // Processa o conteúdo do --data
   if (dataMatch) {
-    const rawData = dataMatch[1];
-    console.log('raw:'+rawData);
-    // Trata o caso de Content-Type JSON
+    const dataContent = dataMatch[2].replace(/\n/g, ''); // Remove quebras de linha
+    console.log('Conteúdo do --data:', dataContent);
+    
     if (config.headers['Content-Type'] === 'application/json') {
       try {
         // Remover caracteres problemáticos e ajustar o JSON
-        const sanitizedData = rawData
+        const sanitizedData = dataContent
           .replace(/\\n/g, '') // Remove quebras de linha
           .replace(/\\t/g, '') // Remove tabulações
           .replace(/'/g, '"'); // Substitui aspas simples por aspas duplas
 
         config.data = JSON.parse(sanitizedData); // Converte para objeto JSON
       } catch (error) {
-        console.error('JSON inválido detectado no --data:', rawData);
+        console.error('JSON inválido detectado no --data:', dataContent);
         throw new Error('Falha ao processar o JSON fornecido em --data.');
       }
     } else {
       // Se não for JSON, passa como string
-      config.data = rawData;
+      config.data = dataContent;
     }
+  } else {
+    console.log('Nenhum conteúdo --data encontrado.');
   }
-
+  
   // Processa upload de arquivos (-F ou --form)
   const formMatches = curlCommand.match(/-F\s+["']?([^"' ]+)["']?/g);
   if (formMatches) {

@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-class WritterAiService {
+class WritterAIService {
   /**
    * Inicializa a integração com a API Writter-IA.
    * @param {string} baseURL - A URL base do serviço Writter-IA.
@@ -100,4 +100,4 @@ class WritterAiService {
   
 }
 
-module.exports = WritterAiService;
+module.exports = WritterAIService;

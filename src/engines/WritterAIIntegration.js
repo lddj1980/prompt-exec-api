@@ -1,5 +1,5 @@
 const axios = require('axios');
-const WritterAiService = require('./services/WritterAiService'); // Ajuste o caminho para a classe WritterAiAPI
+const WritterAIService = require('../services/WritterAIService'); // Ajuste o caminho para a classe WritterAiAPI
 
 module.exports = {
   async process(prompt, model, modelParameters) {
@@ -15,7 +15,7 @@ module.exports = {
       }
 
       // Instancia o serviço WritterAiAPI
-      const writterAiAPI = new WritterAiService();
+      const writterAiAPI = new WritterAIService();
 
       // Decide qual funcionalidade usar com base nos parâmetros
       if (modelParameters.action === 'getOldestUnusedTitle') {

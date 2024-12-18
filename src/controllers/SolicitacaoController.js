@@ -180,7 +180,7 @@ module.exports = {
 
   /**
  * @swagger
- * /api/v1/solicitacoes/{protocoloUid}/resultado:
+ * /solicitacoes/{protocoloUid}/resultado:
  *   get:
  *     summary: Obtém o resultado da solicitação
  *     description: Retorna o resultado processado da solicitação.
@@ -231,7 +231,7 @@ module.exports = {
 
   /**
  * @swagger
- * /api/v1/solicitacoes/{protocoloUid}/resume:
+ * /solicitacoes/{protocoloUid}/resume:
  *   post:
  *     summary: Retoma o processamento da solicitação
  *     description: Endpoint para retomar o processamento de uma solicitação em andamento.

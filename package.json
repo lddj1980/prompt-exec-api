@@ -15,7 +15,10 @@
     "form-data": "^4.0.0",
     "querystring": "^0.2.1",
     "parse-curl": "^0.2.6",
-    "node-telegram-bot-api": "^0.57.0"
+    "node-telegram-bot-api": "^0.57.0",
+    "swagger-ui-express": "^4.6.3",
+    "swagger-autogen": "^2.23.0",
+    "swagger-jsdoc": "^6.2.8"
   },
   "engines": {
     "node": "14.x"

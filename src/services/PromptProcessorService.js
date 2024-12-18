@@ -7,6 +7,7 @@ const InferenceAPIIntegrationTextToAudio = require('../engines/InferenceAPIInteg
 const InferenceAPIIntegrationTextToSpeech = require('../engines/InferenceAPIIntegrationTextToSpeech');
 const CURLIntegration = require('../engines/CURLIntegration');
 const FreePikTextToImageIntegration = require('../engines/FreePikTextToImageIntegration');
+const WritterAIIntegration = require('../engines/WritterAIIntegration');
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo) {
@@ -39,7 +40,10 @@ module.exports = {
           break;           
         case 'freepikapi-text-to-image':
           integrationClass = FreePikTextToImageIntegration;
-          break;           
+          break;      
+        case 'writter-ai':
+          integrationClass = WritterAIIntegration;
+          break;
         case 'curl':
           integrationClass = CURLIntegration;
           break;           

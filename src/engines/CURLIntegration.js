@@ -59,6 +59,9 @@ function parseCurlCommand(curlCommand) {
     config.headers[key.trim()] = value.trim();
   });
 
+  const parse = require('parse-curl');
+  const out = parse(curlCommand);
+  console.log('teste de parse'+JSON.stringify(out, null, 2));
   
   
   // Expressão regular para capturar o conteúdo do --data
@@ -66,8 +69,6 @@ function parseCurlCommand(curlCommand) {
 
   // Executa a regex no comando CURL
   const dataMatch = curlCommand.match(dataRegex);
-
-  console.log(dataMatch);
   // Processa o conteúdo do --data
   if (dataMatch) {
     const dataContent = dataMatch[2].replace(/\n/g, ''); // Remove quebras de linha

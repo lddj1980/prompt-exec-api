@@ -1,17 +1,27 @@
 const axios = require('axios');
 
 module.exports = {
-  async process(prompt, model,modelParameters={}) {
+  async process(prompt, model,modelParameters) {
     try {
-      const response = await axios.post('https://api.dall-e.com/v1/images/generate', {
-        prompt,
-        model,
-      }, {
-        headers: {
-          Authorization: `Bearer ${process.env.DALLE_API_KEY}`,
+      
+      modelParameter
+      const response = await axios.post(
+        'https://api.openai.com/v1/images/generations',
+        {
+          prompt: prompt,
+          n: 1,
+          model: model,
+          size: size,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.DALLE_API_KEY}`,
+          },
+        }
+      );
 
+      const imageUrl = response.data.data[0].url;
+      
       if (response.status === 200) {
         return response.data;
       } else {

@@ -5,6 +5,74 @@ const ParametroRepository = require('../data/ParametroRepository');
 const ProcessingService = require('../services/ProcessingService');
 
 module.exports = {
+  
+  
+  /**
+ * @swagger
+ * /solicitacoes:
+ *   post:
+ *     summary: Cria uma nova solicitação de processamento
+ *     description: Endpoint para criar uma nova solicitação utilizando prompts. A solicitação é processada em background.
+ *     operationId: createSolicitacao
+ *     tags:
+ *       - Solicitacoes
+ *     parameters:
+ *       - name: x-api-key
+ *         in: header
+ *         required: true
+ *         description: Chave de autenticação da API
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               prompts:
+ *                 type: array
+ *                 description: Lista de prompts a serem processados
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     conteudo:
+ *                       type: string
+ *                       description: Conteúdo do prompt
+ *                     engine:
+ *                       type: string
+ *                       description: Motor de execução do prompt
+ *                     modelo:
+ *                       type: string
+ *                       description: Modelo de IA utilizado
+ *                     parametros_modelo:
+ *                       type: object
+ *                       description: Parâmetros do modelo
+ *                     parametros:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           nome:
+ *                             type: string
+ *                           valor:
+ *                             type: string
+ *     responses:
+ *       202:
+ *         description: Solicitação criada com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 protocoloUid:
+ *                   type: string
+ *                   description: Identificador único da solicitação.
+ *       400:
+ *         description: Solicitação inválida.
+ *       500:
+ *         description: Erro interno do servidor.
+ */
   async create(req, res) {
     try {
       const { prompts } = req.body;
@@ -42,6 +110,53 @@ module.exports = {
     }
   },
 
+  /**
+ * @swagger
+ * /solicitacoes/{protocoloUid}/progress:
+ *   get:
+ *     summary: Obtém o progresso da solicitação
+ *     description: Retorna o status e os prompts processados da solicitação.
+ *     operationId: getProgress
+ *     tags:
+ *       - Solicitacoes
+ *     parameters:
+ *       - name: x-api-key
+ *         in: header
+ *         required: true
+ *         description: Chave de autenticação da API
+ *         schema:
+ *           type: string
+ *       - name: protocoloUid
+ *         in: path
+ *         required: true
+ *         description: Identificador único da solicitação.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Progresso da solicitação retornado com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   description: Status da solicitação.
+ *                 prompts:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       conteudo:
+ *                         type: string
+ *       404:
+ *         description: Solicitação não encontrada.
+ *       500:
+ *         description: Erro interno do servidor.
+ */
   async getProgress(req, res) {
     try {
       const { protocoloUid } = req.params;
@@ -63,6 +178,41 @@ module.exports = {
     }
   },
 
+  /**
+ * @swagger
+ * /api/v1/solicitacoes/{protocoloUid}/resultado:
+ *   get:
+ *     summary: Obtém o resultado da solicitação
+ *     description: Retorna o resultado processado da solicitação.
+ *     operationId: getResultado
+ *     tags:
+ *       - Solicitacoes
+ *     parameters:
+ *       - name: x-api-key
+ *         in: header
+ *         required: true
+ *         description: Chave de autenticação da API
+ *         schema:
+ *           type: string
+ *       - name: protocoloUid
+ *         in: path
+ *         required: true
+ *         description: Identificador único da solicitação.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Resultado da solicitação retornado com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               additionalProperties: true
+ *       404:
+ *         description: Solicitação não encontrada.
+ *       500:
+ *         description: Erro interno do servidor.
+ */
   async getResultado(req, res) {
     try {
       const { protocoloUid } = req.params;
@@ -79,6 +229,38 @@ module.exports = {
     }
   },
 
+  /**
+ * @swagger
+ * /api/v1/solicitacoes/{protocoloUid}/resume:
+ *   post:
+ *     summary: Retoma o processamento da solicitação
+ *     description: Endpoint para retomar o processamento de uma solicitação em andamento.
+ *     operationId: resumeSolicitacao
+ *     tags:
+ *       - Solicitacoes
+ *     parameters:
+ *       - name: x-api-key
+ *         in: header
+ *         required: true
+ *         description: Chave de autenticação da API
+ *         schema:
+ *           type: string
+ *       - name: protocoloUid
+ *         in: path
+ *         required: true
+ *         description: Identificador único da solicitação.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       202:
+ *         description: Processamento retomado com sucesso.
+ *       400:
+ *         description: Solicitação já foi concluída.
+ *       404:
+ *         description: Solicitação não encontrada.
+ *       500:
+ *         description: Erro interno do servidor.
+ */
   async resume(req, res) {
     try {
       const { protocoloUid } = req.params;

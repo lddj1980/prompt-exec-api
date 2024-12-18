@@ -1,7 +1,7 @@
 const pool = require('../config/database');
 
 module.exports = async (req, res, next) => {
-  const apiKey = req.headers['api_key'];
+  const apiKey = req.headers['x-api-key'] ? req.headers['x-api-key'] : req.headers['api_key'];
   if (!apiKey) {
     return res.status(400).json({ error: 'API Key is missing.' });
   }

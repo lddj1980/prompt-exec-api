@@ -9,6 +9,7 @@ const CURLIntegration = require('../engines/CURLIntegration');
 const FreePikTextToImageIntegration = require('../engines/FreePikTextToImageIntegration');
 const WritterAIIntegration = require('../engines/WritterAIIntegration');
 const BrainstormAIIntegration = require('../engines/BrainstormAIIntegration');
+const WordpressIntegration = require('../engines/WordpressIntegration');
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo) {
@@ -48,6 +49,9 @@ module.exports = {
         case 'brainstorm-ai':
           integrationClass = BrainstormAIIntegration;
           break;
+        case 'wordpress':
+          integrationClass = WordpressIntegration;
+          break;          
         case 'curl':
           integrationClass = CURLIntegration;
           break;           

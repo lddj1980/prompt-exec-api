@@ -19,7 +19,7 @@ module.exports = {
       for (const prompt of prompts) {
         const parametros = await ParametroRepository.getParametrosByPrompt(prompt.id);
         const substituicoes = this.prepareSubstituicoes(parametros, resultadoGlobal);
-        const promptConteudo = this.replacePlaceholders(prompt.conteudo, substituicoes);
+        const promptConteudo = this.replacePlaceholders(prompt.prompt, substituicoes);
 
         console.log('Segue prompt:');
         console.log(promptConteudo);
@@ -90,7 +90,7 @@ module.exports = {
 
         const parametros = await ParametroRepository.getParametrosByPrompt(prompt.id);
         const substituicoes = this.prepareSubstituicoes(parametros, resultadoGlobal);
-        const promptConteudo = this.replacePlaceholders(prompt.conteudo, substituicoes);
+        const promptConteudo = this.replacePlaceholders(prompt.prompt, substituicoes);
 
         const resultado = await PromptProcessorService.processPrompt(promptConteudo, prompt.engine, prompt.modelo, prompt.parametros_modelo);
 

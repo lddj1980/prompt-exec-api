@@ -1,54 +1,39 @@
-const axios = require('axios');
+const { generateText } = require('@google/generative-ai');
 
 module.exports = {
   /**
-   * Processa uma solicitação usando a API Gemini na Vertex AI.
+   * Processa uma solicitação usando a API Gemini.
    * @param {string} prompt - O prompt a ser enviado para o modelo.
-   * @param {string} model - O modelo a ser usado (por exemplo, "gemini-1.5-pro").
+   * @param {string} model - O modelo a ser usado (por exemplo, "models/chat-bison-001").
    * @param {object} modelParameters - Parâmetros adicionais para a solicitação.
    * @returns {Promise<object>} - A resposta processada pela API Gemini.
    * @throws {Error} - Caso ocorra um erro na chamada da API.
    */
   async process(prompt, model, modelParameters = {}) {
     try {
-      // Configurações
-      const projectId = process.env.GCP_PROJECT_ID; // ID do projeto Google Cloud
-      const region = process.env.GCP_REGION || 'us-central1'; // Região da Vertex AI
-      const accessToken = process.env.GCP_ACCESS_TOKEN; // Token de acesso
-
-      if (!projectId || !accessToken) {
-        throw new Error(
-          'Os parâmetros "GCP_PROJECT_ID" e "GCP_ACCESS_TOKEN" são obrigatórios.'
-        );
+      // Configurar a chave da API
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error('A variável de ambiente GEMINI_API_KEY não está definida.');
       }
 
-      // Endpoint da API Gemini
-      const endpoint = `https://${region}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${region}/publishers/google/models/${model}:predict`;
-
-      // Corpo da solicitação
-      const payload = {
-        instances: [
-          {
-            content: prompt,
-            parameters: modelParameters,
-          },
-        ],
-      };
-
-      console.log(`Enviando solicitação para ${endpoint}...`);
-
-      // Chamada à API
-      const response = await axios.post(endpoint, payload, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
+      // Configurar o cliente da API
+      const client = new generateText({
+        apiKey: apiKey,
       });
 
-      if (response.status === 200) {
-        return extrairJSON(response.data.predictions[0].content.trim());
+      // Chamar a API para gerar conteúdo
+      const response = await client.generateText({
+        model: model,
+        prompt: prompt,
+        ...modelParameters,
+      });
+
+      // Verificar se a resposta foi bem-sucedida
+      if (response && response.candidates && response.candidates.length > 0) {
+        return extrairJSON(response.candidates[0].output);
       } else {
-        throw new Error(`Erro ao processar com Gemini: ${response.statusText}`);
+        throw new Error('Erro ao processar com Gemini: resposta vazia');
       }
     } catch (error) {
       console.error('Erro na integração com Gemini:', error);
@@ -83,6 +68,11 @@ function extrairJSON(resposta) {
       return null;
     }
   } else {
-    return JSON.parse(resposta);
+    try {
+      return JSON.parse(resposta);
+    } catch (error) {
+      console.error('Erro ao fazer o parse do JSON direto:', error);
+      return null;
+    }
   }
 }

@@ -16,6 +16,7 @@ const TelegramIntegration = require('../engines/TelegramIntegration');
 const CarouselIntegration = require('../engines/CarouselIntegration');
 const ImageRepoIntegration = require('../engines/ImageRepoIntegration');
 const HtmlToImageIntegration = require('../engines/HtmlToImageIntegration');
+const CurlJobIntegration = require('../engines/CurlJobIntegration');
 
 
 module.exports = {
@@ -79,6 +80,9 @@ module.exports = {
           break;
        case 'curl':
           integrationClass = CURLIntegration;
+          break;           
+       case 'curl-sched':
+          integrationClass = CurlJobIntegration;
           break;           
         default:
           throw new Error(`Engine não suportada: ${engine}`);

@@ -6,15 +6,15 @@ const qs = require('querystring');
 module.exports = {
   /**
    * Processa manualmente um comando CURL e executa usando axios.
-   * @param {string} curlCommand - O comando CURL a ser processado.
+   * @param {string} prompt - O comando CURL a ser processado.
    * @returns {Promise<object>} - A resposta da requisição executada.
    */
-  async process(curlCommand) {
+  async process(prompt) {
     try {
-      console.log('Comando CURL recebido:', curlCommand);
+      console.log('Comando CURL recebido:', prompt);
 
       // Parseia o comando CURL
-      const config = parseCurlCommand(curlCommand);
+      const config = parseCurlCommand(prompt);
       console.log('Configuração gerada para axios:', config);
 
       // Executa a requisição com axios
@@ -34,17 +34,17 @@ module.exports = {
  * @param {string} curlCommand - O comando CURL a ser parseado.
  * @returns {object} - Configuração para axios.
  */
-function parseCurlCommand(curlCommand) {
+function parseCurlCommand(prompt) {
   const config = { headers: {} };
   let formData = null;
 
   // Extrai o método HTTP (padrão: GET)
-  config.method = /-X\s+(\w+)/.test(curlCommand)
-    ? curlCommand.match(/-X\s+(\w+)/)[1].toLowerCase()
+  config.method = /-X\s+(\w+)/.test(prompt)
+    ? prompt.match(/-X\s+(\w+)/)[1].toLowerCase()
     : 'get';
 
   // Extrai a URL
-  const urlMatch = curlCommand.match(/(?:^|\s)['"]?(https?:\/\/[^\s'"]+)['"]?/);
+  const urlMatch = prompt.match(/(?:^|\s)['"]?(https?:\/\/[^\s'"]+)['"]?/);
   if (urlMatch) {
     config.url = urlMatch[1];
   } else {
@@ -52,7 +52,7 @@ function parseCurlCommand(curlCommand) {
   }
 
   // Extrai os cabeçalhos
-  const headerMatches = curlCommand.match(/-H\s+["']?([^"']+)["']?/g) || [];
+  const headerMatches = prompt.match(/-H\s+["']?([^"']+)["']?/g) || [];
   headerMatches.forEach((header) => {
     const cleanHeader = header.replace(/-H\s+/, '').replace(/^['"]|['"]$/g, '');
     const [key, value] = cleanHeader.split(/:\s*/);
@@ -60,7 +60,7 @@ function parseCurlCommand(curlCommand) {
   });
 
   const parse = require('parse-curl');
-  const out = parse(curlCommand);
+  const out = parse(prompt);
   console.log('teste de parse'+JSON.stringify(out, null, 2));
   
   
@@ -68,7 +68,7 @@ function parseCurlCommand(curlCommand) {
   const dataRegex = /--data\s+(['"])([\s\S]*?)\1/;
 
   // Executa a regex no comando CURL
-  const dataMatch = curlCommand.match(dataRegex);
+  const dataMatch = prompt.match(dataRegex);
   // Processa o conteúdo do --data
   if (dataMatch) {
     const dataContent = dataMatch[2].replace(/\n/g, ''); // Remove quebras de linha
@@ -96,7 +96,7 @@ function parseCurlCommand(curlCommand) {
   }
   
   // Processa upload de arquivos (-F ou --form)
-  const formMatches = curlCommand.match(/-F\s+["']?([^"' ]+)["']?/g);
+  const formMatches = prompt.match(/-F\s+["']?([^"' ]+)["']?/g);
   if (formMatches) {
     formData = new FormData();
     formMatches.forEach((field) => {
@@ -114,7 +114,7 @@ function parseCurlCommand(curlCommand) {
   }
 
   // Autenticação básica (-u)
-  const authMatch = curlCommand.match(/-u\s+([^:]+):([^ ]+)/);
+  const authMatch = prompt.match(/-u\s+([^:]+):([^ ]+)/);
   if (authMatch) {
     config.auth = {
       username: authMatch[1],
@@ -123,7 +123,7 @@ function parseCurlCommand(curlCommand) {
   }
 
   // Configuração de redirecionamento (-L)
-  if (curlCommand.includes('-L')) config.maxRedirects = 5;
+  if (prompt.includes('-L')) config.maxRedirects = 5;
 
   return config;
 }

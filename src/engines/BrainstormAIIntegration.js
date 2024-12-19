@@ -2,12 +2,12 @@ const axios = require('axios');
 const BrainstormAIService = require('../services/BrainstormAIService'); // Ajuste o caminho para a classe BrainstormAIService
 
 module.exports = {
-  async process(prompt, model, modelParameters) {
+  async process(prompt, modelo, parametros_modelo) {
     try {
-      modelParameters = modelParameters ? modelParameters : {};
+      parametros_modelo = parametros_modelo ? parametros_modelo : {};
       console.log('Iniciando integração com o Brainstorm AI...');
 
-      const apiKey = modelParameters.apiKey || null;
+      const apiKey = parametros_modelo.apiKey || null;
 
       if (!apiKey) {
         throw new Error('O parâmetro "apiKey" é obrigatório.');
@@ -17,34 +17,34 @@ module.exports = {
       const brainstormAIService = new BrainstormAIService();
 
       // Decide qual funcionalidade usar com base nos parâmetros
-      if (modelParameters.action === 'execute') {
+      if (parametros_modelo.action === 'execute') {
         // Executa o script Brainstorm
         console.log('Executando script Brainstorm...');
-        if (!modelParameters.pathParameter) {
-          throw new Error('O parâmetro "pathParameter" é obrigatório para executar o script.');
+        if (!parametros_modelo.writerId) {
+          throw new Error('O parâmetro "writerId" é obrigatório para executar o script.');
         }
 
-        const result = await brainstormAIService.execute(apiKey, modelParameters.pathParameter);
+        const result = await brainstormAIService.execute(apiKey, parametros_modelo.writerId);
 
         console.log('Script Brainstorm executado com sucesso:', result);
         return result;
 
-      } else if (modelParameters.action === 'getLastTitles') {
+      } else if (parametros_modelo.action === 'getLastTitles') {
         // Obtém os últimos 10 títulos de um redator
         console.log('Obtendo os últimos 10 títulos do redator...');
-        if (!modelParameters.writerId) {
+        if (!parametros_modelo.writerId) {
           throw new Error('O parâmetro "writerId" é obrigatório para obter os títulos.');
         }
 
-        const lastTitles = await brainstormAIService.getLastTitles(apiKey, modelParameters.writerId);
+        const lastTitles = await brainstormAIService.getLastTitles(apiKey, parametros_modelo.writerId);
 
         console.log('Últimos títulos obtidos com sucesso:', lastTitles);
         return lastTitles;
 
-      } else if (modelParameters.action === 'createTitles') {
+      } else if (parametros_modelo.action === 'createTitles') {
         // Cria novos títulos e associa ao brainstorm
         console.log('Criando novos títulos...');
-        if (!modelParameters.writerId || !modelParameters.titles) {
+        if (!parametros_modelo.writerId || !parametros_modelo.titles) {
           throw new Error(
             'Os parâmetros "writerId" e "titles" são obrigatórios para criar títulos.'
           );
@@ -52,8 +52,8 @@ module.exports = {
 
         const createdTitles = await brainstormAIService.createTitles(
           apiKey,
-          modelParameters.writerId,
-          modelParameters.titles
+          parametros_modelo.writerId,
+          parametros_modelo.titles
         );
 
         console.log('Novos títulos criados com sucesso:', createdTitles);
@@ -61,7 +61,7 @@ module.exports = {
 
       } else {
         throw new Error(
-          'Nenhuma ação válida foi especificada. Use "execute", "getLastTitles" ou "createTitles" em "modelParameters.action".'
+          'Nenhuma ação válida foi especificada. Use "execute", "getLastTitles" ou "createTitles" em "parametros_modelo.action".'
         );
       }
 

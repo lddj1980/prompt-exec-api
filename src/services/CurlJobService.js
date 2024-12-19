@@ -21,16 +21,6 @@ class CurlJobService {
     console.log(`Scheduling cURL job at: ${url}`);
 
     try {
-      
-      // Função auxiliar para realizar o escape do cURL dentro do payload
-      const escapeString = (str) => {
-        return str.replace(/\\/g, '\\\\') // Escapa barras invertidas
-                  .replace(/"/g, '\\"')  // Escapa aspas duplas
-                  .replace(/\n/g, '\\n'); // Escapa quebras de linha
-      };
-      
-      payload.curl_command = escapeString(payload.curl_command);
-      
       const response = await axios.post(url, payload, {
         headers: {
           'x-api-key': apiKey,

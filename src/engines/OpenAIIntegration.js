@@ -4,6 +4,58 @@ module.exports = {
   
   async process(prompt, model,modelParameters={}) {
     try {
+      
+      const apiKey = process.env.OPENAI_API_KEY;
+
+      if (!apiKey) {
+        throw new Error('A variável de ambiente OPENAI_API_KEY não está definida.');
+      }
+
+      // Endpoint da API
+      const endpoint = 'https://api.openai.com/v1/chat/completions';
+
+      // Mensagens de entrada
+      const messages = [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: prompt,
+            },
+          ],
+        },
+      ];
+
+      // Se uma URL de imagem for fornecida, adiciona ao conteúdo
+      if (modelParameters.imageUrl) {
+        messages[0].content.push({
+          type: 'image_url',
+          image_url: {
+            url: modelParameters.imageUrl,
+          },
+        });
+      }
+
+      // Corpo da solicitação
+      const payload = {
+        model: model,
+        messages: messages,
+        max_tokens: modelParameters.max_tokens || 4096,
+      };
+
+      console.log(`Enviando solicitação para ${endpoint}...`);
+      console.log('Payload:', JSON.stringify(payload, null, 2));
+
+      // Chamada à API
+      const response = await axios.post(endpoint, payload, {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+      });      
+      
+      
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions', // Endpoint da API
         JSON.stringify({

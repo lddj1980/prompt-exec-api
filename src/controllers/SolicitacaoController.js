@@ -81,7 +81,7 @@ module.exports = {
         return res.status(400).json({ error: 'Prompts inválidos.' });
       }
 
-      console.log(prompts);
+      console.log(req.body);
       const protocoloUid = uuidv4();
       const solicitacaoId = await SolicitacaoRepository.createSolicitacao(protocoloUid);
 

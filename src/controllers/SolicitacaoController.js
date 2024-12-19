@@ -36,7 +36,7 @@ module.exports = {
  *                 items:
  *                   type: object
  *                   properties:
- *                     conteudo:
+ *                     prompt:
  *                       type: string
  *                       description: Conteúdo do prompt
  *                     engine:
@@ -88,7 +88,7 @@ module.exports = {
       for (const [index, prompt] of prompts.entries()) {
         const promptId = await PromptRepository.insertPrompt(
           solicitacaoId,
-          prompt.conteudo,
+          prompt.prompt,
           prompt.engine,
           prompt.modelo,
           index + 1,
@@ -150,7 +150,7 @@ module.exports = {
  *                     properties:
  *                       id:
  *                         type: string
- *                       conteudo:
+ *                       prompt:
  *                         type: string
  *       404:
  *         description: Solicitação não encontrada.

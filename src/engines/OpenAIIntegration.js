@@ -56,7 +56,7 @@ module.exports = {
       });      
       
       
-      const response = await axios.post(
+      /*const response = await axios.post(
         'https://api.openai.com/v1/chat/completions', // Endpoint da API
         JSON.stringify({
               "model": model, // Modelo ChatGPT
@@ -76,7 +76,7 @@ module.exports = {
           'Authorization': `Bearer `+ process.env.OPENAI_API_KEY,
           'Content-type': 'application/json'
         }}
-      );
+      );*/
 
       if (response.status === 200) {
         return extrairJSON(response.data.choices[0].message.content.trim());

@@ -77,9 +77,10 @@ module.exports = {
     try {
       const { data } = req.body;
 
-      const prePrompt = Buffer.from(data, 'base64').toString('utf-8');
-      const {prompts} = prePrompt;
-      
+      const prePrompt = JSON.parse(Buffer.from(data, 'base64').toString('utf-8'));
+      console.log(prePrompt);
+      const prompts = prePrompt.prompts;
+ 
       if (!prompts || !Array.isArray(prompts)) {
         return res.status(400).json({ error: 'Prompts inválidos.' });
       }

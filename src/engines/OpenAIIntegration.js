@@ -59,6 +59,10 @@ function extrairJSON(resposta) {
             return null;
         }
     } else {
-        return JSON.parse(resposta);
+        try {
+          return JSON.parse(resposta);
+        } catch (error){
+          return resposta;
+        }
     }
 }

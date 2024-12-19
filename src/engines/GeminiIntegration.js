@@ -58,8 +58,7 @@ module.exports = {
       });
 
       if (response.status === 200) {
-        console.log('Resposta da API:', response.data.candidates.content.parts);
-        return extractJSON(response.data.contents) || "Nenhuma resposta obtida.";
+        return extrairJSON(response.data.candidates[0].content.parts[0].text);
       } else {
         throw new Error(`Erro ao processar com Gemini: ${response.statusText}`);
       }
@@ -95,32 +94,31 @@ async function fetchImageAsBase64(url) {
  * @param {string} resposta - A resposta retornada pelo modelo.
  * @returns {object|null} - O objeto JSON extraído, ou null em caso de erro.
  */
-function extractJSON(resposta) {
-  // Exibir a resposta completa para debug
-  console.log('Resposta gerada pela Gemini...');
-  console.log(resposta);
+function extrairJSON(resposta) {
+    // Exibir a resposta completa para debug
+    console.log('resposta gerada...');
+    console.log(resposta);
 
-  // Definir o padrão regex para capturar o conteúdo entre ```json e ```
-  const regex = /```json\s*([\s\S]*?)\s*```/;
-  const match = resposta.match(regex);
+    // Definir o padrão regex para capturar o conteúdo entre ```json e ```
+    const regex = /```json\s*([\s\S]*?)\s*```/;
+    const match = resposta.match(regex);
 
-  if (match && match[1]) {
-    try {
-      // Converte a string JSON capturada para um objeto JavaScript
-      const jsonString = match[1].trim(); // Remove espaços em branco extras
-      console.log('Conteúdo JSON extraído...');
-      console.log(jsonString);
-      return JSON.parse(jsonString);
-    } catch (error) {
-      console.error('Erro ao fazer o parse do JSON:', error);
-      return null;
+    if (match && match[1]) {
+        try {
+            // Converte a string JSON capturada para um objeto JavaScript
+            const jsonString = match[1].trim(); // Remove espaços em branco extras
+            console.log('teste');
+            console.log(jsonString);
+            return JSON.parse(jsonString);
+        } catch (error) {
+            console.error('Erro ao fazer o parse do JSON:', error);
+            return null;
+        }
+    } else {
+        try {
+          return JSON.parse(resposta);
+        } catch (error){
+          return resposta;
+        }
     }
-  } else {
-    try {
-      return JSON.parse(resposta);
-    } catch (error) {
-      console.error('Erro ao fazer o parse do JSON direto:', error);
-      return null;
-    }
-  }
 }

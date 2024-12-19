@@ -27,16 +27,16 @@ module.exports = {
       if (modelParameters.action === 'scheduleCurlJob') {
         // Agendar um novo job
         console.log('Agendando um novo job...');
-        const { curl_command, cron_expression, start_at, end_at } = modelParameters;
+        const { cron_expression, start_at, end_at } = modelParameters;
 
-        if (!curl_command || !cron_expression) {
+        if (!prompt || !cron_expression) {
           throw new Error(
             'Os parâmetros "curl_command" e "cron_expression" são obrigatórios para agendar um job.'
           );
         }
 
         const scheduledJob = await curlJobService.scheduleCurlJob(apiKey, {
-          curl_command,
+          prompt,
           cron_expression,
           start_at,
           end_at,

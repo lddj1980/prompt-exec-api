@@ -18,10 +18,10 @@ module.exports = {
       // Monta o payload da requisição
       const payload = {
         prompt: prompt,
-        negative_prompt: modelParameters.negativePrompt ? modelParameters.negativePrompt : {},
-        guidance_scale: modelParameters.guidanceScale ? modelParameters.guidanceScale : 1,
+        negative_prompt: modelParameters.negative_prompt ? modelParameters.negative_prompt : {},
+        guidance_scale: modelParameters.guidance_scale ? modelParameters.guidance_scale : 1,
         seed: modelParameters.seed ? modelParameters.seed : 0,
-        num_images: modelParameters.numImages ? modelParameters.numImages : 1,
+        num_images: modelParameters.num_images ? modelParameters.num_images : 1,
         image: modelParameters.image ? modelParameters.image : {
           size: 'square_1_1', // Tamanho padrão conforme o exemplo
         },

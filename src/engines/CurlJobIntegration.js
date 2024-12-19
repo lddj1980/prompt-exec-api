@@ -35,6 +35,8 @@ module.exports = {
           );
         }
 
+        console.log(prompt);
+        
         const scheduledJob = await curlJobService.scheduleCurlJob(apiKey, {
           curl_command:prompt,
           cron_expression,

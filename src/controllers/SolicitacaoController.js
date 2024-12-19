@@ -75,8 +75,11 @@ module.exports = {
  */
   async create(req, res) {
     try {
-      const { prompts } = req.body;
+      const { data } = req.body;
 
+      const prePrompt = Buffer.from(data, 'base64').toString('utf-8');
+      const {prompts} = prePrompt;
+      
       if (!prompts || !Array.isArray(prompts)) {
         return res.status(400).json({ error: 'Prompts inválidos.' });
       }
@@ -85,7 +88,13 @@ module.exports = {
       const protocoloUid = uuidv4();
       const solicitacaoId = await SolicitacaoRepository.createSolicitacao(protocoloUid);
 
+      
+      
       for (const [index, prompt] of prompts.entries()) {
+ 
+        if (prompt.engine == 'curl-sched' || prompt.engine == 'curl'){
+          prompt.prompt = Buffer.from(prompt.prompt, 'base64').toString('utf-8');
+        }
         const promptId = await PromptRepository.insertPrompt(
           solicitacaoId,
           prompt.prompt,

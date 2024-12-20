@@ -424,6 +424,53 @@ module.exports = {
     console.error('Erro ao excluir solicitação:', error);
     res.status(500).json({ error: 'Erro interno do servidor.' });
   }
-} 
+},
+ /**
+ * @swagger
+ * /solicitacoes/{protocoloUid}/process:
+ *   post:
+ *     summary: Processa uma solicitação (mesmo já tendo concluído)
+ *     description: Endpoint para processar uma solicitação
+ *     operationId: processarSolicitacao
+ *     tags:
+ *       - Solicitacoes
+ *     parameters:
+ *       - name: x-api-key
+ *         in: header
+ *         required: true
+ *         description: Chave de autenticação da API
+ *         schema:
+ *           type: string
+ *       - name: protocoloUid
+ *         in: path
+ *         required: true
+ *         description: Identificador único da solicitação.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       202:
+ *         description: Processamento retomado com sucesso.
+ *       404:
+ *         description: Solicitação não encontrada.
+ *       500:
+ *         description: Erro interno do servidor.
+ */
+  async process(req, res) {
+    try {
+      const { protocoloUid } = req.params;
+
+      const solicitacao = await SolicitacaoRepository.getSolicitacaoByProtocolo(protocoloUid);
+      if (!solicitacao) {
+        return res.status(404).json({ error: 'Solicitação não encontrada.' });
+      }
+
+      await ProcessingService.process(protocoloUid);
+
+      res.status(202).json({ message: 'Processamento realizado.' });
+    } catch (error) {
+      console.error('Erro ao realizar o processamento:', error);
+      res.status(500).json({ error: 'Erro interno do servidor.' });
+    }
+  },  
   
 };

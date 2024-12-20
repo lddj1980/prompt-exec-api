@@ -28,6 +28,11 @@ router.post(
   excludeRoutesMiddleware(ApiKeyMiddleware, excludedPaths),
   SolicitacaoController.resume
 );
+router.post(
+  '/solicitacoes/:protocoloUid/process',
+  excludeRoutesMiddleware(ApiKeyMiddleware, excludedPaths),
+  SolicitacaoController.process
+);
 router.get(
   '/solicitacoes/:protocoloUid/progresso',
   excludeRoutesMiddleware(ApiKeyMiddleware, excludedPaths),

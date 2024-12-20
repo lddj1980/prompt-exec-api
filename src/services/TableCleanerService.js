@@ -10,10 +10,7 @@ class TableCleanerService {
             await this.repository.executeQuery('SET FOREIGN_KEY_CHECKS = 0');
 
             // Truncar as tabelas
-            await this.repository.executeQuery('TRUNCATE TABLE parametros');
-            await this.repository.executeQuery('TRUNCATE TABLE prompts');
             await this.repository.executeQuery('TRUNCATE TABLE prompts_resultados');
-            await this.repository.executeQuery('TRUNCATE TABLE solicitacoes_base');
             console.log('Tabelas limpas com sucesso.');
 
             // Reabilitar constraints

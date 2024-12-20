@@ -52,6 +52,24 @@ module.exports = {
  *                     engine:
  *                       type: string
  *                       description: Nome da engine associada
+ *                       enum:
+ *                       - openai
+ *                       - dall-e
+ *                       - gemini
+ *                       - inferenceapi-text-to-image
+ *                       - inferenceapi-text-generation
+ *                       - inferenceapi-text-to-audio
+ *                       - inferenceapi-text-to-speech
+ *                       - freepikapi-text-to-image
+ *                       - writter-ai
+ *                       - brainstorm-ai
+ *                       - wordpress
+ *                       - instagram
+ *                       - whatsapp
+ *                       - telegram
+ *                       - carousel
+ *                       - image-repo
+ *                       - html-to-image
  *                     model:
  *                       type: string
  *                       description: Modelo utilizado pela engine
@@ -213,7 +231,7 @@ module.exports = {
 
 /**
  * @swagger
- * /api/v1/solicitacoes/{protocoloUid}/resultado:
+ * /solicitacoes/{protocoloUid}/resultado:
  *   get:
  *     summary: Obtém o resultado da solicitação
  *     description: Retorna o resultado processado da solicitação.

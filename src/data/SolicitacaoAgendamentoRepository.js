@@ -73,16 +73,6 @@ class SolicitacaoAgendamentoRepository {
     return result.affectedRows > 0;
   }
 
-static async updateAgendamentoBySolicitacao(solicitacaoId, cronExpression, startAt, endAt) {
-  const sql = `
-    UPDATE solicitacao_agendamentos
-    SET cron_expression = ?, data_inicio_validade = ?, data_fim_validade = ?
-    WHERE solicitacao_id = ?
-  `;
-  const [result] = await pool.query(sql, [cronExpression, startAt, endAt, solicitacaoId]);
-  return result.affectedRows > 0;
-}  
-  
   
 }
 

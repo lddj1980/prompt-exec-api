@@ -147,7 +147,9 @@ module.exports = {
       }
 
       res.status(202).json({ protocoloUid });
-      ProcessingService.process(protocoloUid);
+      if (!cron_expression){
+        ProcessingService.process(protocoloUid);
+      }
     } catch (error) {
       console.error('Erro ao criar solicitação:', error);
       res.status(500).json({ error: 'Erro interno do servidor.' });

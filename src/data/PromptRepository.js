@@ -11,16 +11,16 @@ class PromptRepository {
    * @param {object|null} parametrosModelo - Parâmetros do modelo em formato JSON (opcional).
    * @returns {number} - ID do prompt inserido.
    */
-  static async insertPrompt(solicitacaoId, prompt, engine, modelo, ordem, parametrosModelo = null) {
+  static async insertPrompt(solicitacaoId, prompt, engine, model, ordem, model_parameters, cron_expression,start_at,end_at) {
     // Definir a consulta SQL dependendo da presença de `parametrosModelo`
-    const sql = parametrosModelo
+    const sql = model_parameters
       ? 'INSERT INTO prompts (solicitacao_id, prompt, engine, modelo, ordem, parametros_modelo) VALUES (?, ?, ?, ?, ?, ?)'
       : 'INSERT INTO prompts (solicitacao_id, prompt, engine, modelo, ordem) VALUES (?, ?, ?, ?, ?)';
 
     // Definir os valores a serem usados na consulta
-    const values = parametrosModelo
-      ? [solicitacaoId, prompt, engine, modelo, ordem, JSON.stringify(parametrosModelo)]
-      : [solicitacaoId, prompt, engine, modelo, ordem];
+    const values = model_parameters
+      ? [solicitacaoId, prompt, engine, model, ordem, JSON.stringify(model_parameters)]
+      : [solicitacaoId, prompt, engine, model, ordem];
 
     // Executar a consulta
     const [result] = await pool.query(sql, values);

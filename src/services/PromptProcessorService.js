@@ -5,7 +5,6 @@ const InferenceAPIIntegrationTextToImage = require('../engines/InferenceAPIInteg
 const InferenceAPIIntegrationTextGeneration = require('../engines/InferenceAPIIntegrationTextGeneration');
 const InferenceAPIIntegrationTextToAudio = require('../engines/InferenceAPIIntegrationTextToAudio');
 const InferenceAPIIntegrationTextToSpeech = require('../engines/InferenceAPIIntegrationTextToSpeech');
-const CURLIntegration = require('../engines/CURLIntegration');
 const FreePikTextToImageIntegration = require('../engines/FreePikTextToImageIntegration');
 const WritterAIIntegration = require('../engines/WritterAIIntegration');
 const BrainstormAIIntegration = require('../engines/BrainstormAIIntegration');
@@ -16,7 +15,6 @@ const TelegramIntegration = require('../engines/TelegramIntegration');
 const CarouselIntegration = require('../engines/CarouselIntegration');
 const ImageRepoIntegration = require('../engines/ImageRepoIntegration');
 const HtmlToImageIntegration = require('../engines/HtmlToImageIntegration');
-const CurlJobIntegration = require('../engines/CurlJobIntegration');
 
 
 module.exports = {
@@ -78,12 +76,6 @@ module.exports = {
         case 'html-to-image':
           integrationClass = HtmlToImageIntegration;
           break;
-       case 'curl':
-          integrationClass = CURLIntegration;
-          break;           
-       case 'curl-sched':
-          integrationClass = CurlJobIntegration;
-          break;           
         default:
           throw new Error(`Engine não suportada: ${engine}`);
       }

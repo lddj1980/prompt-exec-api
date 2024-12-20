@@ -76,6 +76,10 @@ module.exports = {
   async create(req, res) {
     try {
       const { prompts } = req.body;
+      
+      const cron_expression = req.headers['x-cron-expression'];
+      const start_at = req.headers['x-cron-start-at'];
+      const end_at = req.headers['x-cron-end-at'];
 
       if (!prompts || !Array.isArray(prompts)) {
         return res.status(400).json({ error: 'Prompts inválidos.' });
@@ -84,8 +88,6 @@ module.exports = {
       console.log(req.body);
       const protocoloUid = uuidv4();
       const solicitacaoId = await SolicitacaoRepository.createSolicitacao(protocoloUid);
-
-      
       
       for (const [index, prompt] of prompts.entries()) {
  
@@ -93,14 +95,17 @@ module.exports = {
           solicitacaoId,
           prompt.prompt,
           prompt.engine,
-          prompt.modelo,
+          prompt.model,
           index + 1,
-          prompt.parametros_modelo
+          prompt.model_parameters,
+          cron_expression,
+          start_at,
+          end_at
         );
 
-        if (prompt.parametros && Array.isArray(prompt.parametros)) {
-          for (const parametro of prompt.parametros) {
-            await ParametroRepository.insertParametro(promptId, parametro.nome, parametro.valor);
+        if (prompt.prompt_parameters && Array.isArray(prompt.prompt_parameters)) {
+          for (const parametro of prompt.prompt_parameters) {
+            await ParametroRepository.insertParametro(promptId, parametro.name, parametro.value);
           }
         }
       }

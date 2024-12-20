@@ -7,7 +7,8 @@ const ProcessingService = require('../services/ProcessingService');
 module.exports = {
   
   
- /**
+
+/**
  * @swagger
  * /solicitacoes:
  *   post:
@@ -30,16 +31,37 @@ module.exports = {
  *           schema:
  *             oneOf:
 
-               - description: Solicitação para a engine brainstorm-ai
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine brainstorm-ai
                  properties:
                    engine:
                      type: string
                      enum: ["brainstorm-ai"]
+                     description: A engine utilizada para o processamento brainstorm-ai
+                   model:
+                     type: string
+                     description: O modelo da engine utilizado brainstorm-ai
+                   prompt:
+                     type: string
+                     description: O texto inicial a ser processado pela engine brainstorm-ai
+                   model_parameters:
+                     type: object
+                     properties:
+    
+                     description: Nenhum parâmetro específico para esta engine brainstorm-ai
+        
+                 required: ["engine", "model", "prompt", "model_parameters"]
+    
+               - type: object
+                 description: Configuração específica para a engine carousel
+                 properties:
+                   engine:
+                     type: string
+                     enum: ["carousel"]
                      description: A engine utilizada para o processamento carousel
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado carousel 
                    prompt:
                      type: string
                      description: O texto inicial a ser processado pela engine carousel
@@ -47,44 +69,23 @@ module.exports = {
                      type: object
                      properties:
     
-                     description: Nenhum parâmetro específico para esta engine carousel
+                     description: Nenhum parâmetro específico para esta engine
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine carousel
-                 type: object
-                 properties:
-                   engine:
-                     type: string
-                     enum: ["carousel"]
-                     description: A engine utilizada para o processamento de carousel
-                   model:
-                     type: string
-                     description: O modelo da engine utilizado para carousel
-                   prompt:
-                     type: string
-                     description: O texto inicial a ser processado pela carousel
-                   model_parameters:
-                     type: object
-                     properties:
-    
-                     description: Nenhum parâmetro específico para esta engine carousel
-        
-                 required: ["engine", "model", "prompt", "model_parameters"]
-    
-               - description: Solicitação para a engine dall-e
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine dall-e
                  properties:
                    engine:
                      type: string
                      enum: ["dall-e"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento dall-e
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado dall-e
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine dall-e
                    model_parameters:
                      type: object
                      properties:
@@ -101,19 +102,19 @@ module.exports = {
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine freepikapi-text-to-image
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine freepikapi-text-to-image
                  properties:
                    engine:
                      type: string
                      enum: ["freepikapi-text-to-image"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento freepikapi-text-to-image
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado freepikapi-text-to-image
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine freepikapi-text-to-image
                    model_parameters:
                      type: object
                      properties:
@@ -146,19 +147,19 @@ module.exports = {
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine gemini
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine gemini
                  properties:
                    engine:
                      type: string
                      enum: ["gemini"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento gemini
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado gemini
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine gemini
                    model_parameters:
                      type: object
                      properties:
@@ -171,19 +172,19 @@ module.exports = {
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine html-to-image
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine html-to-image
                  properties:
                    engine:
                      type: string
                      enum: ["html-to-image"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento html-to-image
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado html-to-image
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine html-to-image
                    model_parameters:
                      type: object
                      properties:
@@ -224,19 +225,19 @@ module.exports = {
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine image-repo
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine image-repo
                  properties:
                    engine:
                      type: string
                      enum: ["image-repo"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento image-repo
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado image-repo
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine image-repo
                    model_parameters:
                      type: object
                      properties:
@@ -277,19 +278,19 @@ module.exports = {
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine inferenceapi-text-generation
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine inferenceapi-text-generation
                  properties:
                    engine:
                      type: string
                      enum: ["inferenceapi-text-generation"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento inferenceapi-text-generation
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado inferenceapi-text-generation
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine inferenceapi-text-generation
                    model_parameters:
                      type: object
                      properties:
@@ -298,19 +299,19 @@ module.exports = {
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine inferenceapi-text-to-audio
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine inferenceapi-text-to-audio
                  properties:
                    engine:
                      type: string
                      enum: ["inferenceapi-text-to-audio"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento inferenceapi-text-to-audio
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado inferenceapi-text-to-audio
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine inferenceapi-text-to-audio
                    model_parameters:
                      type: object
                      properties:
@@ -319,19 +320,19 @@ module.exports = {
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine inferenceapi-text-to-image
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine inferenceapi-text-to-image
                  properties:
                    engine:
                      type: string
                      enum: ["inferenceapi-text-to-image"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento inferenceapi-text-to-image
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado inferenceapi-text-to-image
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine inferenceapi-text-to-image
                    model_parameters:
                      type: object
                      properties:
@@ -340,19 +341,19 @@ module.exports = {
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine inferenceapi-text-to-speech
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine inferenceapi-text-to-speech
                  properties:
                    engine:
                      type: string
                      enum: ["inferenceapi-text-to-speech"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento inferenceapi-text-to-speech
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado inferenceapi-text-to-speech
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine inferenceapi-text-to-speech
                    model_parameters:
                      type: object
                      properties:
@@ -361,19 +362,19 @@ module.exports = {
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine instagram
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine instagram
                  properties:
                    engine:
                      type: string
                      enum: ["instagram"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento instagram
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado instagram
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine instagram
                    model_parameters:
                      type: object
                      properties:
@@ -414,19 +415,19 @@ module.exports = {
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine openai
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine openai
                  properties:
                    engine:
                      type: string
                      enum: ["openai"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento openai
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado openai
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine openai
                    model_parameters:
                      type: object
                      properties:
@@ -443,19 +444,19 @@ module.exports = {
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine telegram
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine telegram
                  properties:
                    engine:
                      type: string
                      enum: ["telegram"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento telegram
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado telegram
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine telegram
                    model_parameters:
                      type: object
                      properties:
@@ -508,19 +509,19 @@ module.exports = {
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine whatsapp
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine whatsapp
                  properties:
                    engine:
                      type: string
                      enum: ["whatsapp"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento whatsapp
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado whatsapp
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine whatsapp
                    model_parameters:
                      type: object
                      properties:
@@ -569,19 +570,19 @@ module.exports = {
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine wordpress
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine wordpress
                  properties:
                    engine:
                      type: string
                      enum: ["wordpress"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento wordpress
                    model:
                      type: string
                      description: O modelo da engine utilizado
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine wordpress
                    model_parameters:
                      type: object
                      properties:
@@ -622,19 +623,19 @@ module.exports = {
         
                  required: ["engine", "model", "prompt", "model_parameters"]
     
-               - description: Solicitação para a engine writter-ai
-                 type: object
+               - type: object
+                 description: Configuração específica para a engine writter-ai
                  properties:
                    engine:
                      type: string
                      enum: ["writter-ai"]
-                     description: A engine utilizada para o processamento
+                     description: A engine utilizada para o processamento writter-ai
                    model:
                      type: string
-                     description: O modelo da engine utilizado
+                     description: O modelo da engine utilizado writter-ai
                    prompt:
                      type: string
-                     description: O texto inicial a ser processado pela engine
+                     description: O texto inicial a ser processado pela engine writter-ai
                    model_parameters:
                      type: object
                      properties:

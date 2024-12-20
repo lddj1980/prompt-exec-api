@@ -1,36 +1,36 @@
 const pool = require('../config/database');
 
-class PromptAgendamentoRepository {
+class SolicitacaoAgendamentoRepository {
   /**
    * Insere um novo agendamento no banco de dados.
-   * @param {number} promptId - ID do prompt associado.
+   * @param {number} solicitacaoId - ID da solicitação associada.
    * @param {string} cronExpression - Expressão cron do agendamento.
    * @param {Date|null} dataInicioValidade - Data de início da validade (opcional).
    * @param {Date|null} dataFimValidade - Data de fim da validade (opcional).
    * @returns {number} - ID do agendamento inserido.
    */
-  static async insertAgendamento(promptId, cronExpression, dataInicioValidade = null, dataFimValidade = null) {
+  static async insertAgendamento(solicitacaoId, cronExpression, dataInicioValidade = null, dataFimValidade = null) {
     const sql = `
-      INSERT INTO prompt_agendamentos (prompt_id, cron_expression, data_inicio_validade, data_fim_validade)
+      INSERT INTO solicitacao_agendamentos (solicitacao_id, cron_expression, data_inicio_validade, data_fim_validade)
       VALUES (?, ?, ?, ?)
     `;
-    const values = [promptId, cronExpression, dataInicioValidade, dataFimValidade];
+    const values = [solicitacaoId, cronExpression, dataInicioValidade, dataFimValidade];
     const [result] = await pool.query(sql, values);
     return result.insertId;
   }
 
   /**
-   * Obtém os agendamentos associados a um prompt.
-   * @param {number} promptId - ID do prompt.
+   * Obtém os agendamentos associados a uma solicitação.
+   * @param {number} solicitacaoId - ID da solicitação.
    * @returns {Array<object>} - Lista de agendamentos associados.
    */
-  static async getAgendamentosByPrompt(promptId) {
+  static async getAgendamentosBySolicitacao(solicitacaoId) {
     const sql = `
-      SELECT * FROM prompt_agendamentos
-      WHERE prompt_id = ?
+      SELECT * FROM solicitacao_agendamentos
+      WHERE solicitacao_id = ?
       ORDER BY data_criacao ASC
     `;
-    const [rows] = await pool.query(sql, [promptId]);
+    const [rows] = await pool.query(sql, [solicitacaoId]);
     return rows;
   }
 
@@ -44,7 +44,7 @@ class PromptAgendamentoRepository {
    */
   static async updateAgendamento(id, cronExpression, dataInicioValidade = null, dataFimValidade = null) {
     const sql = `
-      UPDATE prompt_agendamentos
+      UPDATE solicitacao_agendamentos
       SET cron_expression = ?, data_inicio_validade = ?, data_fim_validade = ?
       WHERE id = ?
     `;
@@ -60,12 +60,30 @@ class PromptAgendamentoRepository {
    */
   static async deleteAgendamento(id) {
     const sql = `
-      DELETE FROM prompt_agendamentos
+      DELETE FROM solicitacao_agendamentos
       WHERE id = ?
     `;
     const [result] = await pool.query(sql, [id]);
     return result.affectedRows > 0;
   }
+
+  static async deleteAgendamentosBySolicitacao(solicitacaoId) {
+    const sql = `DELETE FROM solicitacao_agendamentos WHERE solicitacao_id = ?`;
+    const [result] = await pool.query(sql, [solicitacaoId]);
+    return result.affectedRows > 0;
+  }
+
+static async updateAgendamentoBySolicitacao(solicitacaoId, cronExpression, startAt, endAt) {
+  const sql = `
+    UPDATE solicitacao_agendamentos
+    SET cron_expression = ?, data_inicio_validade = ?, data_fim_validade = ?
+    WHERE solicitacao_id = ?
+  `;
+  const [result] = await pool.query(sql, [cronExpression, startAt, endAt, solicitacaoId]);
+  return result.affectedRows > 0;
+}  
+  
+  
 }
 
-module.exports = PromptAgendamentoRepository;
+module.exports = SolicitacaoAgendamentoRepository;

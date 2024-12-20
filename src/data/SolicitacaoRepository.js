@@ -23,6 +23,14 @@ class SolicitacaoRepository {
     );
     return rows[0];
   }
+  
+  static async deleteSolicitacao(id) {
+    const sql = `DELETE FROM solicitacoes_base WHERE id = ?`;
+    const [result] = await pool.query(sql, [id]);
+    return result.affectedRows > 0;
+  }
+
+  
 }
 
 module.exports = SolicitacaoRepository;

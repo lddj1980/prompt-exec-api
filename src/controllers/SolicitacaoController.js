@@ -1,12 +1,11 @@
 const { v4: uuidv4 } = require('uuid');
 const SolicitacaoRepository = require('../data/SolicitacaoRepository');
+const SolicitacaoAgendamentoRepository = require('../data/SolicitacaoAgendamentoRepository');
 const PromptRepository = require('../data/PromptRepository');
 const ParametroRepository = require('../data/ParametroRepository');
 const ProcessingService = require('../services/ProcessingService');
 
 module.exports = {
-  
-  
 
 /**
  * @swagger
@@ -127,6 +126,7 @@ module.exports = {
       console.log(req.body);
       const protocoloUid = uuidv4();
       const solicitacaoId = await SolicitacaoRepository.createSolicitacao(protocoloUid);
+      SolicitacaoAgendamentoRepository.insertAgendamento(solicitacaoId, cron_expression, start_at, end_at);
       
       for (const [index, prompt] of prompts.entries()) {
  

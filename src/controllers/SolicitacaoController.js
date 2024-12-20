@@ -23,26 +23,6 @@ module.exports = {
  *         description: Chave de autenticação para a API
  *         schema:
  *           type: string
- *       - name: x-cron-expression
- *         in: header
- *         required: false
- *         description: Expressão cron para agendamento do processamento dos prompts
- *         schema:
- *           type: string
- *       - name: x-cron-start-at
- *         in: header
- *         required: false
- *         description: Data de início da validade do cronograma (opcional)
- *         schema:
- *           type: string
- *           format: date-time
- *       - name: x-cron-end-at
- *         in: header
- *         required: false
- *         description: Data de término da validade do cronograma (opcional)
- *         schema:
- *           type: string
- *           format: date-time
  *     requestBody:
  *       required: true
  *       content:
@@ -50,6 +30,17 @@ module.exports = {
  *           schema:
  *             type: object
  *             properties:
+ *               cron_expression:
+ *                 type: string
+ *                 description: Expressão cron para agendamento do processamento dos prompts.
+ *               cron_start_at:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Data de início da validade do cronograma (opcional).
+ *               cron_end_at:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Data de término da validade do cronograma (opcional).
  *               prompts:
  *                 type: array
  *                 items:
@@ -113,12 +104,8 @@ module.exports = {
  */
   async create(req, res) {
     try {
-      const { prompts } = req.body;
+      const { prompts, cron_expression, start_at, end_at } = req.body;
       
-      const cron_expression = req.headers['x-cron-expression'];
-      const start_at = req.headers['x-cron-start-at'];
-      const end_at = req.headers['x-cron-end-at'];
-
       if (!prompts || !Array.isArray(prompts)) {
         return res.status(400).json({ error: 'Prompts inválidos.' });
       }

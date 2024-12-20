@@ -17,6 +17,31 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'Documentação da API para executar comandos.',
     },
+    components: {
+      schemas: {
+        DallEModelParameters: {
+          type: 'object',
+          description: 'Parâmetros específicos para a engine dall-e',
+          properties: {
+            resolution: {
+              type: 'string',
+              description: 'Resolução da imagem gerada (ex.: "1024x1024")',
+              example: '1024x1024',
+            },
+            color_depth: {
+              type: 'string',
+              description: 'Profundidade de cor (ex.: "8-bit", "16-bit")',
+              example: '8-bit',
+            },
+          },
+        },
+        DefaultModelParameters: {
+          type: 'object',
+          description: 'Parâmetros genéricos para outras engines',
+          additionalProperties: true,
+        },
+      },
+    },    
     servers: [
       {
         url: 'https://promptexec-api.glitch.me', // URL base da API

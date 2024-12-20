@@ -12,7 +12,9 @@ module.exports = {
  * /solicitacoes:
  *   post:
  *     summary: Cria uma nova solicitação de processamento
- *     description: Cria uma solicitação contendo prompts e seus respectivos parâmetros, associados a um cronograma de execução.
+ *     description: >
+ *       Cria uma solicitação contendo prompts e seus respectivos parâmetros,
+ *       associados a um cronograma de execução.
  *     operationId: createSolicitacao
  *     tags:
  *       - Solicitacoes
@@ -48,34 +50,40 @@ module.exports = {
  *                   properties:
  *                     prompt:
  *                       type: string
- *                       description: Texto do prompt a ser processado
+ *                       description: Texto do prompt a ser processado.
  *                     engine:
  *                       type: string
- *                       description: Nome da engine associada
+ *                       description: Nome da engine associada.
  *                       enum:
- *                       - openai
- *                       - dall-e
- *                       - gemini
- *                       - inferenceapi-text-to-image
- *                       - inferenceapi-text-generation
- *                       - inferenceapi-text-to-audio
- *                       - inferenceapi-text-to-speech
- *                       - freepikapi-text-to-image
- *                       - writter-ai
- *                       - brainstorm-ai
- *                       - wordpress
- *                       - instagram
- *                       - whatsapp
- *                       - telegram
- *                       - carousel
- *                       - image-repo
- *                       - html-to-image
+ *                         - openai
+ *                         - dall-e
+ *                         - gemini
+ *                         - inferenceapi-text-to-image
+ *                         - inferenceapi-text-generation
+ *                         - inferenceapi-text-to-audio
+ *                         - inferenceapi-text-to-speech
+ *                         - freepikapi-text-to-image
+ *                         - writter-ai
+ *                         - brainstorm-ai
+ *                         - wordpress
+ *                         - instagram
+ *                         - whatsapp
+ *                         - telegram
+ *                         - carousel
+ *                         - image-repo
+ *                         - html-to-image
  *                     model:
  *                       type: string
- *                       description: Modelo utilizado pela engine
+ *                       description: Modelo utilizado pela engine.
  *                     model_parameters:
- *                       type: object
- *                       description: Parâmetros específicos do modelo
+ *                       oneOf:
+ *                         - $ref: '#/components/schemas/DallEModelParameters'
+ *                         - $ref: '#/components/schemas/DefaultModelParameters'
+ *                       discriminator:
+ *                         propertyName: engine
+ *                         mapping:
+ *                           dall-e: '#/components/schemas/DallEModelParameters'
+ *                           default: '#/components/schemas/DefaultModelParameters'
  *                     prompt_parameters:
  *                       type: array
  *                       items:
@@ -83,14 +91,17 @@ module.exports = {
  *                         properties:
  *                           name:
  *                             type: string
- *                             description: Nome do parâmetro
+ *                             description: Nome do parâmetro.
  *                           value:
  *                             type: string
- *                             description: Valor do parâmetro
- *                 required: [prompt, engine, model]
+ *                             description: Valor do parâmetro.
+ *                   required:
+ *                     - prompt
+ *                     - engine
+ *                     - model
  *     responses:
  *       202:
- *         description: Solicitação criada com sucesso e processamento iniciado
+ *         description: Solicitação criada com sucesso e processamento iniciado.
  *         content:
  *           application/json:
  *             schema:
@@ -98,9 +109,9 @@ module.exports = {
  *               properties:
  *                 protocoloUid:
  *                   type: string
- *                   description: Identificador único do protocolo da solicitação
+ *                   description: Identificador único do protocolo da solicitação.
  *       400:
- *         description: Requisição inválida (dados incorretos ou ausentes)
+ *         description: Requisição inválida (dados incorretos ou ausentes).
  *         content:
  *           application/json:
  *             schema:
@@ -108,9 +119,9 @@ module.exports = {
  *               properties:
  *                 error:
  *                   type: string
- *                   description: Mensagem de erro
+ *                   description: Mensagem de erro.
  *       500:
- *         description: Erro interno do servidor
+ *         description: Erro interno do servidor.
  *         content:
  *           application/json:
  *             schema:
@@ -118,8 +129,27 @@ module.exports = {
  *               properties:
  *                 error:
  *                   type: string
- *                   description: Mensagem de erro
+ *                   description: Mensagem de erro.
+ * components:
+ *   schemas:
+ *     DallEModelParameters:
+ *       type: object
+ *       description: Parâmetros específicos para a engine `dall-e`.
+ *       properties:
+ *         resolution:
+ *           type: string
+ *           description: Resolução da imagem gerada (ex.: "1024x1024").
+ *           example: "1024x1024"
+ *         color_depth:
+ *           type: string
+ *           description: Profundidade de cor (ex.: "8-bit", "16-bit").
+ *           example: "8-bit"
+ *     DefaultModelParameters:
+ *       type: object
+ *       description: Parâmetros genéricos para outras engines.
+ *       additionalProperties: true
  */
+
   async create(req, res) {
     try {
       const { prompts, cron_expression, start_at, end_at } = req.body;

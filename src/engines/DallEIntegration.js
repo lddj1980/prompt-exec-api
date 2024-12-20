@@ -14,7 +14,7 @@ module.exports = {
           prompt: prompt,
           n: modelParameters.n ? modelParameters.n : 1,
           model: model ? model : 'dall-e-3',
-          size: modelParameters.n ? modelParameters.size : '1024x1024',
+          size: modelParameters.size ? modelParameters.size : '1024x1024',
         },
         {
           headers: {

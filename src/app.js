@@ -23,15 +23,15 @@ const swaggerOptions = {
           type: 'object',
           description: 'Parâmetros específicos para a engine dall-e',
           properties: {
-            resolution: {
-              type: 'string',
-              description: 'Resolução da imagem gerada (ex.: "1024x1024")',
-              example: '1024x1024',
+            n: {
+              type: 'integer',
+              description: 'Número de imagens desejadas para geração',
+              example: 1,
             },
-            color_depth: {
+            size: {
               type: 'string',
-              description: 'Profundidade de cor (ex.: "8-bit", "16-bit")',
-              example: '8-bit',
+              description: 'Resolução da imagem desejada',
+              example: '1024x1024',
             },
           },
         },

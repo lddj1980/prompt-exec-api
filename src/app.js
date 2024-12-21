@@ -13,9 +13,9 @@ const swaggerOptions = {
   definition: {
     openapi: '3.1.0', // Especificação OpenAPI 3.0
     info: {
-      title: 'API de Comandos',
+      title: 'API para gestão de pipelines de prompts de integração',
       version: '1.0.0',
-      description: 'Documentação da API para executar comandos.',
+      description: 'Documentação da API que permite fazer a gestão de pipelines de prompts de integração. Ela permite compor múltiplos comandos aninhados em formato de pipelines. É possível solicitar a criação da pipeline para execução imediata ou agendada, acompanhar o progresso da pipeline, obter os resultados gerados, resumir a execução, executar ou obter os resultados do processamento.',
     },
     components: {
       schemas: {
@@ -72,6 +72,81 @@ const swaggerOptions = {
             }
           },
           "required": ["image_url"]
+        },   
+        "BrainstormAIModelParameters": {
+            "type": "object",
+            "description": "Parâmetros para integração com o Brainstorm AI.",
+            "properties": {
+              "api_key": {
+                "type": "string",
+                "description": "Chave de API para autenticação no Brainstorm AI."
+              },
+              "action": {
+                "type": "string",
+                "description": "Ação a ser executada pela integração.",
+                "enum": ["execute", "getLastTitles", "createTitles"]
+              },
+              "writer_id": {
+                "type": "string",
+                "description": "ID do redator associado à ação."
+              },
+              "titles": {
+                "type": "array",
+                "description": "Lista de títulos a serem criados (apenas para a ação 'createTitles').",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": ["api_key"],
+            "oneOf": [
+              {
+                "description": "Parâmetros para a ação 'execute'.",
+                "properties": {
+                  "action": {
+                    "const": "execute"
+                  },
+                  "writer_id": {
+                    "type": "string",
+                    "description": "ID do redator associado à ação."
+                  }
+                },
+                "required": ["action", "writer_id"]
+              },
+              {
+                "description": "Parâmetros para a ação 'getLastTitles'.",
+                "properties": {
+                  "action": {
+                    "const": "getLastTitles"
+                  },
+                  "writer_id": {
+                    "type": "string",
+                    "description": "ID do redator associado à ação."
+                  }
+                },
+                "required": ["action", "writer_id"]
+              },
+              {
+                "description": "Parâmetros para a ação 'createTitles'.",
+                "properties": {
+                  "action": {
+                    "const": "createTitles"
+                  },
+                  "writer_id": {
+                    "type": "string",
+                    "description": "ID do redator associado à ação."
+                  },
+                  "titles": {
+                    "type": "array",
+                    "description": "Lista de títulos a serem criados.",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": ["action", "writer_id", "titles"]
+              }
+            ]
         },        
         DefaultModelParameters: {
           type: 'object',

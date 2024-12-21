@@ -78,6 +78,7 @@ module.exports = {
  *                         - $ref: '#/components/schemas/OpenAIModelParameters'
  *                         - $ref: '#/components/schemas/DallEModelParameters'
  *                         - $ref: '#/components/schemas/GeminiModelParameters'
+ *                         - $ref: '#/components/schemas/BrainstormAIModelParameters'
  *                         - $ref: '#/components/schemas/DefaultModelParameters'
  *                       discriminator:
  *                         propertyName: engine

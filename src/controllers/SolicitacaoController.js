@@ -82,6 +82,7 @@ module.exports = {
  *                         - $ref: '#/components/schemas/GeminiModelParameters'
  *                         - $ref: '#/components/schemas/HTMLToImageModelParameters'
  *                         - $ref: '#/components/schemas/OpenAIModelParameters'
+ *                         - $ref: '#/components/schemas/ImageRepoModelParameters'
  *                         - $ref: '#/components/schemas/DefaultModelParameters'
  *                       discriminator:
  *                         propertyName: engine
@@ -91,8 +92,8 @@ module.exports = {
  *                           dall-e: '#/components/schemas/DallEModelParameters'
  *                           freepikapi-text-to-image: '#/components/schemas/FreepikModelParameters'
  *                           gemini: '#/components/schemas/GeminiModelParameters'
- *                           gemini: '#/components/schemas/GeminiModelParameters'
  *                           html-to-image: '#/components/schemas/HTMLToImageModelParameters'
+ *                           image-repo: '#/components/schemas/ImageRepoModelParameters'
  *                           default: '#/components/schemas/DefaultModelParameters'
  *                     prompt_parameters:
  *                       type: array

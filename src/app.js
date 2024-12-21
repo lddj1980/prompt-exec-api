@@ -346,6 +346,117 @@ const swaggerOptions = {
                 "required": ["action", "html"]
               }
             ]
+          },       
+          "ImageRepoModelParameters": {
+            "type": "object",
+            "description": "Parâmetros para integração com o serviço ImageRepoService.",
+            "properties": {
+              "apiKey": {
+                "type": "string",
+                "description": "Chave de API para autenticação no ImageRepoService."
+              },
+              "baseURL": {
+                "type": "string",
+                "format": "uri",
+                "description": "URL base do serviço ImageRepoService.",
+                "default": "https://default-base-url.com"
+              },
+              "action": {
+                "type": "string",
+                "description": "Ação a ser executada. Atualmente, apenas 'createImage' é suportado.",
+                "enum": ["createImage"]
+              },
+              "image_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "URL da imagem a ser salva no repositório."
+              },
+              "metadata": {
+                "type": "object",
+                "description": "Metadados associados à imagem.",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "description": "Descrição da imagem.",
+                    "default": ""
+                  },
+                  "tags": {
+                    "type": "array",
+                    "description": "Lista de tags associadas à imagem.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "default": []
+                  }
+                }
+              },
+              "extension": {
+                "type": "string",
+                "description": "Extensão do arquivo de imagem.",
+                "enum": [".jpg", ".png", ".gif"],
+                "default": ".jpg"
+              },
+              "ftp_config_id": {
+                "type": "integer",
+                "description": "ID da configuração do FTP para upload da imagem."
+              },
+              "base64": {
+                "type": "boolean",
+                "description": "Indica se o conteúdo da imagem está em Base64.",
+                "default": false
+              }
+            },
+            "required": ["apiKey", "action", "image_url", "metadata", "extension", "ftp_config_id"],
+            "oneOf": [
+              {
+                "description": "Parâmetros para a ação 'createImage'.",
+                "properties": {
+                  "action": {
+                    "const": "createImage"
+                  },
+                  "image_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL da imagem a ser salva no repositório."
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "description": "Metadados associados à imagem.",
+                    "properties": {
+                      "description": {
+                        "type": "string",
+                        "description": "Descrição da imagem.",
+                        "default": ""
+                      },
+                      "tags": {
+                        "type": "array",
+                        "description": "Lista de tags associadas à imagem.",
+                        "items": {
+                          "type": "string"
+                        },
+                        "default": []
+                      }
+                    }
+                  },
+                  "extension": {
+                    "type": "string",
+                    "description": "Extensão do arquivo de imagem.",
+                    "enum": [".jpg", ".png", ".gif"],
+                    "default": ".jpg"
+                  },
+                  "ftp_config_id": {
+                    "type": "integer",
+                    "description": "ID da configuração do FTP para upload da imagem."
+                  },
+                  "base64": {
+                    "type": "boolean",
+                    "description": "Indica se o conteúdo da imagem está em Base64.",
+                    "default": false
+                  }
+                },
+                "required": ["action", "image_url", "metadata", "extension", "ftp_config_id"]
+              }
+            ]
           },        
           DefaultModelParameters: {
           type: 'object',

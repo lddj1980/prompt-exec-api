@@ -40,6 +40,31 @@ const swaggerOptions = {
           description: 'Parâmetros genéricos para outras engines',
           additionalProperties: true,
         },
+        "OpenAIModelParameters": {
+          "type": "object",
+          "description": "Parâmetros para interações com a engine OpenAI.",
+          "properties": {
+            "max_tokens": {
+              "type": "integer",
+              "description": "O número máximo de tokens permitidos na resposta. Necessário para interações de texto.",
+              "example": 1000
+            },
+            "image_url": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL da imagem a ser analisada. Necessário para interações baseadas em imagens.",
+              "example": "https://example.com/my-image.jpg"
+            }
+          },
+          "oneOf": [
+            {
+              "required": ["max_tokens"]
+            },
+            {
+              "required": ["image_url"]
+            }
+          ]
+        },        
       },
     },    
     servers: [

@@ -75,11 +75,13 @@ module.exports = {
  *                       description: Modelo utilizado pela engine
  *                     model_parameters:
  *                       oneOf:
+ *                         - $ref: '#/components/schemas/OpenAIModelParameters'
  *                         - $ref: '#/components/schemas/DallEModelParameters'
  *                         - $ref: '#/components/schemas/DefaultModelParameters'
  *                       discriminator:
  *                         propertyName: engine
  *                         mapping:
+ *                           openai: '#/components/schemas/OpenAIModelParameters'
  *                           dall-e: '#/components/schemas/DallEModelParameters'
  *                           default: '#/components/schemas/DefaultModelParameters'
  *                     prompt_parameters:

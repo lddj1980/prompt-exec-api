@@ -28,11 +28,11 @@ module.exports = {
       ];
 
       // Se uma URL de imagem for fornecida, adiciona ao conteúdo
-      if (modelParameters.imageUrl) {
+      if (modelParameters.image_url) {
         messages[0].content.push({
           type: 'image_url',
           image_url: {
-            url: modelParameters.imageUrl,
+            url: modelParameters.image_url,
           },
         });
       }

@@ -35,11 +35,6 @@ const swaggerOptions = {
             },
           },
         },
-        DefaultModelParameters: {
-          type: 'object',
-          description: 'Parâmetros genéricos para outras engines',
-          additionalProperties: true,
-        },
         "OpenAIModelParameters": {
           "type": "object",
           "description": "Parâmetros para interações com a engine OpenAI.",
@@ -64,6 +59,24 @@ const swaggerOptions = {
               "required": ["image_url"]
             }
           ]
+        },
+        "GeminiModelParameters": {
+          "type": "object",
+          "description": "Parâmetros para interações com a engine Gemini.",
+          "properties": {
+            "image_url": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL da imagem a ser analisada pela engine Gemini.",
+              "example": "https://example.com/my-image.jpg"
+            }
+          },
+          "required": ["image_url"]
+        },        
+        DefaultModelParameters: {
+          type: 'object',
+          description: 'Parâmetros genéricos para outras engines',
+          properties: {}
         },        
       },
     },    

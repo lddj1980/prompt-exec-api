@@ -77,12 +77,14 @@ module.exports = {
  *                       oneOf:
  *                         - $ref: '#/components/schemas/OpenAIModelParameters'
  *                         - $ref: '#/components/schemas/DallEModelParameters'
+ *                         - $ref: '#/components/schemas/GeminiModelParameters'
  *                         - $ref: '#/components/schemas/DefaultModelParameters'
  *                       discriminator:
  *                         propertyName: engine
  *                         mapping:
  *                           openai: '#/components/schemas/OpenAIModelParameters'
  *                           dall-e: '#/components/schemas/DallEModelParameters'
+ *                           gemini: '#/components/schemas/GeminiModelParameters'
  *                           default: '#/components/schemas/DefaultModelParameters'
  *                     prompt_parameters:
  *                       type: array

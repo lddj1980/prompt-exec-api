@@ -7,7 +7,7 @@ module.exports = {
       parametros_modelo = parametros_modelo ? parametros_modelo : {};
       console.log('Iniciando integração com o Brainstorm AI...');
 
-      const apiKey = parametros_modelo.apiKey || null;
+      const apiKey = parametros_modelo.api_key || null;
 
       if (!apiKey) {
         throw new Error('O parâmetro "apiKey" é obrigatório.');
@@ -20,11 +20,11 @@ module.exports = {
       if (parametros_modelo.action === 'execute') {
         // Executa o script Brainstorm
         console.log('Executando script Brainstorm...');
-        if (!parametros_modelo.writerId) {
+        if (!parametros_modelo.writer_id) {
           throw new Error('O parâmetro "writerId" é obrigatório para executar o script.');
         }
 
-        const result = await brainstormAIService.execute(apiKey, parametros_modelo.writerId);
+        const result = await brainstormAIService.execute(apiKey, parametros_modelo.writer_id);
 
         console.log('Script Brainstorm executado com sucesso:', result);
         return result;
@@ -32,11 +32,11 @@ module.exports = {
       } else if (parametros_modelo.action === 'getLastTitles') {
         // Obtém os últimos 10 títulos de um redator
         console.log('Obtendo os últimos 10 títulos do redator...');
-        if (!parametros_modelo.writerId) {
+        if (!parametros_modelo.writer_id) {
           throw new Error('O parâmetro "writerId" é obrigatório para obter os títulos.');
         }
 
-        const lastTitles = await brainstormAIService.getLastTitles(apiKey, parametros_modelo.writerId);
+        const lastTitles = await brainstormAIService.getLastTitles(apiKey, parametros_modelo.writer_id);
 
         console.log('Últimos títulos obtidos com sucesso:', lastTitles);
         return lastTitles;
@@ -44,7 +44,7 @@ module.exports = {
       } else if (parametros_modelo.action === 'createTitles') {
         // Cria novos títulos e associa ao brainstorm
         console.log('Criando novos títulos...');
-        if (!parametros_modelo.writerId || !parametros_modelo.titles) {
+        if (!parametros_modelo.writer_id || !parametros_modelo.titles) {
           throw new Error(
             'Os parâmetros "writerId" e "titles" são obrigatórios para criar títulos.'
           );
@@ -52,7 +52,7 @@ module.exports = {
 
         const createdTitles = await brainstormAIService.createTitles(
           apiKey,
-          parametros_modelo.writerId,
+          parametros_modelo.writer_id,
           parametros_modelo.titles
         );
 

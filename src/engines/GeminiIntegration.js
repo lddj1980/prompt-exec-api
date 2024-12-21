@@ -29,8 +29,8 @@ module.exports = {
       ];
 
       // Se uma imagem for fornecida como URL, converte para Base64 e adiciona ao payload
-      if (modelParameters.imageUrl) {
-        const imageBase64 = await fetchImageAsBase64(modelParameters.imageUrl);
+      if (modelParameters.image_url) {
+        const imageBase64 = await fetchImageAsBase64(modelParameters.image_url);
         parts.push({
           inline_data: {
             mime_type: 'image/jpeg', // Ajuste o MIME type se necessário

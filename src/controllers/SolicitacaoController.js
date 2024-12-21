@@ -7,6 +7,16 @@ const ProcessingService = require('../services/ProcessingService');
 
 module.exports = {
 
+
+/**                       - inferenceapi-text-generation
+ *                       - inferenceapi-text-to-audio
+ *                       - inferenceapi-text-to-speech
+ *                       - instagram
+ *                       - writter-ai
+ *                       - wordpress
+ *                       - whatsapp
+*/
+  
 /**
  * @swagger
  * /solicitacoes:
@@ -44,69 +54,178 @@ module.exports = {
  *               prompts:
  *                 type: array
  *                 items:
- *                   type: object
- *                   properties:
- *                     prompt:
- *                       type: string
- *                       description: Texto do prompt a ser processado
- *                     engine:
- *                       type: string
- *                       description: Nome da engine associada
- *                       enum:
- *                       - brainstorm-ai
- *                       - dall-e
- *                       - carousel
- *                       - freepikapi-text-to-image
- *                       - gemini
- *                       - html-to-image
- *                       - image-repo
- *                       - inferenceapi-text-to-image
- *                       - inferenceapi-text-generation
- *                       - inferenceapi-text-to-audio
- *                       - inferenceapi-text-to-speech
- *                       - instagram
- *                       - openai
- *                       - telegram
- *                       - writter-ai
- *                       - wordpress
- *                       - whatsapp
- *                     model:
- *                       type: string
- *                       description: Modelo utilizado pela engine
- *                     model_parameters:
- *                       oneOf:
- *                         - $ref: '#/components/schemas/BrainstormAIModelParameters'
- *                         - $ref: '#/components/schemas/CarouselModelParameters'
- *                         - $ref: '#/components/schemas/DallEModelParameters'
- *                         - $ref: '#/components/schemas/FreepikModelParameters'
- *                         - $ref: '#/components/schemas/GeminiModelParameters'
- *                         - $ref: '#/components/schemas/HTMLToImageModelParameters'
- *                         - $ref: '#/components/schemas/OpenAIModelParameters'
- *                         - $ref: '#/components/schemas/ImageRepoModelParameters'
- *                         - $ref: '#/components/schemas/DefaultModelParameters'
- *                       discriminator:
- *                         propertyName: engine
- *                         mapping:
- *                           brainstorm-ai: '#/components/schemas/BrainstormAIModelParameters'
- *                           carousel: '#/components/schemas/CarouselModelParameters'
- *                           dall-e: '#/components/schemas/DallEModelParameters'
- *                           freepikapi-text-to-image: '#/components/schemas/FreepikModelParameters'
- *                           gemini: '#/components/schemas/GeminiModelParameters'
- *                           html-to-image: '#/components/schemas/HTMLToImageModelParameters'
- *                           image-repo: '#/components/schemas/ImageRepoModelParameters'
- *                           default: '#/components/schemas/DefaultModelParameters'
- *                     prompt_parameters:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           name:
- *                             type: string
- *                             description: Nome do parâmetro
- *                           value:
- *                             type: string
- *                             description: Valor do parâmetro
- *                 required: [prompt, engine, model]
+ *                   oneOf:
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["brainstorm-ai"]
+ *                           description: Engine para Criação de Brainstorms 
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados na BrainstormAI
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/BrainstormAIModelParameters'
+ *                       required: [engine, model]
+
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["openai"]
+ *                           description: Engine OpenAI
+ *                         model:
+ *                           type: string
+ *                           enum: ["gpt-4o"]
+ *                           description: Modelos suportados para OpenAI
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/OpenAIModelParameters'
+ *                       required: [engine, model]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["dall-e"]
+ *                           description: Engine DALL-E
+ *                         model:
+ *                           type: string
+ *                           enum: ["dall-e-2", "dall-e-3"]
+ *                           description: Modelos suportados para DALL-E
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/DallEModelParameters'
+ *                       required: [engine, model]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["carousel"]
+ *                           description: Engine Carousel
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para Carousel
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/CarouselModelParameters'
+ *                       required: [engine, model]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Engine Freepik API
+ *                         model:
+ *                           type: string
+ *                           enum: ["freepik-default", "freepik-advanced"]
+ *                           description: Modelos suportados para Freepik API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/FreepikModelParameters'
+ *                       required: [engine, model]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["gemini"]
+ *                           description: Engine Gemini
+ *                         model:
+ *                           type: string
+ *                           enum: ["gemini-1.5-flash"]
+ *                           description: Modelos suportados para Gemini
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/GeminiModelParameters'
+ *                       required: [engine, model]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Engine HTML-to-Image
+ *                         model:
+ *                           type: string
+ *                           enum: ["html-image-basic", "html-image-advanced"]
+ *                           description: Modelos suportados para HTML-to-Image
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/HTMLToImageModelParameters'
+ *                       required: [engine, model]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["image-repo"]
+ *                           description: Engine Image Repository
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para Image Repository
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/ImageRepoModelParameters'
+ *                       required: [engine, model]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["inferenceapi-text-to-image"]
+ *                           description: Engine Inference API Text-to-Image
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para Inference API Text-to-Image
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/InferenceAPITextToImageModelParameters'
+ *                       required: [engine, model]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["inferenceapi-text-generation"]
+ *                           description: Engine Inference API Text Generation
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para Inference API Text Generation
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/InferenceAPITextGenerationModelParameters'
+ *                       required: [engine, model]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["telegram"]
+ *                           description: Engine Telegram
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para Telegram
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/TelegramModelParameters'
+ *                       required: [engine, model]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["wordpress"]
+ *                           description: Engine WordPress
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para WordPress
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/WordPressModelParameters'
+ *                       required: [engine, model]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Engine WhatsApp
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para WhatsApp
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/WhatsAppModelParameters'
+ *                       required: [engine, model]
+ *             required: [cron_expression, prompts]
  *     responses:
  *       202:
  *         description: Solicitação criada com sucesso e processamento iniciado
@@ -139,6 +258,9 @@ module.exports = {
  *                   type: string
  *                   description: Mensagem de erro
  */
+  
+  
+  
   async create(req, res) {
     try {
       const { prompts, cron_expression, start_at, end_at } = req.body;

@@ -114,11 +114,11 @@ module.exports = {
  *                       properties:
  *                         engine:
  *                           type: string
- *                           enum: ["none"]
+ *                           enum: ["freepikapi-text-to-image"]
  *                           description: Engine Freepik API
  *                         model:
  *                           type: string
- *                           enum: ["freepik-default", "freepik-advanced"]
+ *                           enum: ["none"]
  *                           description: Modelos suportados para Freepik API
  *                         model_parameters:
  *                           $ref: '#/components/schemas/FreepikModelParameters'
@@ -132,6 +132,7 @@ module.exports = {
  *                         model:
  *                           type: string
  *                           enum: ["gemini-1.5-flash"]
+ *                           default: gemini-1.5-flash
  *                           description: Modelos suportados para Gemini
  *                         model_parameters:
  *                           $ref: '#/components/schemas/GeminiModelParameters'

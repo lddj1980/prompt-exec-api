@@ -5,6 +5,7 @@ const PromptResultadoRepository = require('../data/PromptResultadoRepository');
 const PromptProcessorService = require('./PromptProcessorService');
 
 module.exports = {
+  
   async process(protocoloUid) {
     try {
       const solicitacao = await SolicitacaoRepository.getSolicitacaoByProtocolo(protocoloUid);
@@ -15,7 +16,7 @@ module.exports = {
       const prompts = await PromptRepository.getPromptsBySolicitacao(solicitacao.id);
       const resultadoGlobal = {};
       const resultadoBd = {};
-
+      const resultadoFinal = {};
       for (const prompt of prompts) {
         const parametros = await ParametroRepository.getParametrosByPrompt(prompt.id);
         const substituicoes = this.prepareSubstituicoes(parametros, resultadoGlobal);
@@ -40,6 +41,7 @@ module.exports = {
         this.processNestedResult(resultadoGlobal, resultado);
 
         await PromptResultadoRepository.insertPromptResultado(solicitacao.id, prompt.id, JSON.stringify(resultado));
+        resultadoFinal = { ...resultadoGlobal };
       }
 
       await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'concluido', JSON.stringify(resultadoBd));

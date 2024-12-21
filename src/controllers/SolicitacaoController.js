@@ -78,6 +78,7 @@ module.exports = {
  *                         model:
  *                           type: string
  *                           enum: ["gpt-4o"]
+ *                           default: gpt-4o
  *                           description: Modelos suportados para OpenAI
  *                         model_parameters:
  *                           $ref: '#/components/schemas/OpenAIModelParameters'
@@ -91,6 +92,7 @@ module.exports = {
  *                         model:
  *                           type: string
  *                           enum: ["dall-e-2", "dall-e-3"]
+ *                           default: dall-e-3
  *                           description: Modelos suportados para DALL-E
  *                         model_parameters:
  *                           $ref: '#/components/schemas/DallEModelParameters'

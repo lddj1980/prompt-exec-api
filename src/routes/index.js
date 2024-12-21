@@ -34,12 +34,12 @@ router.post(
   SolicitacaoController.process
 );
 router.get(
-  '/solicitacoes/:protocoloUid/progresso',
+  '/solicitacoes/:protocoloUid/progress',
   excludeRoutesMiddleware(ApiKeyMiddleware, excludedPaths),
   SolicitacaoController.getProgress
 );
 router.get(
-  '/solicitacoes/:protocoloUid/resultado',
+  '/solicitacoes/:protocoloUid/result',
   excludeRoutesMiddleware(ApiKeyMiddleware, excludedPaths),
   SolicitacaoController.getResultado
 );

@@ -378,7 +378,7 @@ module.exports = {
 
 /**
  * @swagger
- * /solicitacoes/{protocoloUid}/resultado:
+ * /solicitacoes/{protocoloUid}/result:
  *   get:
  *     summary: Obtém o resultado da solicitação
  *     description: Retorna o resultado processado da solicitação.

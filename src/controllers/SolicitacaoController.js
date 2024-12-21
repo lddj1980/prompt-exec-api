@@ -53,23 +53,23 @@ module.exports = {
  *                       type: string
  *                       description: Nome da engine associada
  *                       enum:
- *                       - openai
+ *                       - brainstorm-ai
  *                       - dall-e
+ *                       - carousel
+ *                       - freepikapi-text-to-image
  *                       - gemini
+ *                       - html-to-image
+ *                       - image-repo
  *                       - inferenceapi-text-to-image
  *                       - inferenceapi-text-generation
  *                       - inferenceapi-text-to-audio
  *                       - inferenceapi-text-to-speech
- *                       - freepikapi-text-to-image
- *                       - writter-ai
- *                       - brainstorm-ai
- *                       - wordpress
  *                       - instagram
- *                       - whatsapp
+ *                       - openai
  *                       - telegram
- *                       - carousel
- *                       - image-repo
- *                       - html-to-image
+ *                       - writter-ai
+ *                       - wordpress
+ *                       - whatsapp
  *                     model:
  *                       type: string
  *                       description: Modelo utilizado pela engine
@@ -79,6 +79,8 @@ module.exports = {
  *                         - $ref: '#/components/schemas/DallEModelParameters'
  *                         - $ref: '#/components/schemas/GeminiModelParameters'
  *                         - $ref: '#/components/schemas/BrainstormAIModelParameters'
+ *                         - $ref: '#/components/schemas/CarouselModelParameters'
+ *                         - $ref: '#/components/schemas/FreepikModelParameters'
  *                         - $ref: '#/components/schemas/DefaultModelParameters'
  *                       discriminator:
  *                         propertyName: engine
@@ -86,6 +88,9 @@ module.exports = {
  *                           openai: '#/components/schemas/OpenAIModelParameters'
  *                           dall-e: '#/components/schemas/DallEModelParameters'
  *                           gemini: '#/components/schemas/GeminiModelParameters'
+ *                           brainstorm-ai: '#/components/schemas/BrainstormAIModelParameters'
+ *                           carousel: '#/components/schemas/CarouselModelParameters'
+ *                           freepikapi-text-to-image: '#/components/schemas/FreepikModelParameters'
  *                           default: '#/components/schemas/DefaultModelParameters'
  *                     prompt_parameters:
  *                       type: array

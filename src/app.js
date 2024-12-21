@@ -147,7 +147,128 @@ const swaggerOptions = {
                 "required": ["action", "writer_id", "titles"]
               }
             ]
-        },        
+        },
+        "CarouselModelParameters": {
+            "type": "object",
+            "description": "Parâmetros para integração com o Carousel API.",
+            "properties": {
+              "api_key": {
+                "type": "string",
+                "description": "Chave de API para autenticação no Carousel API."
+              },
+              "base_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Base URL para o serviço Carousel API."
+              },
+              "action": {
+                "type": "string",
+                "description": "Ação a ser executada pela integração.",
+                "enum": ["generateCarousel", "getProgress", "getCarousel"]
+              },
+              "payload": {
+                "type": "object",
+                "description": "Carga de dados necessária para gerar um carousel (apenas para a ação 'generateCarousel').",
+                "additionalProperties": true
+              },
+              "progress_id": {
+                "type": "string",
+                "description": "ID do progresso associado à geração do carousel (apenas para a ação 'getProgress')."
+              },
+              "carousel_id": {
+                "type": "string",
+                "description": "ID do carousel gerado (apenas para a ação 'getCarousel')."
+              }
+            },
+            "required": ["api_key"],
+            "oneOf": [
+              {
+                "description": "Parâmetros para a ação 'generateCarousel'.",
+                "properties": {
+                  "action": {
+                    "const": "generateCarousel"
+                  },
+                  "payload": {
+                    "type": "object",
+                    "description": "Carga de dados para gerar o carousel.",
+                    "additionalProperties": true
+                  }
+                },
+                "required": ["action", "payload"]
+              },
+              {
+                "description": "Parâmetros para a ação 'getProgress'.",
+                "properties": {
+                  "action": {
+                    "const": "getProgress"
+                  },
+                  "progress_id": {
+                    "type": "string",
+                    "description": "ID do progresso associado à geração do carousel."
+                  }
+                },
+                "required": ["action", "progress_id"]
+              },
+              {
+                "description": "Parâmetros para a ação 'getCarousel'.",
+                "properties": {
+                  "action": {
+                    "const": "getCarousel"
+                  },
+                  "carousel_id": {
+                    "type": "string",
+                    "description": "ID do carousel gerado."
+                  }
+                },
+                "required": ["action", "carousel_id"]
+              }
+            ]
+          },
+          "FreepikModelParameters": {
+            "type": "object",
+            "description": "Parâmetros para integração com a API Freepik Text-to-Image.",
+            "properties": {
+              "negative_prompt": {
+                "type": "object",
+                "description": "Prompt negativo para controlar os elementos a serem evitados na geração da imagem.",
+                "additionalProperties": true
+              },
+              "guidance_scale": {
+                "type": "number",
+                "description": "Fator de ajuste para influenciar o resultado da imagem. O valor padrão é 1.",
+                "example": 1
+              },
+              "seed": {
+                "type": "integer",
+                "description": "Semente para a geração de imagens determinísticas. O valor padrão é 0.",
+                "example": 42
+              },
+              "num_images": {
+                "type": "integer",
+                "description": "Número de imagens a serem geradas. O valor padrão é 1.",
+                "example": 5
+              },
+              "image": {
+                "type": "object",
+                "description": "Configuração do tamanho da imagem.",
+                "properties": {
+                  "size": {
+                    "type": "string",
+                    "description": "Tamanho da imagem gerada. O valor padrão é 'square_1_1'.",
+                    "enum": ["square_1_1", "landscape", "portrait"],
+                    "example": "landscape"
+                  }
+                },
+                "required": ["size"]
+              },
+              "styling": {
+                "type": "object",
+                "description": "Estilização adicional para a geração de imagens.",
+                "additionalProperties": true
+              }
+            },
+            "required": ["negative_prompt", "guidance_scale", "seed", "num_images", "image"]
+        },
         DefaultModelParameters: {
           type: 'object',
           description: 'Parâmetros genéricos para outras engines',

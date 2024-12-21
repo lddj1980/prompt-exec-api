@@ -6,14 +6,14 @@ module.exports = {
       parametros_modelo= parametros_modelo|| {};
       console.log('Iniciando integração com o Carousel API...');
 
-      const apiKey = parametros_modelo.apiKey || null;
+      const apiKey = parametros_modelo.api_key || null;
 
       if (!apiKey) {
         throw new Error('O parâmetro "apiKey" é obrigatório.');
       }
 
       // Instancia o serviço CarouselService
-      const carouselService = new CarouselService(parametros_modelo.baseURL);
+      const carouselService = new CarouselService(parametros_modelo.base_url);
 
       // Decide qual funcionalidade usar com base nos parâmetros
       if (parametros_modelo.action === 'generateCarousel') {
@@ -31,11 +31,11 @@ module.exports = {
       } else if (parametros_modelo.action === 'getProgress') {
         // Consulta o progresso da geração de um carousel
         console.log('Consultando progresso do carousel...');
-        if (!parametros_modelo.progressId) {
+        if (!parametros_modelo.progress_id) {
           throw new Error('O parâmetro "progressId" é obrigatório para consultar o progresso.');
         }
 
-        const result = await carouselService.getProgress(apiKey, parametros_modelo.progressId);
+        const result = await carouselService.getProgress(apiKey, parametros_modelo.progress_id);
 
         console.log('Progresso consultado com sucesso:', result);
         return result;
@@ -43,11 +43,11 @@ module.exports = {
       } else if (parametros_modelo.action === 'getCarousel') {
         // Consulta as imagens de um carousel gerado
         console.log('Consultando carousel gerado...');
-        if (!parametros_modelo.carouselId) {
+        if (!parametros_modelo.carousel_id) {
           throw new Error('O parâmetro "carouselId" é obrigatório para consultar o carousel.');
         }
 
-        const result = await carouselService.getCarousel(apiKey, parametros_modelo.carouselId);
+        const result = await carouselService.getCarousel(apiKey, parametros_modelo.carousel_id);
 
         console.log('Carousel consultado com sucesso:', result);
         return result;

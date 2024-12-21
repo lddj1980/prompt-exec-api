@@ -41,10 +41,10 @@ module.exports = {
         this.processNestedResult(resultadoGlobal, resultado);
 
         await PromptResultadoRepository.insertPromptResultado(solicitacao.id, prompt.id, JSON.stringify(resultado));
-        resultadoFinal = {...resultadoFinal,...resultado};
+        resultadoFinal = JSON.stringify(resultado);
       }
-      console.log(JSON.stringify(resultadoFinal));
-      await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'concluido', JSON.stringify(resultadoFinal));
+      //console.log(JSON.stringify(resultadoFinal));
+      await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'concluido', resultadoFinal);
     } catch (error) {
       console.error('Erro no processamento:', error);
       await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'erro');
@@ -151,10 +151,10 @@ module.exports = {
         this.processNestedResult(resultadoGlobal, resultado);
 
         await PromptResultadoRepository.insertPromptResultado(solicitacao.id, prompt.id, JSON.stringify(resultado));
-        resultadoFinal = { ...resultadoFinal,...resultado };
+        resultadoFinal = JSON.stringify(resultado);
       }
 
-      await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'concluido', JSON.stringify(resultadoFinal));
+      await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'concluido', resultadoFinal);
     } catch (error) {
       console.error('Erro ao retomar processamento:', error);
       await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'erro');

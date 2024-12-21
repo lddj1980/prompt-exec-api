@@ -16,7 +16,7 @@ module.exports = {
       const prompts = await PromptRepository.getPromptsBySolicitacao(solicitacao.id);
       const resultadoGlobal = {};
       const resultadoBd = {};
-      const resultadoFinal = {};
+      var resultadoFinal = {};
       for (const prompt of prompts) {
         const parametros = await ParametroRepository.getParametrosByPrompt(prompt.id);
         const substituicoes = this.prepareSubstituicoes(parametros, resultadoGlobal);
@@ -41,10 +41,10 @@ module.exports = {
         this.processNestedResult(resultadoGlobal, resultado);
 
         await PromptResultadoRepository.insertPromptResultado(solicitacao.id, prompt.id, JSON.stringify(resultado));
-        resultadoFinal = { ...resultadoGlobal };
+        resultadoFinal = {...resultadoFinal,...resultado};
       }
-
-      await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'concluido', JSON.stringify(resultadoBd));
+      console.log(JSON.stringify(resultadoFinal));
+      await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'concluido', JSON.stringify(resultadoFinal));
     } catch (error) {
       console.error('Erro no processamento:', error);
       await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'erro');
@@ -119,6 +119,7 @@ module.exports = {
         return;
       }
 
+      var resultadoFinal = {};
       await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'em_progresso');
 
       const prompts = await PromptRepository.getPromptsBySolicitacao(solicitacao.id);
@@ -150,9 +151,10 @@ module.exports = {
         this.processNestedResult(resultadoGlobal, resultado);
 
         await PromptResultadoRepository.insertPromptResultado(solicitacao.id, prompt.id, JSON.stringify(resultado));
+        resultadoFinal = { ...resultadoFinal,...resultado };
       }
 
-      await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'concluido', JSON.stringify(resultadoGlobal));
+      await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'concluido', JSON.stringify(resultadoFinal));
     } catch (error) {
       console.error('Erro ao retomar processamento:', error);
       await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'erro');

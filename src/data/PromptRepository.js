@@ -34,7 +34,7 @@ class PromptRepository {
    */
   static async getPromptsBySolicitacao(solicitacaoId) {
     const [rows] = await pool.query(
-      'SELECT * FROM prompts WHERE solicitacao_id = ? ORDER BY ordem ASC',
+      'SELECT p.*,pr.resultado FROM prompts p, prompts_resultados pr WHERE p.id = pr.prompt_id and p.solicitacao_id = ? ORDER BY ordem ASC',
       [solicitacaoId]
     );
     return rows;

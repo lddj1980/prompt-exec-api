@@ -21,10 +21,10 @@ module.exports = {
         console.log('Criando imagem no repositório...');
 
         if (
-          !modelParameters.imageUrl ||
+          !modelParameters.image_url ||
           !modelParameters.metadata ||
           !modelParameters.extension ||
-          !modelParameters.ftpConfigId
+          !modelParameters.ftp_config_id
         ) {
           throw new Error(
             'Os parâmetros "imageUrl", "metadata", "extension" e "ftpConfigId" são obrigatórios para criar uma imagem.'
@@ -37,11 +37,11 @@ module.exports = {
         };
 
         const result = await imageRepoAPI.createImage(
-          modelParameters.imageUrl,
+          modelParameters.image_url,
           metadata,
           modelParameters.extension,
           apiKey,
-          modelParameters.ftpConfigId,
+          modelParameters.ftp_config_id,
           modelParameters.base64 || false
         );
 

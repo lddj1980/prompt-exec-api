@@ -6,7 +6,7 @@ module.exports = {
       modelParameters = modelParameters || {};
       console.log('Iniciando integração com o HTMLToImageService...');
 
-      const apiKey = modelParameters.apiKey || null;
+      const apiKey = modelParameters.api_key || null;
       const username = modelParameters.username || null;
 
       if (!apiKey || !username) {
@@ -14,7 +14,7 @@ module.exports = {
       }
 
       // Instancia o serviço HTMLToImageService
-      const htmlToImageService = new HtmlToImageService(modelParameters.baseURL);
+      const htmlToImageService = new HtmlToImageService(modelParameters.base_url);
 
       // Decide qual funcionalidade usar com base nos parâmetros
       if (modelParameters.action === 'generateImage') {

@@ -75,22 +75,24 @@ module.exports = {
  *                       description: Modelo utilizado pela engine
  *                     model_parameters:
  *                       oneOf:
- *                         - $ref: '#/components/schemas/OpenAIModelParameters'
- *                         - $ref: '#/components/schemas/DallEModelParameters'
- *                         - $ref: '#/components/schemas/GeminiModelParameters'
  *                         - $ref: '#/components/schemas/BrainstormAIModelParameters'
  *                         - $ref: '#/components/schemas/CarouselModelParameters'
+ *                         - $ref: '#/components/schemas/DallEModelParameters'
  *                         - $ref: '#/components/schemas/FreepikModelParameters'
+ *                         - $ref: '#/components/schemas/GeminiModelParameters'
+ *                         - $ref: '#/components/schemas/HTMLToImageModelParameters'
+ *                         - $ref: '#/components/schemas/OpenAIModelParameters'
  *                         - $ref: '#/components/schemas/DefaultModelParameters'
  *                       discriminator:
  *                         propertyName: engine
  *                         mapping:
- *                           openai: '#/components/schemas/OpenAIModelParameters'
- *                           dall-e: '#/components/schemas/DallEModelParameters'
- *                           gemini: '#/components/schemas/GeminiModelParameters'
  *                           brainstorm-ai: '#/components/schemas/BrainstormAIModelParameters'
  *                           carousel: '#/components/schemas/CarouselModelParameters'
+ *                           dall-e: '#/components/schemas/DallEModelParameters'
  *                           freepikapi-text-to-image: '#/components/schemas/FreepikModelParameters'
+ *                           gemini: '#/components/schemas/GeminiModelParameters'
+ *                           gemini: '#/components/schemas/GeminiModelParameters'
+ *                           html-to-image: '#/components/schemas/HTMLToImageModelParameters'
  *                           default: '#/components/schemas/DefaultModelParameters'
  *                     prompt_parameters:
  *                       type: array

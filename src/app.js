@@ -269,7 +269,85 @@ const swaggerOptions = {
             },
             "required": ["negative_prompt", "guidance_scale", "seed", "num_images", "image"]
         },
-        DefaultModelParameters: {
+        "HTMLToImageModelParameters": {
+            "type": "object",
+            "description": "Parâmetros para integração com o serviço HTMLToImageService.",
+            "properties": {
+              "api_key": {
+                "type": "string",
+                "description": "Chave de API para autenticação no HTMLToImageService."
+              },
+              "username": {
+                "type": "string",
+                "description": "Nome de usuário associado à conta no HTMLToImageService."
+              },
+              "base_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "URL base do serviço HTMLToImageService.",
+                "default": "https://default-base-url.com"
+              },
+              "action": {
+                "type": "string",
+                "description": "Ação a ser executada. Atualmente, apenas 'generateImage' é suportado.",
+                "enum": ["generateImage"]
+              },
+              "html": {
+                "type": "string",
+                "description": "Conteúdo HTML que será convertido em imagem."
+              },
+              "width": {
+                "type": "integer",
+                "description": "Largura da imagem gerada. Valor padrão: 1080.",
+                "default": 1080,
+                "example": 1080
+              },
+              "height": {
+                "type": "integer",
+                "description": "Altura da imagem gerada. Valor padrão: 1920.",
+                "default": 1920,
+                "example": 1920
+              },
+              "css": {
+                "type": "string",
+                "description": "CSS adicional para estilizar o conteúdo HTML antes de gerar a imagem.",
+                "default": "",
+                "example": "body { background-color: #000; }"
+              }
+            },
+            "required": ["api_key", "username", "action", "html"],
+            "oneOf": [
+              {
+                "description": "Parâmetros para a ação 'generateImage'.",
+                "properties": {
+                  "action": {
+                    "const": "generateImage"
+                  },
+                  "html": {
+                    "type": "string",
+                    "description": "Conteúdo HTML que será convertido em imagem."
+                  },
+                  "width": {
+                    "type": "integer",
+                    "description": "Largura da imagem gerada.",
+                    "default": 1080
+                  },
+                  "height": {
+                    "type": "integer",
+                    "description": "Altura da imagem gerada.",
+                    "default": 1920
+                  },
+                  "css": {
+                    "type": "string",
+                    "description": "CSS adicional para estilizar o conteúdo HTML.",
+                    "default": ""
+                  }
+                },
+                "required": ["action", "html"]
+              }
+            ]
+          },        
+          DefaultModelParameters: {
           type: 'object',
           description: 'Parâmetros genéricos para outras engines',
           properties: {}

@@ -19,12 +19,19 @@ module.exports = {
       for (const prompt of prompts) {
         const parametros = await ParametroRepository.getParametrosByPrompt(prompt.id);
         const substituicoes = this.prepareSubstituicoes(parametros, resultadoGlobal);
+
         const promptConteudo = this.replacePlaceholders(prompt.prompt, substituicoes);
+        const parametrosModeloAtualizados = this.replacePlaceholdersInJson(prompt.parametros_modelo, substituicoes);
 
         console.log('Segue prompt:');
         console.log(promptConteudo);
 
-        const resultado = await PromptProcessorService.processPrompt(promptConteudo, prompt.engine, prompt.modelo,prompt.parametros_modelo);
+        const resultado = await PromptProcessorService.processPrompt(
+          promptConteudo,
+          prompt.engine,
+          prompt.modelo,
+          parametrosModeloAtualizados
+        );
 
         // Atualizar resultadoBd com o resultado atual
         Object.assign(resultadoBd, resultado);
@@ -47,24 +54,57 @@ module.exports = {
       const prefixedKey = prefix ? `${prefix}.${key}` : key;
 
       if (Array.isArray(value)) {
-        // Se for um array, processar cada item com índice
         value.forEach((item, index) => {
           if (typeof item === 'object' && item !== null) {
-            // Se o item for um objeto, chamar recursivamente
             this.processNestedResult(resultadoGlobal, item, `${prefixedKey}.${index}`);
           } else {
-            // Se o item não for objeto, adicionar diretamente
             resultadoGlobal[`${prefixedKey}.${index}`] = item;
           }
         });
       } else if (typeof value === 'object' && value !== null) {
-        // Se for um objeto, chamar recursivamente
         this.processNestedResult(resultadoGlobal, value, prefixedKey);
       } else {
-        // Caso contrário, adicionar diretamente
         resultadoGlobal[prefixedKey] = value;
       }
     }
+  },
+
+  prepareSubstituicoes(parametros, resultadoGlobal) {
+    const substituicoes = { ...resultadoGlobal };
+    for (const parametro of parametros) {
+      substituicoes[parametro.nome] = parametro.valor;
+    }
+    return substituicoes;
+  },
+
+  replacePlaceholders(content, substituicoes) {
+    return content
+      ? content.replace(/\{\{(.*?)\}\}/g, (_, key) => substituicoes[key.trim()] || '')
+      : null;
+  },
+
+  replacePlaceholdersInJson(json, substituicoes) {
+    if (Array.isArray(json)) {
+      return json.map(item => this.replacePlaceholdersInJson(item, substituicoes));
+    } else if (typeof json === 'object' && json !== null) {
+      const updatedJson = {};
+      for (const [key, value] of Object.entries(json)) {
+        updatedJson[key] = this.replacePlaceholdersInJson(value, substituicoes);
+      }
+      return updatedJson;
+    } else if (typeof json === 'string') {
+      return this.replacePlaceholders(json, substituicoes);
+    } else {
+      return json;
+    }
+  },
+
+  async loadResultadosGlobais(solicitacaoId) {
+    const resultados = await PromptResultadoRepository.getResultadosBySolicitacao(solicitacaoId);
+    return resultados.reduce((acumulado, resultado) => {
+      const parsed = JSON.parse(resultado.resultado);
+      return { ...acumulado, ...parsed };
+    }, {});
   },
 
   async resume(protocoloUid) {
@@ -90,9 +130,16 @@ module.exports = {
 
         const parametros = await ParametroRepository.getParametrosByPrompt(prompt.id);
         const substituicoes = this.prepareSubstituicoes(parametros, resultadoGlobal);
-        const promptConteudo = this.replacePlaceholders(prompt.prompt, substituicoes);
 
-        const resultado = await PromptProcessorService.processPrompt(promptConteudo, prompt.engine, prompt.modelo, prompt.parametros_modelo);
+        const promptConteudo = this.replacePlaceholders(prompt.prompt, substituicoes);
+        const parametrosModeloAtualizados = this.replacePlaceholdersInJson(prompt.parametros_modelo, substituicoes);
+
+        const resultado = await PromptProcessorService.processPrompt(
+          promptConteudo,
+          prompt.engine,
+          prompt.modelo,
+          parametrosModeloAtualizados
+        );
 
         console.log('Segue prompt:');
         console.log(promptConteudo);
@@ -108,25 +155,5 @@ module.exports = {
       console.error('Erro ao retomar processamento:', error);
       await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'erro');
     }
-  },
-
-  prepareSubstituicoes(parametros, resultadoGlobal) {
-    const substituicoes = { ...resultadoGlobal };
-    for (const parametro of parametros) {
-      substituicoes[parametro.nome] = parametro.valor;
-    }
-    return substituicoes;
-  },
-
-  replacePlaceholders(content, substituicoes) {
-    return content ? content.replace(/\{\{(.*?)\}\}/g, (_, key) => substituicoes[key.trim()] || '') : null;
-  },
-
-  async loadResultadosGlobais(solicitacaoId) {
-    const resultados = await PromptResultadoRepository.getResultadosBySolicitacao(solicitacaoId);
-    return resultados.reduce((acumulado, resultado) => {
-      const parsed = JSON.parse(resultado.resultado);
-      return { ...acumulado, ...parsed };
-    }, {});
   },
 };

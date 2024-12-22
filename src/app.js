@@ -457,6 +457,34 @@ const swaggerOptions = {
                 "required": ["action", "image_url", "metadata", "extension", "ftp_config_id"]
               }
             ]
+          },  
+          "InferenceAPITextToImageModelParameters": {
+              "type": "object",
+              "description": "Parâmetros para integração com a Inference API do Hugging Face para modelos text-to-image.",
+              "properties": {
+                "model": {
+                  "type": "string",
+                  "description": "Modelo a ser usado na Inference API do Hugging Face  para modelos text-to-image.",
+                  "example": "gpt-neo-1.3B"
+                },
+                "prompt": {
+                  "type": "string",
+                  "description": "Texto de entrada a ser processado pelo modelo.",
+                  "example": "Explique a teoria da gravidade."
+                },
+                "api_key": {
+                  "type": "string",
+                  "description": "Chave de API para autenticação no Hugging Face.",
+                  "default": "HUGGINGFACE_API_KEY"
+                },
+                "wait_for_model": {
+                  "type": "boolean",
+                  "description": "Indica se a requisição deve aguardar o modelo ficar disponível.",
+                  "default": true
+                }
+              },
+              "required": ["model", "prompt"],
+              "additionalProperties": false
           },        
           DefaultModelParameters: {
           type: 'object',

@@ -25,14 +25,26 @@ module.exports = {
       let integrationClass;
 
       switch (engine.toLowerCase()) {
-        case 'openai':
-          integrationClass = OpenAIIntegration;
+        case 'brainstorm-ai':
+          integrationClass = BrainstormAIIntegration;
           break;
+        case 'carousel':
+          integrationClass = CarouselIntegration;
+          break;           
         case 'dall-e':
           integrationClass = DallEIntegration;
           break;
+        case 'freepikapi-text-to-image':
+          integrationClass = FreePikTextToImageIntegration;
+          break;      
         case 'gemini':
           integrationClass = GeminiIntegration;
+          break;
+        case 'html-to-image':
+          integrationClass = HtmlToImageIntegration;
+          break;
+        case 'image-repo':
+          integrationClass = ImageRepoIntegration;
           break;
         case 'inferenceapi-text-to-image':
           integrationClass = InferenceAPIIntegrationTextToImage;
@@ -46,35 +58,23 @@ module.exports = {
         case 'inferenceapi-text-to-speech':
           integrationClass = InferenceAPIIntegrationTextToSpeech;
           break;           
-        case 'freepikapi-text-to-image':
-          integrationClass = FreePikTextToImageIntegration;
-          break;      
-        case 'writter-ai':
-          integrationClass = WritterAIIntegration;
-          break;
-        case 'brainstorm-ai':
-          integrationClass = BrainstormAIIntegration;
-          break;
-        case 'wordpress':
-          integrationClass = WordpressIntegration;
-          break;          
         case 'instagram':
           integrationClass = InstagramIntegration;
           break;    
-        case 'whatsapp':
-          integrationClass = WhatsappIntegration;
-          break; 
+        case 'openai':
+          integrationClass = OpenAIIntegration;
+          break;
         case 'telegram':
           integrationClass = TelegramIntegration;
           break; 
-        case 'carousel':
-          integrationClass = CarouselIntegration;
-          break;           
-        case 'image-repo':
-          integrationClass = ImageRepoIntegration;
-          break;
-        case 'html-to-image':
-          integrationClass = HtmlToImageIntegration;
+        case 'whatsapp':
+          integrationClass = WhatsappIntegration;
+          break; 
+        case 'wordpress':
+          integrationClass = WordpressIntegration;
+          break;          
+        case 'writter-ai':
+          integrationClass = WritterAIIntegration;
           break;
         default:
           throw new Error(`Engine não suportada: ${engine}`);

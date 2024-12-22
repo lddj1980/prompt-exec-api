@@ -1,61 +1,58 @@
 const axios = require('axios');
 const ImageRepoAPI = require('../services/ImageRepoService'); // Ajuste o caminho para o arquivo da classe ImageRepoAPI
-const sharp = require('sharp');
-
-// Criação do axiosInstance com configurações personalizadas
-const axiosInstance = axios.create({
-  maxBodyLength: Infinity, // Permite payloads grandes
-  maxContentLength: Infinity, // Permite respostas grandes
-  headers: {
-    Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`, // Token de API do Hugging Face
-    'Content-Type': 'application/json',
-    'x-wait-for-model': 'true'
-  },
-});
 
 module.exports = {
-  async process(prompt, model, modelParameters = null) {
+  async process(prompt, model, modelParameters = {}) {
     try {
-      console.log('Aqui chegou');
-      // Monta o endpoint da Inference API com o modelo fornecido
-      const endpoint = `https://api-inference.huggingface.co/models/${model}`;
+      console.log('Iniciando integração com a API ElevenLabs');
 
-      const request = modelParameters ? {inputs: prompt, parameters: modelParameters} : {inputs: prompt};
+      modelParameters = modelParameters ? modelParameters : {};
       
-      // Faz a requisição para a Inference API usando axiosInstance
-      const response = await axiosInstance.post(
-        endpoint,
-        request,
-        {
-          responseType: 'arraybuffer', // Necessário para lidar com binários como imagens
-        }
-      );
+      if (!modelParameters.voice_id) {
+        throw new Error('O parâmetro "voice_id" é obrigatório.');
+      }
+      
+      // Configuração do endpoint e headers
+      const endpoint = `https://api.elevenlabs.io/v1/text-to-speech/${modelParameters.voice_id}`;
+      const headers = {
+        'xi-api-key': process.env.ELEVENLABS_API_KEY, // Substitua pela sua chave de API
+        'Content-Type': 'application/json',
+      };
 
-      // Verifica o status da resposta
+      // Corpo da requisição
+      const requestBody = { prompt };
+
+      // Faz a requisição POST usando axios
+      const response = await axios.post(endpoint, requestBody, {
+        headers,
+        responseType: 'arraybuffer', // Para receber os dados binários do áudio
+      });
+
       if (response.status === 200) {
-        // Passo 2: Converter para Base64
-        const base64Image = Buffer.from(response.data, 'binary').toString('base64');
-        console.log('Tamanho do arquivo: ' + calculateBase64Size(base64Image));
+        // Converte a resposta binária para Base64
+        const base64Audio = Buffer.from(response.data, 'binary').toString('base64');
+        console.log('Tamanho do arquivo em Base64:', calculateBase64Size(base64Audio));
 
-        // Instancia o repositório de imagens
+        // Instancia o repositório de imagens (ou similar para áudio)
         const imageRepoAPI = new ImageRepoAPI();
 
-        // Salva a imagem no repositório de imagens
-        console.log('Enviando fala gerada para o Image Repo...');
-        const savedImage = await imageRepoAPI.createImage(
-          base64Image, // Conteúdo em Base64
-          {}, // Metadados da imagem
-          '.jpg', // Extensão do arquivo
+        // Salva o áudio convertido em Base64 no repositório
+        console.log('Enviando áudio gerado para o repositório...');
+        const savedAudio = await imageRepoAPI.createImage(
+          base64Audio, // Conteúdo em Base64
+          {}, // Metadados do áudio
+          '.mp3', // Extensão do arquivo
           '73c6f20e-441e-4739-b42c-10c262138fdd', // Chave da API do Image Repo
-          1, // Configuração do FTP
+          1, // Configuração de FTP (se necessário)
           true // Define que o conteúdo está em Base64
         );
-        return savedImage; // Processa a resposta da API
+
+        return savedAudio; // Retorna os detalhes do áudio salvo
       } else {
-        throw new Error(`Erro ao processar com Inference API: ${response.statusText}`);
+        throw new Error(`Erro na API ElevenLabs: ${response.statusText}`);
       }
     } catch (error) {
-      console.error('Erro na integração com Inference API:', error);
+      console.error('Erro na integração com a API ElevenLabs:', error);
 
       if (error.response) {
         console.error('Detalhes do erro:', error.response.data);
@@ -66,16 +63,9 @@ module.exports = {
 
     // Função auxiliar para calcular o tamanho do Base64 em bytes
     function calculateBase64Size(base64String) {
-      // Remove o prefixo "data:image/png;base64," ou outros cabeçalhos, se existirem
-      const base64 = base64String.split(',').pop();
-
-      // Conta os caracteres de preenchimento '='
-      const padding = (base64.match(/=/g) || []).length;
-
-      // Calcula o tamanho em bytes
-      const sizeInBytes = (base64.length * 3) / 4 - padding;
-
-      return sizeInBytes;
+      const base64 = base64String.split(',').pop(); // Remove prefixos, se existirem
+      const padding = (base64.match(/=/g) || []).length; // Conta '='
+      return (base64.length * 3) / 4 - padding; // Calcula tamanho em bytes
     }
   },
 };

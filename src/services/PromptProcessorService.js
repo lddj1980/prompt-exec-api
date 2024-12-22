@@ -34,6 +34,9 @@ module.exports = {
         case 'dall-e':
           integrationClass = DallEIntegration;
           break;
+        case 'dall-e':
+          integrationClass = DallEIntegration;
+          break;          
         case 'freepikapi-text-to-image':
           integrationClass = FreePikTextToImageIntegration;
           break;      

@@ -464,17 +464,17 @@ const swaggerOptions = {
               "properties": {
                 "model": {
                   "type": "string",
-                  "description": "Modelo a ser usado na Inference API do Hugging Face  para modelos text-to-image.",
+                  "description": "Modelo a ser usado na Inference API do Hugging Face para modelos text-to-image.",
                   "example": "gpt-neo-1.3B"
                 },
                 "prompt": {
                   "type": "string",
-                  "description": "Texto de entrada a ser processado pelo modelo.",
+                  "description": "Texto de entrada a ser processado pelo modelo para modelos text-to-image.",
                   "example": "Explique a teoria da gravidade."
                 },
                 "api_key": {
                   "type": "string",
-                  "description": "Chave de API para autenticação no Hugging Face.",
+                  "description": "Chave de API para autenticação no Hugging Face para modelos text-to-image.",
                   "default": "HUGGINGFACE_API_KEY"
                 },
                 "wait_for_model": {

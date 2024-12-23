@@ -12,11 +12,15 @@ module.exports = {
     try {
       console.log(`Iniciando requisição com o modelo ${model}...`);
 
-      const baseURL = modelParameters.baseURL || null;
+      const baseURL = modelParameters.base_url || null;
       const endpoint = modelParameters.endpoint || null;
       const method = modelParameters.method || null;
       const requestId = modelParameters.request_id || `req-${Date.now()}`;
-
+      console.log(modelParameters);
+      console.log(baseURL);
+      console.log(endpoint);
+      console.log(method);
+      
       if (!baseURL || !endpoint || !method) {
         throw new Error('Os parâmetros "baseURL", "endpoint" e "method" são obrigatórios.');
       }

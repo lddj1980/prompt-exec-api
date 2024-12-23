@@ -159,15 +159,28 @@ module.exports = {
  *                       properties:
  *                         engine:
  *                           type: string
- *                           enum: ["none"]
+ *                           enum: ["html-to-image"]
  *                           description: Engine HTML-to-Image
  *                         model:
  *                           type: string
- *                           enum: ["html-image-basic", "html-image-advanced"]
+ *                           enum: ["nome"]
  *                           description: Modelos suportados para HTML-to-Image
  *                         model_parameters:
  *                           $ref: '#/components/schemas/HTMLToImageModelParameters'
  *                       required: [engine, model, model_parameters]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["http-command"]
+ *                           description: Engine Http-Command
+ *                         model:
+ *                           type: string
+ *                           enum: ["nome"]
+ *                           description: Modelos suportados para Http-Command
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/HttpCommandModelParameters'
+ *                       required: [engine, model, model_parameters] 
  *                     - type: object
  *                       properties:
  *                         engine:

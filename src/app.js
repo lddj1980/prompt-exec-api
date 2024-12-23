@@ -991,6 +991,63 @@ const swaggerOptions = {
                 }
               ]
             },
+            "HttpCommandModelParameters": {
+              "type": "object",
+              "description": "Parâmetros para configuração e integração com a API genérica.",
+              "properties": {
+                "base_url": {
+                  "type": "string",
+                  "description": "URL base da API para as requisições.",
+                  "example": "https://api.example.com/v1"
+                },
+                "endpoint": {
+                  "type": "string",
+                  "description": "Endpoint da API que será chamado.",
+                  "example": "/execute"
+                },
+                "method": {
+                  "type": "string",
+                  "description": "Método HTTP para a requisição.",
+                  "enum": ["GET", "POST", "PUT", "DELETE"],
+                  "example": "POST"
+                },
+                "headers": {
+                  "type": "object",
+                  "description": "Cabeçalhos adicionais para a requisição.",
+                  "example": {
+                    "Authorization": "Bearer your_api_key",
+                    "Content-Type": "application/json"
+                  }
+                },
+                "body": {
+                  "type": "object",
+                  "description": "Dados do corpo da requisição para métodos POST ou PUT.",
+                  "example": {
+                    "key1": "value1",
+                    "key2": "value2"
+                  }
+                },
+                "params": {
+                  "type": "object",
+                  "description": "Parâmetros de query opcionais para a requisição.",
+                  "example": {
+                    "queryParam1": "value1",
+                    "queryParam2": "value2"
+                  }
+                },
+                "timeout": {
+                  "type": "integer",
+                  "description": "Tempo máximo em milissegundos para a requisição. Valor padrão: 5000.",
+                  "example": 10000
+                },
+                "request_id": {
+                  "type": "string",
+                  "description": "Identificador único para a requisição. Gerado automaticamente se não for fornecido.",
+                  "example": "custom-request-id-12345"
+                }
+              },
+              "required": ["base_url", "endpoint", "method"]
+            },        
             DefaultModelParameters: {
               type: 'object',
               description: 'Parâmetros genéricos para outras engines',

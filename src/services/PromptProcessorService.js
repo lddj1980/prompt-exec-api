@@ -15,7 +15,7 @@ const TelegramIntegration = require('../engines/TelegramIntegration');
 const CarouselIntegration = require('../engines/CarouselIntegration');
 const ImageRepoIntegration = require('../engines/ImageRepoIntegration');
 const HtmlToImageIntegration = require('../engines/HtmlToImageIntegration');
-
+const ElevenLabsTextToSpeechIntegration = require('../engines/ElevenLabsTextToSpeechIntegration');
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo) {
@@ -34,8 +34,8 @@ module.exports = {
         case 'dall-e':
           integrationClass = DallEIntegration;
           break;
-        case 'dall-e':
-          integrationClass = DallEIntegration;
+        case 'elevenlabs-text-to-speech':
+          integrationClass = ElevenLabsTextToSpeechIntegration;
           break;          
         case 'freepikapi-text-to-image':
           integrationClass = FreePikTextToImageIntegration;

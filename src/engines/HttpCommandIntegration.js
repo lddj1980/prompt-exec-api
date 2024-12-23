@@ -16,31 +16,32 @@ module.exports = {
       const endpoint = modelParameters.endpoint || null;
       const method = modelParameters.method || null;
       const requestId = modelParameters.request_id || `req-${Date.now()}`;
+
       console.log(modelParameters);
       console.log(baseURL);
       console.log(endpoint);
       console.log(method);
-      
+
       if (!baseURL || !endpoint || !method) {
         throw new Error('Os parâmetros "baseURL", "endpoint" e "method" são obrigatórios.');
       }
 
-      // Configuração do cliente Axios
-      const axiosInstance = axios.create({
-        baseURL: baseURL,
-        headers: modelParameters.headers || {},
-        timeout: modelParameters.timeout || 5000 // Timeout padrão de 5 segundos
-      });
+      // Configuração da requisição
+      const url = `${baseURL}${endpoint}`;
+      const headers = modelParameters.headers || {};
+      const timeout = modelParameters.timeout || 5000; // Timeout padrão de 5 segundos
+      const params = modelParameters.params || {}; // Parâmetros de query opcionais
+      const data = modelParameters.body || {}; // Corpo da requisição
 
-      const config = {
+      // Executa a requisição diretamente com axios
+      const response = await axios({
         method: method.toLowerCase(),
-        url: endpoint,
-        params: modelParameters.params || null, // Parâmetros de query opcionais
-        data: modelParameters.body || { prompt, model } // Corpo da requisição
-      };
-
-      // Executa a requisição
-      const response = await axiosInstance(config);
+        url: url,
+        headers: headers,
+        timeout: timeout,
+        params: params,
+        data: data
+      });
 
       console.log('Resposta recebida com sucesso:', response.data);
       return {

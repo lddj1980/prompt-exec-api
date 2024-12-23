@@ -462,19 +462,11 @@ const swaggerOptions = {
               "type": "object",
               "description": "Parâmetros para integração com a Inference API do Hugging Face para modelos text-to-image.",
               "properties": {
-                "api_key": {
-                  "type": "string",
-                  "description": "Chave de API para autenticação no Hugging Face para modelos text-to-image.",
-                  "default": "HUGGINGFACE_API_KEY"
-                },
-                "wait_for_model": {
-                  "type": "boolean",
-                  "description": "Indica se a requisição deve aguardar o modelo ficar disponível.",
-                  "default": true
+                "parameters": {
+                  "type": "object",
+                  "description": "Parametros opcionais para o modelo.",
                 }
-              },
-              "required": ["model", "prompt"],
-              "additionalProperties": false
+              }
           },  
           "ElevenLabsModelParameters": {
               "type": "object",
@@ -485,24 +477,9 @@ const swaggerOptions = {
                   "description": "ID da voz a ser usada para gerar o áudio. Devem ser identificadas em https://api.elevenlabs.io/v1/voices",
                   "example": "21m00Tcm4TlvDq8ikWAM",
                   "default": "e1NiSFBUD04sZQ0bZgTP"
-                },
-                "model": {
-                  "type": "string",
-                  "description": "Modelo a ser utilizado para conversão de texto em fala.",
-                  "example": "eleven_multilingual_v2",
-                  "default": "eleven_multilingual_v2"
-                },
-                "prompt": {
-                  "type": "string",
-                  "description": "Texto a ser convertido em áudio.",
-                  "example": "Olá, este é um exemplo de áudio gerado pela ElevenLabs."
-                },
-                "api_key": {
-                  "type": "string",
-                  "description": "Chave de API para autenticação na API ElevenLabs."
                 }
               },
-              "required": ["voice_id", "model", "prompt"]
+              "required": ["voice_id"]
             },        
             "InferenceAPITextGenerationModelParameters": {
                 "type": "object",
@@ -511,40 +488,18 @@ const swaggerOptions = {
                   "api_key": {
                     "type": "string",
                     "description": "Chave de API para autenticação na Inference API do Hugging Face. Se não fornecida, será usada a variável de ambiente `HUGGINGFACE_API_KEY`."
-                  },
-                  "prompt": {
-                    "type": "string",
-                    "description": "Texto de entrada que será processado pelo modelo de geração de texto.",
-                    "example": "Explique a teoria da gravidade."
-                  },
-                  "model": {
-                    "type": "string",
-                    "description": "Nome do modelo Hugging Face utilizado para geração de texto.",
-                    "example": "gpt-neo-2.7B"
                   }
-                },
-                "required": ["prompt", "model"]
+                }
             },   
             "InferenceAPIIntegrationTextToAudio": {
               "type": "object",
-              "description": "Parâmetros para integração com a Inference API do Hugging Face, focada em modelos de geração de imagens ou áudio.",
+              "description": "Parâmetros para integração com a Inference API do Hugging Face, focada em modelos de geração de áudio.",
               "properties": {
-                "api_key": {
-                  "type": "string",
-                  "description": "Chave de API para autenticação na Inference API do Hugging Face. Se não fornecida, será usada a variável de ambiente `HUGGINGFACE_API_KEY`."
-                },
-                "prompt": {
-                  "type": "string",
-                  "description": "Texto de entrada que será processado pelo modelo de geração de imagens ou áudio.",
-                  "example": "Desenhe uma paisagem de montanha ao pôr do sol."
-                },
-                "model": {
-                  "type": "string",
-                  "description": "Modelo da Hugging Face utilizado para geração de imagens ou áudio.",
-                  "example": "stable-diffusion-v1-4"
+                "parameters": {
+                  "type": "object",
+                  "description": "Parametros opcionais que serão enviados ao modelo para geração de áudio."
                 }
-              },
-              "required": ["prompt", "model"]
+              }
             },        
             DefaultModelParameters: {
               type: 'object',

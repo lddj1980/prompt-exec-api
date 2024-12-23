@@ -68,7 +68,6 @@ module.exports = {
  *                         model_parameters:
  *                           $ref: '#/components/schemas/BrainstormAIModelParameters'
  *                       required: [engine, model]
-
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -82,7 +81,10 @@ module.exports = {
  *                           description: Modelos suportados para OpenAI
  *                         model_parameters:
  *                           $ref: '#/components/schemas/OpenAIModelParameters'
- *                       required: [engine, model]
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao OpenAI
+ *                       required: [engine, model, prompt]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -96,7 +98,10 @@ module.exports = {
  *                           description: Modelos suportados para DALL-E
  *                         model_parameters:
  *                           $ref: '#/components/schemas/DallEModelParameters'
- *                       required: [engine, model]
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao DALL-E para gerar a imagem
+ *                       required: [engine, model, prompt]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -123,7 +128,10 @@ module.exports = {
  *                           description: Modelos suportados para Engine Elevenlabs para conversão de texto para audio
  *                         model_parameters:
  *                           $ref: '#/components/schemas/ElevenLabsModelParameters'
- *                       required: [engine, model]
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt como o texto que vai ser solicitado para transformar em audio
+ *                       required: [engine, model, prompt]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -136,7 +144,10 @@ module.exports = {
  *                           description: Modelos suportados para Freepik API
  *                         model_parameters:
  *                           $ref: '#/components/schemas/FreepikModelParameters'
- *                       required: [engine, model]
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao freepik para gerar a imagem
+ *                       required: [engine, model, prompt]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -150,7 +161,10 @@ module.exports = {
  *                           description: Modelos suportados para Gemini
  *                         model_parameters:
  *                           $ref: '#/components/schemas/GeminiModelParameters'
- *                       required: [engine, model]
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao gemini
+ *                       required: [engine, model, prompt]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -181,6 +195,23 @@ module.exports = {
  *                       properties:
  *                         engine:
  *                           type: string
+ *                           enum: ["inferenceapi-text-to-audio"]
+ *                           description: Engine Inference API Text-to-Audio
+ *                         model:
+ *                           type: string
+ *                           enum: ["black-forest-labs/FLUX.1-dev","stable-diffusion-3.5-large","fofr/flux-handwriting","stable-diffusion-v1-5/stable-diffusion-v1-5","prashanth970/flux-lora-uncensored"]
+ *                           default: black-forest-labs/FLUX.1-dev
+ *                           description: Modelos suportados para Inference API Text-to-Image
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/InferenceAPITextToAudioModelParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao inferenceapi para gerar a imagem
+ *                       required: [engine, model, prompt]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
  *                           enum: ["inferenceapi-text-to-image"]
  *                           description: Engine Inference API Text-to-Image
  *                         model:
@@ -190,7 +221,10 @@ module.exports = {
  *                           description: Modelos suportados para Inference API Text-to-Image
  *                         model_parameters:
  *                           $ref: '#/components/schemas/InferenceAPITextToImageModelParameters'
- *                       required: [engine, model]
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao inferenceapi para gerar a imagem
+ *                       required: [engine, model, prompt]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -204,7 +238,10 @@ module.exports = {
  *                           description: Modelos suportados para Inference API Text Generation
  *                         model_parameters:
  *                           $ref: '#/components/schemas/InferenceAPITextGenerationModelParameters'
- *                       required: [engine, model]
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao inferenceapi para text generation
+ *                       required: [engine, model, prompt]
  *                     - type: object
  *                       properties:
  *                         engine:

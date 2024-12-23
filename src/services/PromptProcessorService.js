@@ -16,6 +16,7 @@ const CarouselIntegration = require('../engines/CarouselIntegration');
 const ImageRepoIntegration = require('../engines/ImageRepoIntegration');
 const HtmlToImageIntegration = require('../engines/HtmlToImageIntegration');
 const ElevenLabsTextToSpeechIntegration = require('../engines/ElevenLabsTextToSpeechIntegration');
+const HttpCommandIntegration = require('../engines/HttpCommandIntegration');
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo) {
@@ -46,6 +47,9 @@ module.exports = {
         case 'html-to-image':
           integrationClass = HtmlToImageIntegration;
           break;
+        case 'http-command':
+          integrationClass = HttpCommandIntegration;
+          break;          
         case 'image-repo':
           integrationClass = ImageRepoIntegration;
           break;

@@ -14,6 +14,7 @@ module.exports = {
       await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'em_progresso');
 
       const prompts = await PromptRepository.getPromptsBySolicitacao(solicitacao.id);
+      console.log('prompts:'+prompts);
       const resultadoGlobal = {};
       const resultadoBd = {};
       var resultadoFinal = {};

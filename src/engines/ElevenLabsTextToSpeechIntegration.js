@@ -12,6 +12,14 @@ module.exports = {
         throw new Error('O parâmetro "voice_id" é obrigatório.');
       }
       
+      if (!model) {
+        throw new Error('O parâmetro "model" é obrigatório.');
+      }
+
+      if (!prompt) {
+        throw new Error('O parâmetro "prompt" é obrigatório.');
+      }
+
       // Configuração do endpoint e headers
       const endpoint = `https://api.elevenlabs.io/v1/text-to-speech/${modelParameters.voice_id}`;
       const headers = {
@@ -20,7 +28,7 @@ module.exports = {
       };
 
       // Corpo da requisição
-      const requestBody = { prompt };
+      const requestBody = { text:prompt, model_id: model };
 
       // Faz a requisição POST usando axios
       const response = await axios.post(endpoint, requestBody, {

@@ -6,8 +6,8 @@ module.exports = {
       modelParameters = modelParameters ? modelParameters : {};
       console.log('Iniciando integração com o Telegram...');
 
-      const botToken = modelParameters.botToken || null;
-      const channelId = modelParameters.channelId || null;
+      const botToken = modelParameters.bot_token || null;
+      const channelId = modelParameters.channel_id || null;
 
       if (!botToken || !channelId) {
         throw new Error('Os parâmetros "botToken" e "channelId" são obrigatórios.');
@@ -49,12 +49,12 @@ module.exports = {
       } else if (modelParameters.action === 'sendPhoto') {
         // Envia uma imagem
         console.log('Enviando imagem...');
-        if (!modelParameters.photoUrl) {
+        if (!modelParameters.photo_url) {
           throw new Error('O parâmetro "photoUrl" é obrigatório para enviar uma imagem.');
         }
 
         const result = await telegramService.sendPhoto(
-          modelParameters.photoUrl,
+          modelParameters.photo_url,
           modelParameters.caption || ''
         );
 
@@ -64,12 +64,12 @@ module.exports = {
       } else if (modelParameters.action === 'sendDocument') {
         // Envia um documento
         console.log('Enviando documento...');
-        if (!modelParameters.documentPath) {
+        if (!modelParameters.document_path) {
           throw new Error('O parâmetro "documentPath" é obrigatório para enviar um documento.');
         }
 
         const result = await telegramService.sendDocument(
-          modelParameters.documentPath,
+          modelParameters.document_path,
           modelParameters.caption || ''
         );
 
@@ -79,12 +79,12 @@ module.exports = {
       } else if (modelParameters.action === 'sendVideo') {
         // Envia um vídeo
         console.log('Enviando vídeo...');
-        if (!modelParameters.videoPath) {
+        if (!modelParameters.video_path) {
           throw new Error('O parâmetro "videoPath" é obrigatório para enviar um vídeo.');
         }
 
         const result = await telegramService.sendVideo(
-          modelParameters.videoPath,
+          modelParameters.video_path,
           modelParameters.caption || ''
         );
 
@@ -94,12 +94,12 @@ module.exports = {
       } else if (modelParameters.action === 'sendAudio') {
         // Envia um áudio
         console.log('Enviando áudio...');
-        if (!modelParameters.audioPath) {
+        if (!modelParameters.audio_path) {
           throw new Error('O parâmetro "audioPath" é obrigatório para enviar um áudio.');
         }
 
         const result = await telegramService.sendAudio(
-          modelParameters.audioPath,
+          modelParameters.audio_path,
           modelParameters.caption || ''
         );
 

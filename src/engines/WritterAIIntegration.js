@@ -7,8 +7,8 @@ module.exports = {
       modelParameters = modelParameters ? modelParameters : {};
       console.log('Iniciando integração com o Writter-IA...');
 
-      const writerId = modelParameters.writerId || null;
-      const apiKey = modelParameters.apiKey || null;
+      const writerId = modelParameters.writer_id || null;
+      const apiKey = modelParameters.api_key || null;
 
       if (!writerId || !apiKey) {
         throw new Error('Os parâmetros "writerId" e "apiKey" são obrigatórios.');
@@ -47,7 +47,7 @@ module.exports = {
         const savedPublication = await writterAiAPI.savePublication(
           writerId,
           apiKey,
-          modelParameters.tituloId,
+          modelParameters.titulo_id,
           modelParameters.conteudo
         );
 

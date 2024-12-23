@@ -7,7 +7,7 @@ module.exports = {
       modelParameters = modelParameters ? modelParameters : {};
       console.log('Iniciando integração com o WordPress...');
 
-      const webhookURL = modelParameters.webhookURL || 'https://hook.us1.make.com/fy97mitmrsnsy43kaa8x9ousrcy6b2am';
+      const webhookURL = modelParameters.webhook_url || 'https://hook.us1.make.com/fy97mitmrsnsy43kaa8x9ousrcy6b2am';
 
       // Instancia o serviço WordpressService
       const wordpressService = new WordpressService(webhookURL);
@@ -24,8 +24,8 @@ module.exports = {
         author: modelParameters.author || undefined,
         slug: modelParameters.slug || undefined,
         excerpt: modelParameters.excerpt || undefined,
-        featureMediaId: modelParameters.featureMediaId || undefined,
-        parentObjectId: modelParameters.parentObjectId || undefined,
+        featureMediaId: modelParameters.feature_media_id || undefined,
+        parentObjectId: modelParameters.parent_object_id || undefined,
       };
 
       console.log('Detalhes do post:', postDetails);

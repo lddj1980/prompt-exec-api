@@ -727,6 +727,270 @@ const swaggerOptions = {
                 }
               ]
             },
+            "TelegramModelParameters": {
+              "type": "object",
+              "description": "Parâmetros para integração com o Telegram Bot API.",
+              "properties": {
+                "bot_token": {
+                  "type": "string",
+                  "description": "Token do bot do Telegram para autenticação.",
+                  "example": "123456789:ABCDefGhIjKlMnOpQrStUvWxYz1234567890"
+                },
+                "channel_id": {
+                  "type": "string",
+                  "description": "ID do canal ou chat no Telegram onde a ação será realizada.",
+                  "example": "@meu_canal_telegram"
+                },
+                "action": {
+                  "type": "string",
+                  "description": "Ação a ser realizada no Telegram.",
+                  "enum": [
+                    "sendMessage",
+                    "sendPoll",
+                    "sendPhoto",
+                    "sendDocument",
+                    "sendVideo",
+                    "sendAudio"
+                  ],
+                  "example": "sendMessage"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Texto da mensagem a ser enviada. Obrigatório para 'sendMessage'.",
+                  "example": "Olá, esta é uma mensagem enviada pelo bot!"
+                },
+                "question": {
+                  "type": "string",
+                  "description": "Pergunta para a enquete. Obrigatório para 'sendPoll'.",
+                  "example": "Qual é a sua cor favorita?"
+                },
+                "options": {
+                  "type": "array",
+                  "description": "Lista de opções para a enquete. Obrigatório para 'sendPoll'.",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": ["Azul", "Verde", "Vermelho", "Amarelo"]
+                },
+                "photo_url": {
+                  "type": "string",
+                  "description": "URL da foto a ser enviada. Obrigatório para 'sendPhoto'.",
+                  "example": "https://example.com/foto.jpg"
+                },
+                "document_path": {
+                  "type": "string",
+                  "description": "Caminho do documento a ser enviado. Obrigatório para 'sendDocument'.",
+                  "example": "/path/to/document.pdf"
+                },
+                "video_path": {
+                  "type": "string",
+                  "description": "Caminho do vídeo a ser enviado. Obrigatório para 'sendVideo'.",
+                  "example": "/path/to/video.mp4"
+                },
+                "audio_path": {
+                  "type": "string",
+                  "description": "Caminho do áudio a ser enviado. Obrigatório para 'sendAudio'.",
+                  "example": "/path/to/audio.mp3"
+                },
+                "caption": {
+                  "type": "string",
+                  "description": "Legenda opcional para a mídia (foto, documento, vídeo, ou áudio).",
+                  "example": "Veja este arquivo incrível!"
+                }
+              },
+              "required": ["bot_token", "channel_id", "action"],
+              "oneOf": [
+                {
+                  "description": "Parâmetros para enviar uma mensagem de texto.",
+                  "properties": {
+                    "action": {
+                      "const": "sendMessage"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["message"]
+                },
+                {
+                  "description": "Parâmetros para enviar uma enquete.",
+                  "properties": {
+                    "action": {
+                      "const": "sendPoll"
+                    },
+                    "question": {
+                      "type": "string"
+                    },
+                    "options": {
+                      "type": "array"
+                    }
+                  },
+                  "required": ["question", "options"]
+                },
+                {
+                  "description": "Parâmetros para enviar uma imagem.",
+                  "properties": {
+                    "action": {
+                      "const": "sendPhoto"
+                    },
+                    "photo_url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["photo_url"]
+                },
+                {
+                  "description": "Parâmetros para enviar um documento.",
+                  "properties": {
+                    "action": {
+                      "const": "sendDocument"
+                    },
+                    "document_path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["document_path"]
+                },
+                {
+                  "description": "Parâmetros para enviar um vídeo.",
+                  "properties": {
+                    "action": {
+                      "const": "sendVideo"
+                    },
+                    "video_path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["video_path"]
+                },
+                {
+                  "description": "Parâmetros para enviar um áudio.",
+                  "properties": {
+                    "action": {
+                      "const": "sendAudio"
+                    },
+                    "audio_path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["audio_path"]
+                }
+              ]
+            },      
+
+            "WordpressModelParameters": {
+              "type": "object",
+              "description": "Parâmetros para integração com o WordPress API para publicação de posts.",
+              "properties": {
+                "webhook_url": {
+                  "type": "string",
+                  "description": "URL do webhook para envio de notificações. Caso não fornecido, será usado o webhook padrão.",
+                  "example": "https://hook.us1.make.com/fy97mitmrsnsy43kaa8x9ousrcy6b2am"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Título do post a ser publicado.",
+                  "example": "Como criar integrações automatizadas no WordPress"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Conteúdo do post em formato HTML ou Markdown.",
+                  "example": "<p>Este é um exemplo de conteúdo para um post no WordPress.</p>"
+                },
+                "author": {
+                  "type": "string",
+                  "description": "Nome do autor do post. Opcional.",
+                  "example": "João da Silva"
+                },
+                "slug": {
+                  "type": "string",
+                  "description": "Slug do post, utilizado na URL amigável. Opcional.",
+                  "example": "como-criar-integracoes-wordpress"
+                },
+                "excerpt": {
+                  "type": "string",
+                  "description": "Resumo ou trecho do post. Opcional.",
+                  "example": "Aprenda como integrar e automatizar processos no WordPress."
+                },
+                "feature_media_id": {
+                  "type": "integer",
+                  "description": "ID da imagem destacada do post no WordPress. Opcional.",
+                  "example": 12345
+                },
+                "parent_object_id": {
+                  "type": "integer",
+                  "description": "ID do objeto pai para o post, caso aplicável (ex.: ID de um post ao qual este será uma resposta). Opcional.",
+                  "example": 67890
+                }
+              },
+              "required": ["title", "content"]
+            },
+            "WritterAIModelParameters": {
+              "type": "object",
+              "description": "Parâmetros para integração com a API do Writter-IA.",
+              "properties": {
+                "api_key": {
+                  "type": "string",
+                  "description": "Chave de API para autenticação no Writter-IA.",
+                  "example": "your_api_key"
+                },
+                "writer_id": {
+                  "type": "string",
+                  "description": "Identificador único do redator associado ao conteúdo.",
+                  "example": "writer_12345"
+                },
+                "action": {
+                  "type": "string",
+                  "description": "Ação a ser realizada na API do Writter-IA.",
+                  "enum": ["getOldestUnusedTitle", "generateContent", "savePublication"],
+                  "example": "getOldestUnusedTitle"
+                },
+                "titulo_id": {
+                  "type": "string",
+                  "description": "Identificador único do título a ser associado à publicação. Obrigatório para 'savePublication'.",
+                  "example": "title_67890"
+                },
+                "conteudo": {
+                  "type": "string",
+                  "description": "Conteúdo a ser salvo com o título especificado. Obrigatório para 'savePublication'.",
+                  "example": "Este é o conteúdo gerado para o título especificado."
+                }
+              },
+              "required": ["api_key", "writer_id", "action"],
+              "oneOf": [
+                {
+                  "description": "Parâmetros para buscar o título mais antigo não utilizado.",
+                  "properties": {
+                    "action": {
+                      "const": "getOldestUnusedTitle"
+                    }
+                  }
+                },
+                {
+                  "description": "Parâmetros para gerar conteúdo baseado no título mais antigo.",
+                  "properties": {
+                    "action": {
+                      "const": "generateContent"
+                    }
+                  }
+                },
+                {
+                  "description": "Parâmetros para salvar uma publicação.",
+                  "properties": {
+                    "action": {
+                      "const": "savePublication"
+                    },
+                    "titulo_id": {
+                      "type": "string"
+                    },
+                    "conteudo": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["titulo_id", "conteudo"]
+                }
+              ]
+            },
             DefaultModelParameters: {
               type: 'object',
               description: 'Parâmetros genéricos para outras engines',

@@ -7,16 +7,6 @@ const ProcessingService = require('../services/ProcessingService');
 
 module.exports = {
 
-
-/**                       - inferenceapi-text-generation
- *                       - inferenceapi-text-to-audio
- *                       - inferenceapi-text-to-speech
- *                       - instagram
- *                       - writter-ai
- *                       - wordpress
- *                       - whatsapp
-*/
-  
 /**
  * @swagger
  * /solicitacoes:
@@ -284,7 +274,7 @@ module.exports = {
  *                           description: Modelos suportados para Telegram
  *                         model_parameters:
  *                           $ref: '#/components/schemas/TelegramModelParameters'
- *                       required: [engine, model]
+ *                       required: [engine, model, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -296,7 +286,7 @@ module.exports = {
  *                           enum: ["none"]
  *                           description: Modelos suportados para WhatsApp
  *                         model_parameters:
- *                           $ref: '#/components/schemas/WhatsAppModelParameters'
+ *                           $ref: '#/components/schemas/WhatsappModelParameters'
  *                       required: [engine, model, model_parameters]
  *                     - type: object
  *                       properties:
@@ -309,8 +299,21 @@ module.exports = {
  *                           enum: ["none"]
  *                           description: Modelos suportados para WordPress
  *                         model_parameters:
- *                           $ref: '#/components/schemas/WordPressModelParameters'
- *                       required: [engine, model]
+ *                           $ref: '#/components/schemas/WordpressModelParameters'
+ *                       required: [engine, model, model_parameters]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["writter-ai"]
+ *                           description: Engine Writter-AI
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para Writter-AI
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/WritterAIModelParameters'
+ *                       required: [engine, model, model_parameters]
  *             required: [cron_expression, prompts]
  *     responses:
  *       202:

@@ -7,14 +7,14 @@ module.exports = {
       modelParameters = modelParameters ? modelParameters : {};
       console.log('Iniciando integração com o WhatsApp Proxy API...');
 
-      const apiKey = modelParameters.apiKey || null;
+      const apiKey = modelParameters.api_key || null;
 
       if (!apiKey) {
         throw new Error('O parâmetro "apiKey" é obrigatório.');
       }
 
       // Instancia o serviço WhatsappService
-      const whatsappService = new WhatsappService(modelParameters.baseURL);
+      const whatsappService = new WhatsappService(modelParameters.base_url);
 
       // Decide qual funcionalidade usar com base nos parâmetros
       if (modelParameters.action === 'sendMessage') {
@@ -40,9 +40,9 @@ module.exports = {
         console.log('Enviando mensagem com mídia...');
         if (
           !modelParameters.number ||
-          !modelParameters.mediaUrl ||
-          !modelParameters.mimeType ||
-          !modelParameters.fileName
+          !modelParameters.media_url ||
+          !modelParameters.mime_type ||
+          !modelParameters.file_name
         ) {
           throw new Error(
             'Os parâmetros "number", "mediaUrl", "mimeType" e "fileName" são obrigatórios para enviar uma mensagem com mídia.'
@@ -51,9 +51,9 @@ module.exports = {
 
         const result = await whatsappService.sendMedia(
           modelParameters.number,
-          modelParameters.mediaUrl,
-          modelParameters.mimeType,
-          modelParameters.fileName,
+          modelParameters.media_url,
+          modelParameters.mime_type,
+          modelParameters.file_name,
           modelParameters.caption || '',
           apiKey
         );
@@ -64,14 +64,14 @@ module.exports = {
       } else if (modelParameters.action === 'sendGroupMessage') {
         // Envia uma mensagem para um grupo
         console.log('Enviando mensagem para um grupo...');
-        if (!modelParameters.groupId || !modelParameters.message) {
+        if (!modelParameters.group_id || !modelParameters.message) {
           throw new Error(
             'Os parâmetros "groupId" e "message" são obrigatórios para enviar uma mensagem para um grupo.'
           );
         }
 
         const result = await whatsappService.sendGroupMessage(
-          modelParameters.groupId,
+          modelParameters.group_id,
           modelParameters.message,
           apiKey
         );

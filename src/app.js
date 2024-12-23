@@ -510,7 +510,223 @@ const swaggerOptions = {
                   "description": "Parametros opcionais que serão enviados ao modelo para geração de voz."
                 }
               }
-            },         
+            },   
+            "InstagramModelParameters": {
+              "type": "object",
+              "description": "Parâmetros para integração com a API do Instagram.",
+              "properties": {
+                "api_key": {
+                  "type": "string",
+                  "description": "Chave de API para autenticação na API do Instagram.",
+                  "example": "your_api_key"
+                },
+                "api_base_url": {
+                  "type": "string",
+                  "description": "URL base da API do Instagram.",
+                  "example": "https://graph.instagram.com/"
+                },
+                "action": {
+                  "type": "string",
+                  "description": "Ação a ser realizada na API do Instagram.",
+                  "enum": ["publishPost", "publishCarousel", "publishReel", "publishStory"],
+                  "example": "publishPost"
+                },
+                "media_url": {
+                  "type": "string",
+                  "description": "URL da mídia a ser publicada (imagem ou vídeo). Obrigatório para `publishPost` e `publishStory`.",
+                  "example": "https://example.com/media.jpg"
+                },
+                "media_type": {
+                  "type": "string",
+                  "description": "Tipo de mídia para stories (`image` ou `video`). Obrigatório para `publishStory`.",
+                  "enum": ["image", "video"],
+                  "example": "image"
+                },
+                "caption": {
+                  "type": "string",
+                  "description": "Legenda opcional para a publicação.",
+                  "example": "Veja nosso novo post!"
+                },
+                "slides": {
+                  "type": "array",
+                  "description": "Lista de URLs de mídia para um carrossel. Obrigatório para `publishCarousel`.",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": ["https://example.com/slide1.jpg", "https://example.com/slide2.jpg"]
+                },
+                "video_url": {
+                  "type": "string",
+                  "description": "URL do vídeo a ser publicado como reel. Obrigatório para `publishReel`.",
+                  "example": "https://example.com/video.mp4"
+                }
+              },
+              "required": ["api_key", "action"],
+              "oneOf": [
+                {
+                  "description": "Parâmetros para publicar um post.",
+                  "properties": {
+                    "action": {
+                      "const": "publishPost"
+                    },
+                    "media_url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["media_url"]
+                },
+                {
+                  "description": "Parâmetros para publicar um carrossel.",
+                  "properties": {
+                    "action": {
+                      "const": "publishCarousel"
+                    },
+                    "slides": {
+                      "type": "array"
+                    }
+                  },
+                  "required": ["slides"]
+                },
+                {
+                  "description": "Parâmetros para publicar um reel.",
+                  "properties": {
+                    "action": {
+                      "const": "publishReel"
+                    },
+                    "video_url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["video_url"]
+                },
+                {
+                  "description": "Parâmetros para publicar um story.",
+                  "properties": {
+                    "action": {
+                      "const": "publishStory"
+                    },
+                    "media_url": {
+                      "type": "string"
+                    },
+                    "media_type": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["media_url", "media_type"]
+                }
+              ]
+            },   
+            "WhatsappModelParameters": {
+              "type": "object",
+              "description": "Parâmetros para integração com o WhatsApp Proxy API.",
+              "properties": {
+                "api_key": {
+                  "type": "string",
+                  "description": "Chave de API para autenticação na API do WhatsApp.",
+                  "example": "your_api_key"
+                },
+                "base_url": {
+                  "type": "string",
+                  "description": "URL base da API do WhatsApp.",
+                  "example": "https://whatsapp.example.com/api"
+                },
+                "action": {
+                  "type": "string",
+                  "description": "Ação a ser realizada na API do WhatsApp.",
+                  "enum": ["sendMessage", "sendMedia", "sendGroupMessage"],
+                  "example": "sendMessage"
+                },
+                "number": {
+                  "type": "string",
+                  "description": "Número de telefone do destinatário, no formato internacional.",
+                  "example": "+5511999999999"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Texto da mensagem a ser enviada. Obrigatório para 'sendMessage' e 'sendGroupMessage'.",
+                  "example": "Olá, tudo bem?"
+                },
+                "media_url": {
+                  "type": "string",
+                  "description": "URL do arquivo de mídia a ser enviado. Obrigatório para 'sendMedia'.",
+                  "example": "https://example.com/image.jpg"
+                },
+                "mime_type": {
+                  "type": "string",
+                  "description": "Tipo MIME do arquivo de mídia. Obrigatório para 'sendMedia'.",
+                  "example": "image/jpeg"
+                },
+                "file_name": {
+                  "type": "string",
+                  "description": "Nome do arquivo de mídia. Obrigatório para 'sendMedia'.",
+                  "example": "imagem.jpg"
+                },
+                "caption": {
+                  "type": "string",
+                  "description": "Legenda opcional para a mídia enviada em 'sendMedia'.",
+                  "example": "Esta é uma imagem de exemplo."
+                },
+                "group_id": {
+                  "type": "string",
+                  "description": "ID do grupo para o qual a mensagem será enviada. Obrigatório para 'sendGroupMessage'.",
+                  "example": "1234567890@g.us"
+                }
+              },
+              "required": ["apiKey", "action"],
+              "oneOf": [
+                {
+                  "description": "Parâmetros para enviar uma mensagem de texto.",
+                  "properties": {
+                    "action": {
+                      "const": "sendMessage"
+                    },
+                    "number": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["number", "message"]
+                },
+                {
+                  "description": "Parâmetros para enviar uma mensagem com mídia.",
+                  "properties": {
+                    "action": {
+                      "const": "sendMedia"
+                    },
+                    "number": {
+                      "type": "string"
+                    },
+                    "media_url": {
+                      "type": "string"
+                    },
+                    "mime_type": {
+                      "type": "string"
+                    },
+                    "file_name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["number", "media_url", "mime_type", "file_name"]
+                },
+                {
+                  "description": "Parâmetros para enviar uma mensagem para um grupo.",
+                  "properties": {
+                    "action": {
+                      "const": "sendGroupMessage"
+                    },
+                    "group_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["group_id", "message"]
+                }
+              ]
+            },
             DefaultModelParameters: {
               type: 'object',
               description: 'Parâmetros genéricos para outras engines',

@@ -67,7 +67,7 @@ module.exports = {
  *                           description: Modelos suportados na BrainstormAI
  *                         model_parameters:
  *                           $ref: '#/components/schemas/BrainstormAIModelParameters'
- *                       required: [engine, model]
+ *                       required: [engine, model, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -114,7 +114,7 @@ module.exports = {
  *                           description: Modelos suportados para Carousel
  *                         model_parameters:
  *                           $ref: '#/components/schemas/CarouselModelParameters'
- *                       required: [engine, model]
+ *                       required: [engine, model, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -131,7 +131,7 @@ module.exports = {
  *                         prompt:
  *                           type: string
  *                           description: Prompt como o texto que vai ser solicitado para transformar em audio
- *                       required: [engine, model, prompt]
+ *                       required: [engine, model, prompt, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -147,7 +147,7 @@ module.exports = {
  *                         prompt:
  *                           type: string
  *                           description: Prompt que vai ser solicitado ao freepik para gerar a imagem
- *                       required: [engine, model, prompt]
+ *                       required: [engine, model, prompt, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -177,7 +177,7 @@ module.exports = {
  *                           description: Modelos suportados para HTML-to-Image
  *                         model_parameters:
  *                           $ref: '#/components/schemas/HTMLToImageModelParameters'
- *                       required: [engine, model]
+ *                       required: [engine, model, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -190,7 +190,7 @@ module.exports = {
  *                           description: Modelos suportados para Image Repository
  *                         model_parameters:
  *                           $ref: '#/components/schemas/ImageRepoModelParameters'
- *                       required: [engine, model]
+ *                       required: [engine, model, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -263,6 +263,19 @@ module.exports = {
  *                       properties:
  *                         engine:
  *                           type: string
+ *                           enum: ["instagram"]
+ *                           description: Engine Instagram
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para Instagram
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/InstagramModelParameters'
+ *                       required: [engine, model, model_parameters]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
  *                           enum: ["telegram"]
  *                           description: Engine Telegram
  *                         model:
@@ -276,6 +289,19 @@ module.exports = {
  *                       properties:
  *                         engine:
  *                           type: string
+ *                           enum: ["whatsapp"]
+ *                           description: Engine WhatsApp
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para WhatsApp
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/WhatsAppModelParameters'
+ *                       required: [engine, model, model_parameters]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
  *                           enum: ["wordpress"]
  *                           description: Engine WordPress
  *                         model:
@@ -284,19 +310,6 @@ module.exports = {
  *                           description: Modelos suportados para WordPress
  *                         model_parameters:
  *                           $ref: '#/components/schemas/WordPressModelParameters'
- *                       required: [engine, model]
- *                     - type: object
- *                       properties:
- *                         engine:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Engine WhatsApp
- *                         model:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para WhatsApp
- *                         model_parameters:
- *                           $ref: '#/components/schemas/WhatsAppModelParameters'
  *                       required: [engine, model]
  *             required: [cron_expression, prompts]
  *     responses:

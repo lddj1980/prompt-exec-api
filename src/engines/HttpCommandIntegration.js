@@ -45,8 +45,7 @@ module.exports = {
 
       console.log('Resposta recebida com sucesso:', response.data);
       return {
-        request_id: requestId,
-        data: response.data
+        request_id: response.data
       };
     } catch (error) {
       console.error('Erro durante a requisição:', error.message);

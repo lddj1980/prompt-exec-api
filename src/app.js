@@ -514,7 +514,27 @@ const swaggerOptions = {
               },
               "required": ["voice_id", "model", "prompt"]
             },        
-                    
+            "InferenceAPITextGenerationModelParameters": {
+                "type": "object",
+                "description": "Parâmetros para integração com a Inference API do Hugging Face, focada em modelos de geração de texto.",
+                "properties": {
+                  "api_key": {
+                    "type": "string",
+                    "description": "Chave de API para autenticação na Inference API do Hugging Face. Se não fornecida, será usada a variável de ambiente `HUGGINGFACE_API_KEY`."
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "description": "Texto de entrada que será processado pelo modelo de geração de texto.",
+                    "example": "Explique a teoria da gravidade."
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "Nome do modelo Hugging Face utilizado para geração de texto.",
+                    "example": "gpt-neo-2.7B"
+                  }
+                },
+                "required": ["prompt", "model"]
+            },                    
             DefaultModelParameters: {
               type: 'object',
               description: 'Parâmetros genéricos para outras engines',

@@ -198,7 +198,8 @@ module.exports = {
  *                           description: Engine Inference API Text Generation
  *                         model:
  *                           type: string
- *                           enum: ["none"]
+ *                           enum: ["meta-llama/Llama-3.3-70B-Instruct","Qwen/Qwen2.5-72B-Instruct","openai-community/gpt2","google/gemma-7b"]
+ *                           default: meta-llama/Llama-3.3-70B-Instruct
  *                           description: Modelos suportados para Inference API Text Generation
  *                         model_parameters:
  *                           $ref: '#/components/schemas/InferenceAPITextGenerationModelParameters'

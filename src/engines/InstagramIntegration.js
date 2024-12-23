@@ -7,25 +7,25 @@ module.exports = {
       modelParameters = modelParameters ? modelParameters : {};
       console.log('Iniciando integração com o Instagram API...');
 
-      const apiKey = modelParameters.apiKey || null;
+      const apiKey = modelParameters.api_key || null;
 
       if (!apiKey) {
         throw new Error('O parâmetro "apiKey" é obrigatório.');
       }
 
       // Instancia o serviço InstagramService
-      const instagramService = new InstagramService(modelParameters.apiBaseUrl);
+      const instagramService = new InstagramService(modelParameters.api_base_url);
 
       // Decide qual funcionalidade usar com base nos parâmetros
       if (modelParameters.action === 'publishPost') {
         // Publica um post no Instagram
         console.log('Publicando um post no Instagram...');
-        if (!modelParameters.mediaUrl) {
+        if (!modelParameters.media_url) {
           throw new Error('O parâmetro "mediaUrl" é obrigatório para publicar um post.');
         }
 
         const result = await instagramService.publishPost(
-          modelParameters.mediaUrl,
+          modelParameters.media_url,
           modelParameters.caption || '',
           apiKey
         );
@@ -52,12 +52,12 @@ module.exports = {
       } else if (modelParameters.action === 'publishReel') {
         // Publica um reel no Instagram
         console.log('Publicando um reel no Instagram...');
-        if (!modelParameters.videoUrl) {
+        if (!modelParameters.video_url) {
           throw new Error('O parâmetro "videoUrl" é obrigatório para publicar um reel.');
         }
 
         const result = await instagramService.publishReel(
-          modelParameters.videoUrl,
+          modelParameters.video_url,
           modelParameters.caption || '',
           apiKey
         );
@@ -68,15 +68,15 @@ module.exports = {
       } else if (modelParameters.action === 'publishStory') {
         // Publica um story no Instagram
         console.log('Publicando um story no Instagram...');
-        if (!modelParameters.mediaUrl || !modelParameters.mediaType) {
+        if (!modelParameters.media_url || !modelParameters.media_type) {
           throw new Error(
             'Os parâmetros "mediaUrl" e "mediaType" são obrigatórios para publicar um story.'
           );
         }
 
         const result = await instagramService.publishStory(
-          modelParameters.mediaUrl,
-          modelParameters.mediaType,
+          modelParameters.media_url,
+          modelParameters.media_type,
           modelParameters.caption || '',
           apiKey
         );

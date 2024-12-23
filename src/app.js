@@ -491,7 +491,7 @@ const swaggerOptions = {
                   }
                 }
             },   
-            "InferenceAPIIntegrationTextToAudio": {
+            "InferenceAPITextToAudioModelParameters": {
               "type": "object",
               "description": "Parâmetros para integração com a Inference API do Hugging Face, focada em modelos de geração de áudio.",
               "properties": {
@@ -500,7 +500,17 @@ const swaggerOptions = {
                   "description": "Parametros opcionais que serão enviados ao modelo para geração de áudio."
                 }
               }
-            },        
+            }, 
+            "InferenceAPITextToSpeechModelParameters": {
+              "type": "object",
+              "description": "Parâmetros para integração com a Inference API do Hugging Face, focada em modelos de geração de voz.",
+              "properties": {
+                "parameters": {
+                  "type": "object",
+                  "description": "Parametros opcionais que serão enviados ao modelo para geração de voz."
+                }
+              }
+            },         
             DefaultModelParameters: {
               type: 'object',
               description: 'Parâmetros genéricos para outras engines',

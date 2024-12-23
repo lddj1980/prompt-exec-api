@@ -199,14 +199,14 @@ module.exports = {
  *                           description: Engine Inference API Text-to-Audio
  *                         model:
  *                           type: string
- *                           enum: ["black-forest-labs/FLUX.1-dev","stable-diffusion-3.5-large","fofr/flux-handwriting","stable-diffusion-v1-5/stable-diffusion-v1-5","prashanth970/flux-lora-uncensored"]
- *                           default: black-forest-labs/FLUX.1-dev
- *                           description: Modelos suportados para Inference API Text-to-Image
+ *                           enum: ["facebook/musicgen-small"]
+ *                           default: facebook/musicgen-small
+ *                           description: Modelos suportados para Inference API Text-to-Audio
  *                         model_parameters:
  *                           $ref: '#/components/schemas/InferenceAPITextToAudioModelParameters'
  *                         prompt:
  *                           type: string
- *                           description: Prompt que vai ser solicitado ao inferenceapi para gerar a imagem
+ *                           description: Prompt que vai ser solicitado ao inferenceapi para gerar audio
  *                       required: [engine, model, prompt]
  *                     - type: object
  *                       properties:
@@ -242,6 +242,23 @@ module.exports = {
  *                           type: string
  *                           description: Prompt que vai ser solicitado ao inferenceapi para text generation
  *                       required: [engine, model, prompt]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["inferenceapi-text-to-speech"]
+ *                           description: Engine Inference API Text To Speech
+ *                         model:
+ *                           type: string
+ *                           enum: ["facebook/fastspeech2-en-ljspeech"]
+ *                           default: facebook/fastspeech2-en-ljspeech
+ *                           description: Modelos suportados para Inference API Text To Speech
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/InferenceAPIIntegrationTextToSpeechModelParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao inferenceapi para text to speech
+ *                       required: [engine, model, prompt] 
  *                     - type: object
  *                       properties:
  *                         engine:

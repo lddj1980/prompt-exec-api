@@ -114,6 +114,20 @@ module.exports = {
  *                       properties:
  *                         engine:
  *                           type: string
+ *                           enum: ["elevenlabs-text-to-speech"]
+ *                           description: Engine Elevenlabs para conversão de texto para audio
+ *                         model:
+ *                           type: string
+ *                           enum: ["eleven_multilingual_v2","eleven_turbo_v2_5","eleven_turbo_v2","eleven_flash_v2","eleven_monolingual_v1"]
+ *                           default: eleven_multilingual_v2         
+ *                           description: Modelos suportados para Engine Elevenlabs para conversão de texto para audio
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/ElevenLabsModelParameters'
+ *                       required: [engine, model]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
  *                           enum: ["freepikapi-text-to-image"]
  *                           description: Engine Freepik API
  *                         model:

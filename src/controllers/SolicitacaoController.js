@@ -185,7 +185,8 @@ module.exports = {
  *                           description: Engine Inference API Text-to-Image
  *                         model:
  *                           type: string
- *                           enum: ["none"]
+ *                           enum: ["black-forest-labs/FLUX.1-dev","stable-diffusion-3.5-large","fofr/flux-handwriting","stable-diffusion-v1-5/stable-diffusion-v1-5","prashanth970/flux-lora-uncensored"]
+ *                           default: black-forest-labs/FLUX.1-dev
  *                           description: Modelos suportados para Inference API Text-to-Image
  *                         model_parameters:
  *                           $ref: '#/components/schemas/InferenceAPITextToImageModelParameters'

@@ -18,6 +18,15 @@ module.exports = {
   async process(prompt, model, modelParameters = null) {
     try {
       console.log('Aqui chegou');
+      
+      if (!prompt){
+        throw new Error("O parametro 'prompt' é obrigatório");
+      }
+
+      if (!model){
+        throw new Error("O parametro 'model' é obrigatório");
+      }
+
       // Monta o endpoint da Inference API com o modelo fornecido
       const endpoint = `https://api-inference.huggingface.co/models/${model}`;
 

@@ -462,16 +462,6 @@ const swaggerOptions = {
               "type": "object",
               "description": "Parâmetros para integração com a Inference API do Hugging Face para modelos text-to-image.",
               "properties": {
-                "model": {
-                  "type": "string",
-                  "description": "Modelo a ser usado na Inference API do Hugging Face para modelos text-to-image.",
-                  "example": "gpt-neo-1.3B"
-                },
-                "prompt": {
-                  "type": "string",
-                  "description": "Texto de entrada a ser processado pelo modelo para modelos text-to-image.",
-                  "example": "Explique a teoria da gravidade."
-                },
                 "api_key": {
                   "type": "string",
                   "description": "Chave de API para autenticação no Hugging Face para modelos text-to-image.",
@@ -534,7 +524,28 @@ const swaggerOptions = {
                   }
                 },
                 "required": ["prompt", "model"]
-            },                    
+            },   
+            "InferenceAPIIntegrationTextToAudio": {
+              "type": "object",
+              "description": "Parâmetros para integração com a Inference API do Hugging Face, focada em modelos de geração de imagens ou áudio.",
+              "properties": {
+                "api_key": {
+                  "type": "string",
+                  "description": "Chave de API para autenticação na Inference API do Hugging Face. Se não fornecida, será usada a variável de ambiente `HUGGINGFACE_API_KEY`."
+                },
+                "prompt": {
+                  "type": "string",
+                  "description": "Texto de entrada que será processado pelo modelo de geração de imagens ou áudio.",
+                  "example": "Desenhe uma paisagem de montanha ao pôr do sol."
+                },
+                "model": {
+                  "type": "string",
+                  "description": "Modelo da Hugging Face utilizado para geração de imagens ou áudio.",
+                  "example": "stable-diffusion-v1-4"
+                }
+              },
+              "required": ["prompt", "model"]
+            },        
             DefaultModelParameters: {
               type: 'object',
               description: 'Parâmetros genéricos para outras engines',

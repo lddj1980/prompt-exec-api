@@ -1066,13 +1066,15 @@ const swaggerOptions = {
                   "type": "string",
                   "description": "Ação a ser realizada na API Threads.",
                   "enum": ["publishPost", "publishCarousel"],
-                  "example": "publishPost"
+                  "example": "publishPost",
+                  "default":"publishPost"
                 },
                 "media_type": {
                   "type": "string",
                   "description": "Tipo de mídia a ser publicada. Obrigatório para 'publishPost'.",
-                  "enum": ["image", "video"],
-                  "example": "image"
+                  "enum": ["IMAGE", "VIDEO"],
+                  "example": "IMAGE",
+                  "default":"IMAGE"
                 },
                 "text": {
                   "type": "string",

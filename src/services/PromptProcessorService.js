@@ -17,6 +17,7 @@ const ImageRepoIntegration = require('../engines/ImageRepoIntegration');
 const HtmlToImageIntegration = require('../engines/HtmlToImageIntegration');
 const ElevenLabsTextToSpeechIntegration = require('../engines/ElevenLabsTextToSpeechIntegration');
 const HttpCommandIntegration = require('../engines/HttpCommandIntegration');
+const ThreadsIntegration = require('../engines/ThreadsIntegration');
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo) {
@@ -73,6 +74,9 @@ module.exports = {
           break;
         case 'telegram':
           integrationClass = TelegramIntegration;
+          break; 
+        case 'threads':
+          integrationClass = ThreadsIntegration;
           break; 
         case 'whatsapp':
           integrationClass = WhatsappIntegration;

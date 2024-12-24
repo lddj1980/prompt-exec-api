@@ -1,4 +1,4 @@
-const ThreadsService = require('../services/ThreadsService'); // Ajuste o caminho para a ThreadsService
+const ThreadsService = require('../services/ThreadsService');
 
 module.exports = {
   async process(prompt, model, modelParameters) {
@@ -6,65 +6,68 @@ module.exports = {
       modelParameters = modelParameters || {};
       console.log('Iniciando integração com o Threads API...');
 
-      const accessToken = modelParameters.access_token || null;
+      const accessToken = modelParameters.access_token;
+      const userId = modelParameters.user_id;
 
-      if (!accessToken) {
-        throw new Error('O parâmetro "accessToken" é obrigatório.');
+      if (!accessToken || !userId) {
+        throw new Error('Os parâmetros "accessToken" e "userId" são obrigatórios.');
       }
 
-      // Decide qual funcionalidade usar com base nos parâmetros
       if (modelParameters.action === 'publishPost') {
-        // Publica um post no Threads
         console.log('Publicando um post no Threads...');
-        if (!modelParameters.message) {
-          throw new Error('O parâmetro "message" é obrigatório para publicar um post.');
+
+        const { media_type, text, image_url, video_url } = modelParameters;
+        if (!media_type) {
+          throw new Error('O parâmetro "mediaType" é obrigatório.');
         }
 
-        const threadId = modelParameters.thread_id || null; // Para responder a uma thread existente (opcional)
+        const mediaContainerId = await ThreadsService.createMediaContainer(accessToken, userId, {
+          media_type,
+          text,
+          image_url,
+          video_url,
+        });
 
-        const result = await ThreadsService.publishPost(
-          accessToken,
-          modelParameters.message,
-          threadId
-        );
+        console.log('Esperando 30 segundos para publicar...');
+        await new Promise((resolve) => setTimeout(resolve, 30000)); // Aguarda 30 segundos
 
+        const result = await ThreadsService.publishMediaContainer(accessToken, userId, mediaContainerId);
         console.log('Post publicado com sucesso:', result);
         return result;
 
-      } else if (modelParameters.action === 'getUserPosts') {
-        // Obtém as postagens de um usuário no Threads
-        console.log('Obtendo postagens de um usuário no Threads...');
-        if (!modelParameters.user_id) {
-          throw new Error('O parâmetro "userId" é obrigatório para obter as postagens.');
+      } else if (modelParameters.action === 'publishCarousel') {
+        console.log('Publicando um carrossel no Threads...');
+
+        const { items, text } = modelParameters;
+        if (!items || !Array.isArray(items) || items.length < 2) {
+          throw new Error('O parâmetro "items" deve ser uma lista de pelo menos dois objetos.');
         }
 
-        const result = await ThreadsService.getUserPosts(
-          accessToken,
-          modelParameters.user_id
-        );
-
-        console.log('Postagens obtidas com sucesso:', result);
-        return result;
-
-      } else if (modelParameters.action === 'deletePost') {
-        // Deleta um post no Threads
-        console.log('Deletando um post no Threads...');
-        if (!modelParameters.thread_id) {
-          throw new Error('O parâmetro "threadId" é obrigatório para deletar um post.');
+        const children = [];
+        for (const item of items) {
+          const childId = await ThreadsService.createMediaContainer(accessToken, userId, {
+            ...item,
+            is_carousel_item: true,
+          });
+          children.push(childId);
         }
 
-        const result = await ThreadsService.deletePost(
+        const carouselContainerId = await ThreadsService.createCarouselContainer(
           accessToken,
-          modelParameters.thread_id
+          userId,
+          children,
+          text
         );
 
-        console.log('Post deletado com sucesso:', result);
+        console.log('Esperando 30 segundos para publicar...');
+        await new Promise((resolve) => setTimeout(resolve, 30000)); // Aguarda 30 segundos
+
+        const result = await ThreadsService.publishMediaContainer(accessToken, userId, carouselContainerId);
+        console.log('Carrossel publicado com sucesso:', result);
         return result;
 
       } else {
-        throw new Error(
-          'Nenhuma ação válida foi especificada. Use "publishPost", "getUserPosts" ou "deletePost" em "modelParameters.action".'
-        );
+        throw new Error('Ação inválida. Use "publishPost" ou "publishCarousel".');
       }
     } catch (error) {
       console.error('Erro durante a integração com o Threads API:', error.message);

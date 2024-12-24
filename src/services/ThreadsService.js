@@ -1,82 +1,101 @@
-const ThreadsService = require('../services/ThreadsService');
+const axios = require('axios');
+
+const THREADS_API_BASE_URL = 'https://graph.threads.net/v1.0';
+
+/**
+ * Cria um media container para um post no Threads.
+ * @param {string} accessToken - Token de acesso da API.
+ * @param {string} userId - ID do usuário no Threads.
+ * @param {Object} options - Opções para o media container (media_type, text, image_url, video_url, is_carousel_item).
+ * @returns {Promise<string>} - Retorna o ID do media container criado.
+ */
+async function createMediaContainer(accessToken, userId, options) {
+  const { media_type, text, image_url, video_url, is_carousel_item } = options;
+
+  if (!media_type) {
+    throw new Error('O parâmetro "media_type" é obrigatório.');
+  }
+
+  const payload = { media_type, text, image_url, video_url, is_carousel_item };
+
+  try {
+    const response = await axios.post(`${THREADS_API_BASE_URL}/${userId}/threads`, payload, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return response.data.id; // Retorna o ID do container
+  } catch (error) {
+    console.error('Erro ao criar media container no Threads:', error.response?.data || error.message);
+    throw new Error('Não foi possível criar o media container.');
+  }
+}
+
+/**
+ * Publica um media container no Threads.
+ * @param {string} accessToken - Token de acesso da API.
+ * @param {string} userId - ID do usuário no Threads.
+ * @param {string} creationId - ID do media container criado.
+ * @returns {Promise<string>} - Retorna o ID da postagem publicada.
+ */
+async function publishMediaContainer(accessToken, userId, creationId) {
+  if (!creationId) {
+    throw new Error('O parâmetro "creationId" é obrigatório.');
+  }
+
+  try {
+    const response = await axios.post(
+      `${THREADS_API_BASE_URL}/${userId}/threads_publish`,
+      { creation_id: creationId },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    return response.data.id; // Retorna o ID da postagem publicada
+  } catch (error) {
+    console.error('Erro ao publicar media container no Threads:', error.response?.data || error.message);
+    throw new Error('Não foi possível publicar o media container.');
+  }
+}
+
+/**
+ * Cria um media container para um carrossel.
+ * @param {string} accessToken - Token de acesso da API.
+ * @param {string} userId - ID do usuário no Threads.
+ * @param {Array<string>} children - IDs dos media containers que compõem o carrossel.
+ * @param {string} text - Texto opcional associado ao carrossel.
+ * @returns {Promise<string>} - Retorna o ID do media container do carrossel.
+ */
+async function createCarouselContainer(accessToken, userId, children, text = '') {
+  if (!children || children.length < 2) {
+    throw new Error('O parâmetro "children" deve conter pelo menos dois IDs de media containers.');
+  }
+
+  const payload = { media_type: 'CAROUSEL', children: children.join(','), text };
+
+  try {
+    const response = await axios.post(`${THREADS_API_BASE_URL}/${userId}/threads`, payload, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return response.data.id; // Retorna o ID do container do carrossel
+  } catch (error) {
+    console.error('Erro ao criar carrossel container no Threads:', error.response?.data || error.message);
+    throw new Error('Não foi possível criar o carrossel container.');
+  }
+}
 
 module.exports = {
-  async process(prompt, model, modelParameters) {
-    try {
-      modelParameters = modelParameters || {};
-      console.log('Iniciando integração com o Threads API...');
-
-      const accessToken = modelParameters.access_token;
-      const userId = modelParameters.user_id;
-
-      if (!accessToken || !userId) {
-        throw new Error('Os parâmetros "accessToken" e "userId" são obrigatórios.');
-      }
-
-      if (modelParameters.action === 'publishPost') {
-        console.log('Publicando um post no Threads...');
-
-        const { media_type, text, image_url, video_url } = modelParameters;
-        if (!media_type) {
-          throw new Error('O parâmetro "mediaType" é obrigatório.');
-        }
-
-        const mediaContainerId = await ThreadsService.createMediaContainer(accessToken, userId, {
-          media_type,
-          text,
-          image_url,
-          video_url,
-        });
-
-        console.log('Esperando 30 segundos para publicar...');
-        await new Promise((resolve) => setTimeout(resolve, 30000)); // Aguarda 30 segundos
-
-        const result = await ThreadsService.publishMediaContainer(accessToken, userId, mediaContainerId);
-        console.log('Post publicado com sucesso:', result);
-        return result;
-
-      } else if (modelParameters.action === 'publishCarousel') {
-        console.log('Publicando um carrossel no Threads...');
-
-        const { items, text } = modelParameters;
-        if (!items || !Array.isArray(items) || items.length < 2) {
-          throw new Error('O parâmetro "items" deve ser uma lista de pelo menos dois objetos.');
-        }
-
-        const children = [];
-        for (const item of items) {
-          const childId = await ThreadsService.createMediaContainer(accessToken, userId, {
-            ...item,
-            is_carousel_item: true,
-          });
-          children.push(childId);
-        }
-
-        const carouselContainerId = await ThreadsService.createCarouselContainer(
-          accessToken,
-          userId,
-          children,
-          text
-        );
-
-        console.log('Esperando 30 segundos para publicar...');
-        await new Promise((resolve) => setTimeout(resolve, 30000)); // Aguarda 30 segundos
-
-        const result = await ThreadsService.publishMediaContainer(accessToken, userId, carouselContainerId);
-        console.log('Carrossel publicado com sucesso:', result);
-        return result;
-
-      } else {
-        throw new Error('Ação inválida. Use "publishPost" ou "publishCarousel".');
-      }
-    } catch (error) {
-      console.error('Erro durante a integração com o Threads API:', error.message);
-
-      if (error.response) {
-        console.error('Detalhes do erro:', error.response.data);
-      }
-
-      throw error;
-    }
-  },
+  createMediaContainer,
+  publishMediaContainer,
+  createCarouselContainer,
 };

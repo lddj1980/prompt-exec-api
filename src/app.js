@@ -1047,6 +1047,108 @@ const swaggerOptions = {
                 }
               },
               "required": ["base_url", "endpoint", "method"]
+            },     
+            "ThreadsModelParameters": {
+              "type": "object",
+              "description": "Parâmetros para integração com o Threads API.",
+              "properties": {
+                "access_token": {
+                  "type": "string",
+                  "description": "Token de acesso para autenticação no Threads API.",
+                  "example": "your_access_token"
+                },
+                "user_id": {
+                  "type": "string",
+                  "description": "Identificador único do usuário associado ao Threads API.",
+                  "example": "123456789"
+                },
+                "action": {
+                  "type": "string",
+                  "description": "Ação a ser realizada na API Threads.",
+                  "enum": ["publishPost", "publishCarousel"],
+                  "example": "publishPost"
+                },
+                "media_type": {
+                  "type": "string",
+                  "description": "Tipo de mídia a ser publicada. Obrigatório para 'publishPost'.",
+                  "enum": ["image", "video"],
+                  "example": "image"
+                },
+                "text": {
+                  "type": "string",
+                  "description": "Texto associado à publicação. Opcional para ambas as ações.",
+                  "example": "Este é o texto da publicação."
+                },
+                "image_url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "URL da imagem a ser publicada. Obrigatório se 'media_type' for 'image'.",
+                  "example": "https://example.com/image.jpg"
+                },
+                "video_url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "URL do vídeo a ser publicado. Obrigatório se 'media_type' for 'video'.",
+                  "example": "https://example.com/video.mp4"
+                },
+                "items": {
+                  "type": "array",
+                  "description": "Lista de objetos representando os itens do carrossel. Obrigatório para 'publishCarousel'.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "media_type": {
+                        "type": "string",
+                        "description": "Tipo de mídia para o item do carrossel.",
+                        "enum": ["image", "video"],
+                        "example": "image"
+                      },
+                      "image_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL da imagem para o item do carrossel. Obrigatório se 'media_type' for 'image'.",
+                        "example": "https://example.com/carousel-image.jpg"
+                      },
+                      "video_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL do vídeo para o item do carrossel. Obrigatório se 'media_type' for 'video'.",
+                        "example": "https://example.com/carousel-video.mp4"
+                      }
+                    },
+                    "required": ["media_type"]
+                  }
+                }
+              },
+              "required": ["access_token", "user_id", "action"],
+              "oneOf": [
+                {
+                  "description": "Parâmetros para publicar um post no Threads.",
+                  "properties": {
+                    "action": {
+                      "const": "publishPost"
+                    },
+                    "media_type": {
+                      "type": "string",
+                      "enum": ["image", "video"]
+                    }
+                  },
+                  "required": ["media_type"]
+                },
+                {
+                  "description": "Parâmetros para publicar um carrossel no Threads.",
+                  "properties": {
+                    "action": {
+                      "const": "publishCarousel"
+                    },
+                    "items": {
+                      "type": "array",
+                      "minItems": 2
+                    }
+                  },
+                  "required": ["items"]
+                }
+              ]
             },        
             DefaultModelParameters: {
               type: 'object',

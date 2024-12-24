@@ -288,6 +288,18 @@ module.exports = {
  *                         model_parameters:
  *                           $ref: '#/components/schemas/TelegramModelParameters'
  *                       required: [engine, model, model_parameters]
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["threads"]
+ *                           description: Engine Threads
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para Threads
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/ThreadsModelParameters'
+ *                       required: [engine, model, model_parameters] 
  *                     - type: object
  *                       properties:
  *                         engine:

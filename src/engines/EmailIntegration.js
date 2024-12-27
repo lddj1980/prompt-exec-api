@@ -12,14 +12,6 @@ module.exports = {
         throw new Error('Os parâmetros "from", "to", "subject" e "body" são obrigatórios.');
       }
 
-      if (!model) {
-        throw new Error('O parâmetro "model" é obrigatório.');
-      }
-
-      if (!prompt) {
-        throw new Error('O parâmetro "prompt" é obrigatório.');
-      }
-
       // Configuração do endpoint e headers do serviço externo
       const endpoint = 'https://emailprovider.vercel.app/api/send-email'; // Substitua pela URL do serviço externo
       const headers = {

@@ -128,13 +128,9 @@ module.exports = {
  *                           type: string
  *                           enum: ["email"]
  *                           description: Engine Email para envio de mensagens
- *                         model:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para Engine Email para envio de mensagens
  *                         model_parameters:
  *                           $ref: '#/components/schemas/EmailServiceModelParameters'
- *                       required: [engine, model, model_parameters] 
+ *                       required: [engine, model_parameters] 
  *                     - type: object
  *                       properties:
  *                         engine:

@@ -1151,7 +1151,36 @@ const swaggerOptions = {
                   "required": ["items"]
                 }
               ]
-            },        
+            },      
+            "EmailServiceModelParameters": {
+                "type": "object",
+                "description": "Parâmetros para integração com o serviço externo de envio de e-mails.",
+                "properties": {
+                  "from": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Endereço de e-mail do remetente.",
+                    "example": "sender@example.com"
+                  },
+                  "to": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Endereço de e-mail do destinatário.",
+                    "example": "recipient@example.com"
+                  },
+                  "subject": {
+                    "type": "string",
+                    "description": "Assunto do e-mail.",
+                    "example": "Assunto do E-mail"
+                  },
+                  "body": {
+                    "type": "string",
+                    "description": "Conteúdo do e-mail.",
+                    "example": "Este é o corpo do e-mail enviado pelo serviço externo."
+                  }
+                },
+                "required": ["from", "to", "subject", "body"]
+              },        
             DefaultModelParameters: {
               type: 'object',
               description: 'Parâmetros genéricos para outras engines',

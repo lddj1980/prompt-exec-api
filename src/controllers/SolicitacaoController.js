@@ -349,7 +349,7 @@ module.exports = {
  *                         model_parameters:
  *                           $ref: '#/components/schemas/WritterAIModelParameters'
  *                       required: [engine, model, model_parameters]
- *             required: [cron_expression, prompts]
+ *             required: [prompts]
  *     responses:
  *       202:
  *         description: Solicitação criada com sucesso e processamento iniciado

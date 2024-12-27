@@ -1052,15 +1052,10 @@ const swaggerOptions = {
               "type": "object",
               "description": "Parâmetros para integração com o Threads API.",
               "properties": {
-                "access_token": {
+                "api_key": {
                   "type": "string",
                   "description": "Token de acesso para autenticação no Threads API.",
                   "example": "your_access_token"
-                },
-                "user_id": {
-                  "type": "string",
-                  "description": "Identificador único do usuário associado ao Threads API.",
-                  "example": "123456789"
                 },
                 "action": {
                   "type": "string",
@@ -1122,7 +1117,7 @@ const swaggerOptions = {
                   }
                 }
               },
-              "required": ["access_token", "user_id", "action"],
+              "required": ["api_key", "action"],
               "oneOf": [
                 {
                   "description": "Parâmetros para publicar um post no Threads.",

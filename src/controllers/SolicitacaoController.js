@@ -288,6 +288,7 @@ module.exports = {
  *                         model_parameters:
  *                           $ref: '#/components/schemas/TelegramModelParameters'
  *                       required: [engine, model, model_parameters]
+ *                     - type: object
  *                       properties:
  *                         engine:
  *                           type: string

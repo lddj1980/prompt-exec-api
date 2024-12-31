@@ -59,22 +59,23 @@ module.exports = {
           };
         }
 
-        const messages = await client.fetchAll(emailIds, {source: true});
-        for (let message of messages){
+      
+        console.log("Iniciando busca por conteúdo das mensagens..."+fetchOptions);
+        for await (let message of client.fetch(emailIds, {source:true})) {
           try {
-            console.log(message);
+            // Usa o simpleParser para processar o conteúdo da mensagem
+            const mail = await simpleParser(message.source);
             messages.push({
               id: message.uid,
-              from: message.from?.text || "Sem remetente",
-              subject: message.subject || "Sem assunto",
-              text: message.text || "",
-              date: message.date || "Sem data",
+              from: mail.from?.text || "Sem remetente",
+              subject: mail.subject || "Sem assunto",
+              text: mail.text || "",
+              date: mail.date || "Sem data",
             });
           } catch (parseError) {
-            console.error("Erro ao analisar o email:", parseError);
+            console.error("Erro ao analisar a mensagem:", parseError);
           }
         }
-
         console.log("Busca de emails concluída.");
       } finally {
         lock.release();

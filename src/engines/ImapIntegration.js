@@ -69,7 +69,6 @@ module.exports = {
                       console.error('Erro ao analisar o email:', err);
                       return;
                     }
-
                     // Adiciona a mensagem ao array
                     messages.push({
                       from: mail.from.text,

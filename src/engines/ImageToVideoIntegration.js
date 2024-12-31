@@ -4,24 +4,19 @@ const ImageRepoAPI = require("../services/ImageRepoService");
 
 module.exports = {
   async process(prompt, model, modelParameters = {}) {
-    // Extraindo parâmetros obrigatórios
     const { imagens, narracao, musica, tempo_por_imagem = 10, apiKey, responseKey } = modelParameters;
 
     try {
       console.log("Iniciando integração com o gerador de vídeo...");
 
       if (!imagens || !Array.isArray(imagens) || imagens.length === 0) {
-        throw new Error("O parâmetro 'imagens' deve ser uma lista de URLs ou streams.");
+        throw new Error("O parâmetro 'imagens' deve ser uma lista de URLs.");
       }
-      if (!narracao) {
-        throw new Error("O parâmetro 'narracao' é obrigatório.");
-      }
-      if (!musica) {
-        throw new Error("O parâmetro 'musica' é obrigatório.");
-      }
+
       if (!apiKey) {
         throw new Error("O parâmetro 'apiKey' é obrigatório para salvar no ImageRepo.");
       }
+
       if (!responseKey) {
         throw new Error("O parâmetro 'responseKey' é obrigatório.");
       }
@@ -29,33 +24,42 @@ module.exports = {
       // Configurando o repositório de imagens
       const imageRepoAPI = new ImageRepoAPI();
 
-      // Criação do pipeline de vídeo com streams
+      // Criando um arquivo temporário de texto para a lista de imagens
+      const imageList = imagens.map((url, index) => `file '${url}'\nduration ${tempo_por_imagem}`).join("\n");
+      const listFile = "/tmp/image_list.txt";
+
+      // Salva o arquivo temporário contendo a lista de imagens
+      const fs = require("fs");
+      fs.writeFileSync(listFile, imageList);
+
+      // Configurando o pipeline de vídeo no ffmpeg
       const ffmpegCommand = ffmpeg();
 
-      // Adicionando imagens como entradas
-      for (const imagemUrl of imagens) {
-        const imagemStream = await axios.get(imagemUrl, { responseType: "stream" });
-        ffmpegCommand.input(imagemStream.data).inputOptions([`-loop 1`, `-t ${tempo_por_imagem}`]);
+      ffmpegCommand.input(listFile).inputOptions(["-f concat", "-safe 0"]); // Lê a lista de imagens
+
+      // Adiciona a narração, se disponível
+      if (narracao) {
+        const narracaoStream = await axios.get(narracao, { responseType: "stream" });
+        ffmpegCommand.input(narracaoStream.data);
       }
 
-      // Adicionando narração e música como entradas
-      const narracaoStream = await axios.get(narracao, { responseType: "stream" });
-      const musicaStream = await axios.get(musica, { responseType: "stream" });
+      // Adiciona a música, se disponível
+      if (musica) {
+        const musicaStream = await axios.get(musica, { responseType: "stream" });
+        ffmpegCommand.input(musicaStream.data);
+      }
 
-      ffmpegCommand.input(narracaoStream.data);
-      ffmpegCommand.input(musicaStream.data);
-
-      // Criando um stream de saída para o vídeo
+      // Criando stream de saída do vídeo
       const videoStream = ffmpegCommand
-        .outputOptions("-movflags frag_keyframe+empty_moov") // Opções para saída progressiva
+        .outputOptions("-movflags frag_keyframe+empty_moov") // Saída progressiva
         .videoCodec("libx264")
         .audioCodec("aac")
         .format("mp4")
         .pipe();
 
-      console.log("Vídeo sendo gerado...");
+      console.log("Gerando vídeo...");
 
-      // Salvando o vídeo diretamente no ImageRepo
+      // Salvando o vídeo no repositório de imagens
       const savedVideo = await imageRepoAPI.createImage(
         videoStream, // Conteúdo do vídeo como stream
         { description: "Vídeo gerado automaticamente", tags: ["video"] }, // Metadados

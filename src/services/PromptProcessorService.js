@@ -21,6 +21,8 @@ const ThreadsIntegration = require('../engines/ThreadsIntegration');
 const EmailIntegration = require('../engines/EmailIntegration');
 const ImapIntegration = require('../engines/ImapIntegration');
 const MysqlIntegration = require('../engines/MysqlIntegration');
+const PexelsIntegration = require('../engines/PexelsIntegration');
+
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo) {
@@ -83,6 +85,9 @@ module.exports = {
           break;    
         case 'openai':
           integrationClass = OpenAIIntegration;
+          break;
+        case 'pexels':
+          integrationClass = PexelsIntegration;
           break;
         case 'telegram':
           integrationClass = TelegramIntegration;

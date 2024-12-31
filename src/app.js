@@ -1272,7 +1272,36 @@ const swaggerOptions = {
                       }
                     },
                     "required": ["host", "user", "password", "database", "query"]
-                  },        
+                  },       
+          "PexelsModelParameters": {
+              "type": "object",
+              "description": "Parâmetros para integração com a API do Pexels para busca de imagens.",
+              "properties": {
+                "api_key": {
+                  "type": "string",
+                  "description": "Chave de autenticação para a API do Pexels.",
+                  "example": "your_pexels_api_key"
+                },
+                "query": {
+                  "type": "string",
+                  "description": "Palavra-chave para a busca de imagens.",
+                  "example": "espaço"
+                },
+                "quantidade": {
+                  "type": "integer",
+                  "description": "Número máximo de imagens a serem retornadas pela busca.",
+                  "default": 5,
+                  "example": 10
+                },
+                "respostaChave": {
+                  "type": "string",
+                  "description": "Chave para organizar a resposta no JSON.",
+                  "default": "pexelsBusca",
+                  "example": "resultadoPexels"
+                }
+              },
+              "required": ["api_key", "query"]
+            },        
             DefaultModelParameters: {
               type: 'object',
               description: 'Parâmetros genéricos para outras engines',

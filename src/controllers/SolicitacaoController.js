@@ -301,6 +301,19 @@ module.exports = {
  *                       properties:
  *                         engine:
  *                           type: string
+ *                           enum: ["mysql"]
+ *                           description: Engine Instagram
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para Mysql
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/MySQLIntegrationModelParameters'
+ *                       required: [engine, model, model_parameters]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
  *                           enum: ["telegram"]
  *                           description: Engine Telegram
  *                         model:

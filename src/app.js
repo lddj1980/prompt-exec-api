@@ -42,13 +42,20 @@ const swaggerOptions = {
             "max_tokens": {
               "type": "integer",
               "description": "O número máximo de tokens permitidos na resposta. Necessário para interações de texto.",
-              "example": 1000
+              "example": 1000,
+              "minimum": 1
             },
             "image_url": {
               "type": "string",
               "format": "uri",
               "description": "URL da imagem a ser analisada. Necessário para interações baseadas em imagens.",
               "example": "https://example.com/my-image.jpg"
+            },
+            "responseKey": {
+              "type": "string",
+              "description": "Chave personalizada para o retorno da resposta da API.",
+              "example": "resultadoAPI",
+              "default": "result"
             }
           },
           "oneOf": [
@@ -58,7 +65,8 @@ const swaggerOptions = {
             {
               "required": ["image_url"]
             }
-          ]
+          ],
+          "additionalProperties": false
         },
         "GeminiModelParameters": {
           "type": "object",

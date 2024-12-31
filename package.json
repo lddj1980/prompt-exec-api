@@ -21,7 +21,7 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3",
     "uuid": "^9.0.0",
-    "imap": "^0.8.19",
+    "imapflow": "^1.0.171",
     "mailparser": "^3.6.0"
   },
   "engines": {

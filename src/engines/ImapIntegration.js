@@ -1,4 +1,4 @@
-const Imap = require('imap');
+const { ImapFlow } = require('imapflow');
 const { simpleParser } = require('mailparser');
 
 module.exports = {
@@ -10,9 +10,8 @@ module.exports = {
       port,
       tls,
       responseKey,
-      tlsOptions,
-      searchCriteria = ['UNSEEN'],
-      fetchOptions = { bodies: '', markSeen: true },
+      searchCriteria = { seen: true },
+      fetchOptions = { uid: true },
     } = modelParameters;
 
     try {
@@ -22,91 +21,64 @@ module.exports = {
         throw new Error('Os parâmetros "user", "password", "host", "port" e "responseKey" são obrigatórios.');
       }
 
-      // Configuração do IMAP
-      const imapConfig = {
-        user,
-        password,
+      // Configuração do cliente IMAP
+      const client = new ImapFlow({
         host,
         port,
-        tls: tls !== undefined ? tls : true, // Usar TLS por padrão
-        tlsOptions,
-      };
-
-      const imap = new Imap(imapConfig);
+        secure: tls !== undefined ? tls : true,
+        auth: {
+          user,
+          pass: password,
+        },
+      });
 
       const messages = [];
 
-      // Conecta ao servidor IMAP e busca mensagens
-      await new Promise((resolve, reject) => {
-        imap.once('ready', () => {
-          imap.openBox('INBOX', false, (err, box) => {
-            if (err) {
-              reject(err);
-              return;
-            }
+      // Conecta ao servidor IMAP
+      await client.connect();
+      console.log('Conexão com o servidor IMAP estabelecida.');
 
-            console.log('Caixa de entrada aberta:', box);
+      // Trava a caixa de entrada para garantir consistência
+      let lock = await client.getMailboxLock('INBOX');
+      try {
+        console.log('Caixa de entrada aberta.');
 
-            console.log(searchCriteria);
-            // Realiza a busca com os critérios especificados
-            imap.search(searchCriteria, (err, results) => {
-              if (err) {
-                reject(err);
-                return;
-              }
+        // Busca mensagens usando os critérios especificados
+        const emailIds = await client.search(searchCriteria);
+        console.log(`Mensagens encontradas: ${emailIds.length}`);
 
-              // Verifica se há mensagens para buscar
-              if (results.length === 0) {
-                console.log('Nenhuma mensagem encontrada com os critérios fornecidos:', searchCriteria);
-                imap.end();
-                resolve();
-                return;
-              }
+        if (emailIds.length === 0) {
+          console.log('Nenhuma mensagem encontrada com os critérios fornecidos.');
+          return {
+            [responseKey]: {
+              success: true,
+              messages: [],
+            },
+          };
+        }
 
-              // Configuração do fetch
-              const fetch = imap.fetch(results, fetchOptions);
-
-              fetch.on('message', (msg) => {
-                const mailPromises = [];
-
-                msg.on('body', (stream) => {
-                  mailPromises.push(
-                    simpleParser(stream).then((mail) => {
-                      messages.push({
-                        from: mail.from.text,
-                        subject: mail.subject,
-                        text: mail.text,
-                        date: mail.date,
-                        body: mail.body
-                      });
-                    })
-                  );
-                });
-
-                fetch.once('end', async () => {
-                  try {
-                    // Aguarda o processamento de todas as mensagens
-                    await Promise.all(mailPromises);
-                    //console.log('Busca de emails concluída.');
-                    imap.end();
-                    resolve();
-                  } catch (err) {
-                    reject(err);
-                  }
-                });
-              });
-            });
+        // Busca o conteúdo das mensagens
+        for await (let message of client.fetch(emailIds, { envelope: true, source: true })) {
+          const mail = await simpleParser(message.source);
+          messages.push({
+            from: mail.from.text,
+            subject: mail.subject,
+            text: mail.text,
+            date: mail.date,
           });
-        });
+        }
 
-        imap.once('error', (err) => {
-          reject(err);
-        });
+        console.log('Busca de emails concluída.');
+      } finally {
+        lock.release();
+      }
 
-        imap.connect();
-      });
+      // Encerra a conexão com o servidor
+      await client.logout();
 
-      // Retorna as mensagens em formato JSON, referenciadas pela chave responseKey
+      console.log('Conexão com o servidor encerrada.');
+
+      // Retorna as mensagens em formato JSON
       return {
         [responseKey]: {
           success: true,
@@ -116,7 +88,7 @@ module.exports = {
     } catch (error) {
       console.error('Erro ao integrar com o servidor IMAP:', error);
 
-      // Em caso de erro, retorna um JSON vazio referenciado pela chave responseKey
+      // Em caso de erro, retorna um JSON vazio
       return {
         [responseKey]: {
           success: false,

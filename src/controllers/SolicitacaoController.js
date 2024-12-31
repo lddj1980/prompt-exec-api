@@ -310,6 +310,19 @@ module.exports = {
  *                         model_parameters:
  *                           $ref: '#/components/schemas/MySQLIntegrationModelParameters'
  *                       required: [engine, model, model_parameters]
+  *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["pexels"]
+ *                           description: Engine Pexels
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para Mysql
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/PexelsModelParameters'
+ *                       required: [engine, model, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:

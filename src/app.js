@@ -1293,7 +1293,7 @@ const swaggerOptions = {
                   "default": 5,
                   "example": 10
                 },
-                "respostaChave": {
+                "responseKey": {
                   "type": "string",
                   "description": "Chave para organizar a resposta no JSON.",
                   "default": "pexelsBusca",

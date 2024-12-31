@@ -10,9 +10,11 @@ module.exports = {
    */
   async process(prompt, model, modelParameters = {}) {
     try {
+      modelParameters = modelParameters ? modelParameters : {};
+      
       console.log("Iniciando integração com a API do Pexels...");
 
-      const { api_key, query, quantidade = 5, respostaChave = "pexelsBusca" } = modelParameters;
+      const { api_key, query, quantidade = 5, responseKey = "pexelsBusca" } = modelParameters;
 
       if (!api_key) {
         throw new Error('O parâmetro "api_key" é obrigatório para autenticação na API do Pexels.');
@@ -40,7 +42,7 @@ module.exports = {
       console.log("Busca concluída com sucesso:", images);
 
       return {
-        [respostaChave]: {
+        [responseKey]: {
           success: true,
           images,
         },
@@ -50,7 +52,7 @@ module.exports = {
 
       // Em caso de erro, retorna um JSON indicando falha
       return {
-        pexelsBusca: {
+        responseKey: {
           success: false,
           error: error.message,
         },

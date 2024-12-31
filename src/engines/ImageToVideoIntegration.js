@@ -1,6 +1,7 @@
 const ffmpeg = require("fluent-ffmpeg");
 const axios = require("axios");
 const ImageRepoAPI = require("../services/ImageRepoService");
+const { PassThrough } = require("stream");
 
 module.exports = {
   async process(prompt, model, modelParameters = {}) {
@@ -25,10 +26,9 @@ module.exports = {
       const imageRepoAPI = new ImageRepoAPI();
 
       // Criando um arquivo temporário de texto para a lista de imagens
-      const imageList = imagens.map((url, index) => `file '${url}'\nduration ${tempo_por_imagem}`).join("\n");
+      const imageList = imagens.map((url) => `file '${url}'\nduration ${tempo_por_imagem}`).join("\n");
       const listFile = "/tmp/image_list.txt";
 
-      // Salva o arquivo temporário contendo a lista de imagens
       const fs = require("fs");
       fs.writeFileSync(listFile, imageList);
 
@@ -49,27 +49,52 @@ module.exports = {
         ffmpegCommand.input(musicaStream.data);
       }
 
-      // Criando stream de saída do vídeo
-      const videoStream = ffmpegCommand
+      // Cria um stream de saída do vídeo
+      const passThrough = new PassThrough();
+      ffmpegCommand
         .outputOptions("-movflags frag_keyframe+empty_moov") // Saída progressiva
         .videoCodec("libx264")
         .audioCodec("aac")
         .format("mp4")
-        .pipe();
+        .pipe(passThrough);
 
-      console.log("Gerando vídeo...");
+      console.log("Gerando vídeo e enviando diretamente para o repositório...");
 
-      // Salvando o vídeo no repositório de imagens
-      const savedVideo = await imageRepoAPI.createImage(
-        videoStream, // Conteúdo do vídeo como stream
-        { description: "Vídeo gerado automaticamente", tags: ["video"] }, // Metadados
-        ".mp4", // Extensão
-        apiKey,
-        1, // Configuração do FTP (exemplo)
-        false // Não é conteúdo Base64
-      );
+      // Converte o stream de vídeo diretamente para Base64 enquanto o transmite
+      const base64Chunks = [];
+      await new Promise((resolve, reject) => {
+        passThrough.on("data", (chunk) => {
+          // Converte cada pedaço do stream para Base64 e armazena em chunks
+          base64Chunks.push(chunk.toString("base64"));
+        });
 
-      console.log("Vídeo salvo no repositório com sucesso:", savedVideo);
+        passThrough.on("end", async () => {
+          try {
+            // Junta todos os pedaços de Base64
+            const videoBase64 = base64Chunks.join("");
+
+            // Salva o vídeo no repositório
+            const savedVideo = await imageRepoAPI.createImage(
+              videoBase64, // Conteúdo do vídeo como Base64
+              { description: "Vídeo gerado automaticamente", tags: ["video"] }, // Metadados
+              ".mp4", // Extensão
+              apiKey,
+              1, // Configuração do FTP (exemplo)
+              true // Indica que é Base64
+            );
+
+            console.log("Vídeo salvo no repositório com sucesso:", savedVideo);
+            resolve(savedVideo);
+          } catch (err) {
+            reject(err);
+          }
+        });
+
+        passThrough.on("error", (err) => {
+          console.error("Erro durante o processamento do vídeo:", err);
+          reject(err);
+        });
+      });
 
       // Retornando com responseKey
       return {

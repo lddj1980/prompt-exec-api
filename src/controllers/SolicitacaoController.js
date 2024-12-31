@@ -126,10 +126,10 @@ module.exports = {
  *                       properties:
  *                         engine:
  *                           type: string
- *                           enum: ["email"]
- *                           description: Engine Email para envio de mensagens
+ *                           enum: ["send-email"]
+ *                           description: Engine Send-Email para envio de mensagens
  *                         model_parameters:
- *                           $ref: '#/components/schemas/EmailServiceModelParameters'
+ *                           $ref: '#/components/schemas/SendEmailServiceModelParameters'
  *                       required: [engine, model_parameters] 
  *                     - type: object
  *                       properties:

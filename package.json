@@ -20,7 +20,9 @@
     "swagger-autogen": "^2.23.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "imap": "^0.8.19",
+    "mailparser": "^3.6.0"
   },
   "engines": {
     "node": "14.x"

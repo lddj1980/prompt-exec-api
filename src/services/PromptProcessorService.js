@@ -18,7 +18,8 @@ const HtmlToImageIntegration = require('../engines/HtmlToImageIntegration');
 const ElevenLabsTextToSpeechIntegration = require('../engines/ElevenLabsTextToSpeechIntegration');
 const HttpCommandIntegration = require('../engines/HttpCommandIntegration');
 const ThreadsIntegration = require('../engines/ThreadsIntegration');
-const EmailIntegration = require('../engines/EmailIntegration');
+const SendEmailIntegration = require('../engines/SendEmailIntegration');
+const ReadEmailIntegration = require('../engines/ReadEmailIntegration');
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo) {
@@ -40,8 +41,8 @@ module.exports = {
         case 'elevenlabs-text-to-speech':
           integrationClass = ElevenLabsTextToSpeechIntegration;
           break;          
-        case 'email':
-          integrationClass = EmailIntegration;
+        case 'send-email':
+          integrationClass = SendEmailIntegration;
           break;                    
         case 'freepikapi-text-to-image':
           integrationClass = FreePikTextToImageIntegration;
@@ -76,6 +77,9 @@ module.exports = {
         case 'openai':
           integrationClass = OpenAIIntegration;
           break;
+        case 'read-email':
+          integrationClass = ReadEmailIntegration;
+          break;                    
         case 'telegram':
           integrationClass = TelegramIntegration;
           break; 

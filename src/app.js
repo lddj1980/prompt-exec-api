@@ -1147,7 +1147,7 @@ const swaggerOptions = {
                 }
               ]
             },      
-            "EmailServiceModelParameters": {
+            "SendEmailServiceModelParameters": {
                 "type": "object",
                 "description": "Parâmetros para integração com o serviço externo de envio de e-mails.",
                 "properties": {

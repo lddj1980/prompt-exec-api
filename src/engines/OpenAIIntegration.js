@@ -4,6 +4,7 @@ module.exports = {
   
   async process(prompt, model,modelParameters={}) {
     try {
+      modelParameters = modelParameters ? modelParameters : {};
       
       const apiKey = process.env.OPENAI_API_KEY;
 

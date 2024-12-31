@@ -19,6 +19,7 @@ module.exports = {
       const resultadoBd = {};
       var resultadoFinal = {};
       for (const prompt of prompts) {
+        console.log(resultadoGlobal);
         const parametros = await ParametroRepository.getParametrosByPrompt(prompt.id);
         const substituicoes = this.prepareSubstituicoes(parametros, resultadoGlobal);
 

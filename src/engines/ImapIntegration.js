@@ -59,18 +59,16 @@ module.exports = {
           };
         }
 
-        // Busca o conteúdo das mensagens
-        for await (let message of client.fetch(emailIds, fetchOptions)) {
+        const messages = await client.fetchAll(emailIds, {source: true});
+        for (let message of messages){
           try {
-            // Usa o simpleParser para processar o conteúdo da mensagem
-            const mail = await simpleParser(message.source);
-            console,log
+            console.log(message);
             messages.push({
               id: message.uid,
-              from: mail.from?.text || "Sem remetente",
-              subject: mail.subject || "Sem assunto",
-              text: mail.text || "",
-              date: mail.date || "Sem data",
+              from: message.from?.text || "Sem remetente",
+              subject: message.subject || "Sem assunto",
+              text: message.text || "",
+              date: message.date || "Sem data",
             });
           } catch (parseError) {
             console.error("Erro ao analisar o email:", parseError);

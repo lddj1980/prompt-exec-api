@@ -1212,7 +1212,59 @@ const swaggerOptions = {
                     }
                   },
                   "required": ["user", "password", "host", "port", "responseKey"]
-                },        
+                },    
+                "MySQLIntegrationModelParameters": {
+                    "type": "object",
+                    "description": "Parâmetros para a integração com um banco de dados MySQL.",
+                    "properties": {
+                      "host": {
+                        "type": "string",
+                        "description": "Endereço do servidor MySQL.",
+                        "example": "localhost"
+                      },
+                      "user": {
+                        "type": "string",
+                        "description": "Usuário para autenticação no banco de dados.",
+                        "example": "root"
+                      },
+                      "password": {
+                        "type": "string",
+                        "description": "Senha para autenticação do usuário no banco de dados.",
+                        "example": "my_password"
+                      },
+                      "database": {
+                        "type": "string",
+                        "description": "Nome do banco de dados a ser utilizado.",
+                        "example": "my_database"
+                      },
+                      "port": {
+                        "type": "integer",
+                        "description": "Porta para conexão ao banco de dados MySQL. O valor padrão é 3306.",
+                        "example": 3306,
+                        "default": 3306
+                      },
+                      "query": {
+                        "type": "string",
+                        "description": "Consulta SQL a ser executada no banco de dados.",
+                        "example": "SELECT * FROM users WHERE id = ?"
+                      },
+                      "values": {
+                        "type": "array",
+                        "description": "Valores para as variáveis na consulta SQL (placeholders ?).",
+                        "items": {
+                          "type": "string"
+                        },
+                        "example": ["1"]
+                      },
+                      "responseKey": {
+                        "type": "string",
+                        "description": "Chave para organizar os resultados na resposta JSON.",
+                        "example": "mysqlResponse",
+                        "default": "mysqlResponse"
+                      }
+                    },
+                    "required": ["host", "user", "password", "database", "query"]
+                  },        
             DefaultModelParameters: {
               type: 'object',
               description: 'Parâmetros genéricos para outras engines',

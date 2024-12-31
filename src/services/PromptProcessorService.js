@@ -20,6 +20,7 @@ const HttpCommandIntegration = require('../engines/HttpCommandIntegration');
 const ThreadsIntegration = require('../engines/ThreadsIntegration');
 const EmailIntegration = require('../engines/EmailIntegration');
 const ImapIntegration = require('../engines/ImapIntegration');
+const MysqlIntegration = require('../engines/MysqlIntegration');
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo) {
@@ -76,6 +77,9 @@ module.exports = {
           break;           
         case 'instagram':
           integrationClass = InstagramIntegration;
+          break;    
+        case 'mysql':
+          integrationClass = MysqlIntegration;
           break;    
         case 'openai':
           integrationClass = OpenAIIntegration;

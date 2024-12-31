@@ -11,7 +11,7 @@ module.exports = {
       tls,
       responseKey,
       searchCriteria = { seen: true },
-      fetchOptions = { uid: true },
+      fetchOptions = { uid: true },//
     } = modelParameters;
 
     try {
@@ -32,7 +32,7 @@ module.exports = {
         },
       });
 
-      const messages = [];
+      var messages = [];
 
       // Conecta ao servidor IMAP
       await client.connect();

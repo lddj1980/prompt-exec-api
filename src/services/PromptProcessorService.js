@@ -18,8 +18,8 @@ const HtmlToImageIntegration = require('../engines/HtmlToImageIntegration');
 const ElevenLabsTextToSpeechIntegration = require('../engines/ElevenLabsTextToSpeechIntegration');
 const HttpCommandIntegration = require('../engines/HttpCommandIntegration');
 const ThreadsIntegration = require('../engines/ThreadsIntegration');
-const SendEmailIntegration = require('../engines/SendEmailIntegration');
-const ReadEmailIntegration = require('../engines/ReadEmailIntegration');
+const EmailIntegration = require('../engines/EmailIntegration');
+const ImapIntegration = require('../engines/ImapIntegration');
 
 module.exports = {
   async processPrompt(prompt, engine, model, parametrosModelo) {
@@ -41,9 +41,6 @@ module.exports = {
         case 'elevenlabs-text-to-speech':
           integrationClass = ElevenLabsTextToSpeechIntegration;
           break;          
-        case 'send-email':
-          integrationClass = SendEmailIntegration;
-          break;                    
         case 'freepikapi-text-to-image':
           integrationClass = FreePikTextToImageIntegration;
           break;      
@@ -59,6 +56,12 @@ module.exports = {
         case 'image-repo':
           integrationClass = ImageRepoIntegration;
           break;
+        case 'imap':
+          integrationClass = ImapIntegration;
+          break;                    
+        case 'email':
+          integrationClass = EmailIntegration;
+          break;                    
         case 'inferenceapi-text-to-image':
           integrationClass = InferenceAPIIntegrationTextToImage;
           break;
@@ -77,9 +80,6 @@ module.exports = {
         case 'openai':
           integrationClass = OpenAIIntegration;
           break;
-        case 'read-email':
-          integrationClass = ReadEmailIntegration;
-          break;                    
         case 'telegram':
           integrationClass = TelegramIntegration;
           break; 

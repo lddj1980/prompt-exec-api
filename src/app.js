@@ -1147,7 +1147,7 @@ const swaggerOptions = {
                 }
               ]
             },      
-            "SendEmailServiceModelParameters": {
+            "EmailServiceModelParameters": {
                 "type": "object",
                 "description": "Parâmetros para integração com o serviço externo de envio de e-mails.",
                 "properties": {
@@ -1175,7 +1175,44 @@ const swaggerOptions = {
                   }
                 },
                 "required": ["from", "to", "subject", "body"]
-              },        
+              },     
+              "IMAPModelParameters": {
+                  "type": "object",
+                  "description": "Parâmetros para integração com servidores IMAP.",
+                  "properties": {
+                    "user": {
+                      "type": "string",
+                      "description": "Nome de usuário para autenticação no servidor IMAP.",
+                      "example": "user@example.com"
+                    },
+                    "password": {
+                      "type": "string",
+                      "description": "Senha do usuário para autenticação no servidor IMAP.",
+                      "example": "your_password"
+                    },
+                    "host": {
+                      "type": "string",
+                      "description": "Host do servidor IMAP.",
+                      "example": "imap.example.com"
+                    },
+                    "port": {
+                      "type": "integer",
+                      "description": "Porta para conexão com o servidor IMAP.",
+                      "example": 993
+                    },
+                    "tls": {
+                      "type": "boolean",
+                      "description": "Indica se a conexão deve usar TLS (Transport Layer Security). O padrão é true.",
+                      "example": true
+                    },
+                    "responseKey": {
+                      "type": "string",
+                      "description": "Chave de resposta para organizar os resultados no JSON de saída.",
+                      "example": "imapResponse"
+                    }
+                  },
+                  "required": ["user", "password", "host", "port", "responseKey"]
+                },        
             DefaultModelParameters: {
               type: 'object',
               description: 'Parâmetros genéricos para outras engines',

@@ -4,7 +4,7 @@ const { simpleParser } = require('mailparser');
 module.exports = {
   async process(prompt, model, modelParameters = {}) {
     // Verifica e extrai os parâmetros necessários de modelParameters
-    const { user, password, host, port, tls, responseKey } = modelParameters;
+    const { user, password, host, port, tls, responseKey, tlsOpt } = modelParameters;
     try {
       console.log('Iniciando integração com o servidor IMAP...');
 
@@ -19,6 +19,7 @@ module.exports = {
         host,
         port,
         tls: tls !== undefined ? tls : true, // Usar TLS por padrão
+        tlsOptions,
       };
 
       const imap = new Imap(imapConfig);

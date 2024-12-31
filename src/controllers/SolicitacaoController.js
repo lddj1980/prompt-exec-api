@@ -126,10 +126,10 @@ module.exports = {
  *                       properties:
  *                         engine:
  *                           type: string
- *                           enum: ["send-email"]
- *                           description: Engine Send-Email para envio de mensagens
+ *                           enum: ["email"]
+ *                           description: Engine Email para envio de mensagens
  *                         model_parameters:
- *                           $ref: '#/components/schemas/SendEmailServiceModelParameters'
+ *                           $ref: '#/components/schemas/EmailServiceModelParameters'
  *                       required: [engine, model_parameters] 
  *                     - type: object
  *                       properties:
@@ -203,6 +203,19 @@ module.exports = {
  *                         model_parameters:
  *                           $ref: '#/components/schemas/ImageRepoModelParameters'
  *                       required: [engine, model, model_parameters]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["imap"]
+ *                           description: Engine Imap
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para Imap
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/IMAPModelParameters'
+ *                       required: [engine, model, model_parameters] 
  *                     - type: object
  *                       properties:
  *                         engine:

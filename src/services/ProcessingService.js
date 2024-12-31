@@ -46,7 +46,7 @@ module.exports = {
         resultadoFinal = JSON.stringify(resultado);
       }
       //console.log(JSON.stringify(resultadoFinal));
-      await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'concluido', JSON.stringify(resultadoFinal));
+      await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'concluido', resultadoFinal);
     } catch (error) {
       console.error('Erro no processamento:', error);
       await SolicitacaoRepository.updateSolicitacaoStatus(protocoloUid, 'erro');

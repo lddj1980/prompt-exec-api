@@ -1301,6 +1301,52 @@ const swaggerOptions = {
                 }
               },
               "required": ["api_key", "query"]
+            },     
+            "VideoGenerationParameters": {
+              "type": "object",
+              "description": "Parâmetros para geração de vídeos usando ffmpeg e envio para o ImageRepo.",
+              "properties": {
+                "imagens": {
+                  "type": "array",
+                  "description": "URLs das imagens que serão usadas no vídeo.",
+                  "items": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://example.com/image1.jpg"
+                  },
+                  "minItems": 1
+                },
+                "narracao": {
+                  "type": "string",
+                  "description": "URL do arquivo de narração em áudio.",
+                  "format": "uri",
+                  "example": "https://example.com/narracao.mp3"
+                },
+                "musica": {
+                  "type": "string",
+                  "description": "URL do arquivo de música de fundo.",
+                  "format": "uri",
+                  "example": "https://example.com/musica.mp3"
+                },
+                "tempo_por_imagem": {
+                  "type": "integer",
+                  "description": "Duração em segundos para cada imagem no vídeo.",
+                  "default": 10,
+                  "example": 5,
+                  "minimum": 1
+                },
+                "apiKey": {
+                  "type": "string",
+                  "description": "Chave de API para autenticação no ImageRepo.",
+                  "example": "your_image_repo_api_key"
+                },
+                "responseKey": {
+                  "type": "string",
+                  "description": "Chave para estruturar a resposta da integração.",
+                  "example": "videoResponse"
+                }
+              },
+              "required": ["imagens", "narracao", "musica", "apiKey", "responseKey"]
             },        
             DefaultModelParameters: {
               type: 'object',

@@ -220,6 +220,19 @@ module.exports = {
  *                       properties:
  *                         engine:
  *                           type: string
+ *                           enum: ["image-to-video"]
+ *                           description: Engine VideoGeneration
+ *                         model:
+ *                           type: string
+ *                           enum: ["none"]
+ *                           description: Modelos suportados para VideoGeneration
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/VideoGenerationParameters'
+ *                       required: [engine, model, model_parameters]  
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
  *                           enum: ["inferenceapi-text-to-audio"]
  *                           description: Engine Inference API Text-to-Audio
  *                         model:

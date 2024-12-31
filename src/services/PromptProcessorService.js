@@ -22,6 +22,7 @@ const EmailIntegration = require('../engines/EmailIntegration');
 const ImapIntegration = require('../engines/ImapIntegration');
 const MysqlIntegration = require('../engines/MysqlIntegration');
 const PexelsIntegration = require('../engines/PexelsIntegration');
+const ImageToVideoIntegration = require('../engines/ImageToVideoIntegration');
 
 
 module.exports = {
@@ -56,15 +57,18 @@ module.exports = {
         case 'http-command':
           integrationClass = HttpCommandIntegration;
           break;          
-        case 'image-repo':
-          integrationClass = ImageRepoIntegration;
-          break;
-        case 'imap':
-          integrationClass = ImapIntegration;
-          break;                    
         case 'email':
           integrationClass = EmailIntegration;
           break;                    
+        case 'imap':
+          integrationClass = ImapIntegration;
+          break;                    
+        case 'image-repo':
+          integrationClass = ImageRepoIntegration;
+          break;
+        case 'image-to-video':
+          integrationClass = ImageToVideoIntegration;
+          break;
         case 'inferenceapi-text-to-image':
           integrationClass = InferenceAPIIntegrationTextToImage;
           break;

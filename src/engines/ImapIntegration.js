@@ -47,6 +47,7 @@ module.exports = {
 
             console.log('Caixa de entrada aberta:', box);
 
+            console.log(searchCriteria);
             // Realiza a busca com os critérios especificados
             imap.search(searchCriteria, (err, results) => {
               if (err) {

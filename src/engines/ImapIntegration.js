@@ -4,7 +4,8 @@ const { simpleParser } = require('mailparser');
 module.exports = {
   async process(prompt, model, modelParameters = {}) {
     // Verifica e extrai os parâmetros necessários de modelParameters
-    const { user, password, host, port, tls, responseKey, tlsOpt } = modelParameters;
+    const { user, password, host, port, tls, responseKey, tlsOptions, searchCriteria = ['UNSEEN'], fetchOptions = { bodies: '', markSeen: true } } = modelParameters;
+
     try {
       console.log('Iniciando integração com o servidor IMAP...');
 
@@ -36,9 +37,9 @@ module.exports = {
               return;
             }
 
-            const searchCriteria = ['UNSEEN']; // Busca emails não lidos
-            const fetchOptions = { bodies: '', markSeen: true };
+            console.log('Caixa de entrada aberta:', box);
 
+            // Realiza a busca com os critérios especificados
             imap.search(searchCriteria, (err, results) => {
               if (err) {
                 reject(err);
@@ -47,12 +48,18 @@ module.exports = {
 
               // Verifica se há mensagens para buscar
               if (results.length === 0) {
-                console.log('Nenhuma mensagem nova encontrada.');
+                console.log('Nenhuma mensagem encontrada com os critérios fornecidos:', searchCriteria);
                 imap.end();
                 resolve(messages);
-                return;
+                return {
+                  [responseKey]: {
+                    success: true,
+                    messages,
+                  },
+                };
               }
 
+              // Configuração do fetch
               const fetch = imap.fetch(results, fetchOptions);
 
               fetch.on('message', (msg) => {

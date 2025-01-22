@@ -12,7 +12,11 @@ module.exports = {
    */
   async process(prompt, model, modelParameters = {}) {
     try {
-      modelParameters = modelParameters ? modelParameters : {};
+      modelParameters = modelParameters || {};
+    
+      const responseKey = modelParameters.responseKey || 'response';
+      console.log('Iniciando integração com Gemini...');
+
       // Obter a chave da API
       const apiKey = process.env.GEMINI_API_KEY;
 
@@ -20,13 +24,19 @@ module.exports = {
         throw new Error('A variável de ambiente GEMINI_API_KEY não está definida.');
       }
 
+      if (!prompt) {
+        throw new Error('O parâmetro "prompt" é obrigatório.');
+      }
+
+      if (!model) {
+        throw new Error('O parâmetro "model" é obrigatório.');
+      }
+
       // Endpoint da API
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
       // Montar a estrutura de conteúdos
-      const parts = [
-        { text: prompt },
-      ];
+      const parts = [{ text: prompt }];
 
       // Se uma imagem for fornecida como URL, converte para Base64 e adiciona ao payload
       if (modelParameters.image_url) {
@@ -41,11 +51,7 @@ module.exports = {
 
       // Corpo da solicitação
       const payload = {
-        contents: [
-          {
-            parts: parts,
-          },
-        ],
+        contents: [{ parts: parts }],
       };
 
       console.log(`Enviando solicitação para ${endpoint}...`);
@@ -58,16 +64,31 @@ module.exports = {
       });
 
       if (response.status === 200) {
-        return extrairJSON(response.data.candidates[0].content.parts[0].text);
+        const processedResponse = extrairJSON(response.data.candidates[0].content.parts[0].text);
+
+        console.log('Solicitação processada com sucesso.');
+        return {
+          [responseKey]: {
+            success: true,
+            data: processedResponse,
+          },
+        };
       } else {
         throw new Error(`Erro ao processar com Gemini: ${response.statusText}`);
       }
     } catch (error) {
       console.error('Erro na integração com Gemini:', error);
+
       if (error.response) {
         console.error('Detalhes do erro:', error.response.data);
       }
-      throw error;
+
+      return {
+        [modelParameters.responseKey || 'response']: {
+          success: false,
+          error: error.message,
+        },
+      };
     }
   },
 };
@@ -79,9 +100,7 @@ module.exports = {
  */
 async function fetchImageAsBase64(url) {
   try {
-    const response = await axios.get(url, {
-      responseType: 'arraybuffer',
-    });
+    const response = await axios.get(url, { responseType: 'arraybuffer' });
     return Buffer.from(response.data).toString('base64');
   } catch (error) {
     console.error(`Erro ao buscar imagem da URL '${url}':`, error.message);
@@ -95,30 +114,24 @@ async function fetchImageAsBase64(url) {
  * @returns {object|null} - O objeto JSON extraído, ou null em caso de erro.
  */
 function extrairJSON(resposta) {
-    // Exibir a resposta completa para debug
-    console.log('resposta gerada...');
-    console.log(resposta);
+  console.log('Resposta gerada:', resposta);
 
-    // Definir o padrão regex para capturar o conteúdo entre ```json e ```
-    const regex = /```json\s*([\s\S]*?)\s*```/;
-    const match = resposta.match(regex);
+  const regex = /```json\s*([\s\S]*?)\s*```/;
+  const match = resposta.match(regex);
 
-    if (match && match[1]) {
-        try {
-            // Converte a string JSON capturada para um objeto JavaScript
-            const jsonString = match[1].trim(); // Remove espaços em branco extras
-            console.log('teste');
-            console.log(jsonString);
-            return JSON.parse(jsonString);
-        } catch (error) {
-            console.error('Erro ao fazer o parse do JSON:', error);
-            return null;
-        }
-    } else {
-        try {
-          return JSON.parse(resposta);
-        } catch (error){
-          return resposta;
-        }
+  if (match && match[1]) {
+    try {
+      const jsonString = match[1].trim();
+      return JSON.parse(jsonString);
+    } catch (error) {
+      console.error('Erro ao fazer o parse do JSON:', error);
+      return null;
     }
+  } else {
+    try {
+      return JSON.parse(resposta);
+    } catch (error) {
+      return resposta;
+    }
+  }
 }

@@ -12,11 +12,17 @@ const THREADS_API_BASE_URL = 'https://graph.threads.net/v1.0';
 async function createMediaContainer(accessToken, userId, options) {
   const { media_type, text, image_url, video_url, is_carousel_item } = options;
 
-  if (!media_type) {
-    throw new Error('O parâmetro "media_type" é obrigatório.');
+  // Verifica se o post é apenas texto
+  const isTextOnly = !media_type && !image_url && !video_url;
+
+  if (!text) {
+    throw new Error('O parâmetro "text" é obrigatório para criar um post.');
   }
 
-  const payload = { media_type, text, image_url, video_url, is_carousel_item };
+  // Define o payload com base no tipo de post
+  const payload = isTextOnly
+    ? { text } // Apenas texto
+    : { media_type, text, image_url, video_url, is_carousel_item }; // Post com mídia
 
   try {
     const response = await axios.post(`${THREADS_API_BASE_URL}/${userId}/threads`, payload, {

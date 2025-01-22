@@ -9,6 +9,8 @@ module.exports = {
    * @returns {Promise<Object>} - Resultado da consulta no formato JSON.
    */
   async process(prompt, model, modelParameters = {}) {
+    modelParameters = modelParameters || {};
+
     const {
       host,
       user,
@@ -39,19 +41,35 @@ module.exports = {
 
       console.log('Conexão estabelecida com sucesso.');
 
-      // Executa a consulta
-      const [rows] = await connection.execute(query, values);
+      // Divide a query em comandos individuais (separados por ;)
+      const commands = query.split(';').filter(cmd => cmd.trim() !== '');
 
-      console.log('Consulta executada com sucesso:', rows);
+      // Array para armazenar os resultados de cada comando
+      const results = [];
+
+      // Executa cada comando individualmente
+      for (const cmd of commands) {
+        // Verifica se o comando é DML (permitido) ou DDL (bloqueado)
+        const isDML = /^(SELECT|INSERT|UPDATE|DELETE)/i.test(cmd.trim());
+        if (!isDML) {
+          throw new Error(`Comando não permitido: ${cmd.trim()}. Apenas comandos DML (SELECT, INSERT, UPDATE, DELETE) são aceitos.`);
+        }
+
+        // Executa o comando
+        const [rows] = await connection.execute(cmd, values);
+        results.push(rows);
+      }
+
+      console.log('Comandos executados com sucesso:', results);
 
       // Fecha a conexão
       await connection.end();
 
-      // Retorna o resultado da consulta
+      // Retorna o resultado da execução
       return {
         [responseKey]: {
           success: true,
-          data: rows,
+          data: results,
         },
       };
     } catch (error) {

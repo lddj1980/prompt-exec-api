@@ -6,7 +6,7 @@ const ParametroRepository = require('../data/ParametroRepository');
 const ProcessingService = require('../services/ProcessingService');
 
 module.exports = {
-
+//
 /**
  * @swagger
  * /solicitacoes:
@@ -49,15 +49,447 @@ module.exports = {
  *                       properties:
  *                         engine:
  *                           type: string
- *                           enum: ["brainstorm-ai"]
- *                           description: Engine para Criação de Brainstorms 
+ *                           enum: ["youtube-video-download"]
+ *                           description: Engine for the YouTube video download integration
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/YoutubeDownloadParameters'
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["ffmpeg-command"]
+ *                           description: Engine for the FFMPEG Command Execution API integration
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/FfmpegCommandParameters'
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["audio-frequency-adjustment"]
+ *                           description: Engine for the Audio Frequency Adjustment API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/AudioFrequencyAdjustmentParameters'
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["mimic-motion"]
+ *                           description: Engine for the MimicMotion API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/MimicMotionParameters'
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["synced-media-generation"]
+ *                           description: Engine for the Synced Media Generation API integration
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/SyncedMediaGenerationParameters'
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["sd1.5-img2img"]
+ *                           description: Engine for the SD1.5 Img2Img API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/SD1_5Img2ImgParameters'
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["background-replace"]
+ *                           description: Engine for the Background Replace API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/BackgroundReplaceParameters'
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["consistent-character-ai"]
+ *                           description: Engine for the Consistent Character AI
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/ConsistentCharacterAIParameters'
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["flux-pulid"]
+ *                           description: Engine for the Flux-Pulid API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/FluxPulidParameters'
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["sd1.5-inpainting"]
+ *                           description: Engine for the SD1.5 Inpainting API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/SD1.5InpaintingParameters'
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["automatic-mask-generator"]
+ *                           description: Engine for the Automatic Mask Generator API integration
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/AutomaticMaskGeneratorParameters'
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["mp3-to-mp4"]
+ *                           description: Engine for converting an MP3 file to an MP4 video with a looping image
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/Mp3ToMp4ConversionParameters'
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["jsfunction"]
+ *                           description: Engine for executing predefined functions
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/FunctionExecutionParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao jsfunction for executing predefined functions
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["youtube-video-publish"]
+ *                           description: Engine for sending video publishing requests to the YouTube webhook
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/YoutubeVideoPublishParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao youtube-video-publish for sending video publishing requests to the YouTube webhook
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["openai-transcribe"]
+ *                           description: Engine para transcrição de áudio usando a API da OpenAI.
  *                         model:
  *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados na BrainstormAI
+ *                           enum: ["whisper-1"]
+ *                           description: Modelos suportados para transcrição de áudio usando a API da OpenAI.
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/OpenAiTranscriptionParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao openai-transcribe para transcrição de áudio usando a API da OpenAI.
+ *                       required: [engine, model,model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["openai-tts"]
+ *                           description: Engine for generating audio using the SunoAPI
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/OpenApiTtsParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao suno-api-music-generation for generating audio using the SunoAPI
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["suno-api-music-generation"]
+ *                           description: Engine for generating audio using the SunoAPI
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/SunoApiParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao suno-api-music-generation for generating audio using the SunoAPI
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["video-creation"]
+ *                           description: Engine for video creation using the API and FTP storage
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/VideoCreationParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao video-creation para video creation using the API and FTP storage
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["stability-ai-text2img"]
+ *                           description: Engine para Stability AI image generation API integration
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/StabilityAiTextToImageParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao stability-ai-text2img para Stability AI image generation API integration
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["liveportrait"]
+ *                           description: Engine para  animates static images using a reference driving video through implicit key point based framework, bringing a portrait to life with realistic expressions and movements
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/LivePortraitParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao liveportrait para  animates static images using a reference driving video through implicit key point based framework, bringing a portrait to life with realistic expressions and movements
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["tryondiffusion"]
+ *                           description: Engine para Outfitting Fusion based Latent Diffusion for Controllable Virtual Try-on
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/TryOnDiffusionParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao tryondiffusion para Outfitting Fusion based Latent Diffusion for Controllable Virtual Try-on
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["idmvton"]
+ *                           description: Engine para IDM VTON API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/IDMVTONParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao idmvton para troca de roupa em modelos com IA
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["consistent-character-with-pose"]
+ *                           description: Engine para Consistent Character With Pose API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/ConsistentCharacterWithPoseParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao Consistent Character With Pose API
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["outfiting"]
+ *                           description: Engine para conexao com outfit img
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/TheNewBlackAIEditParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao outfit img
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["ftp"]
+ *                           description: Engine para conexao com FTP
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/FtpIntegrationParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao ftp
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["realdreamv9"]
+ *                           description: Engine para Realdream Pony V9 API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/RealdreamPonyV9Parameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao realdreamv9 para text to image
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["fluxrealism"]
+ *                           description: Engine para Flux Realism Lora with Upscale API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/FluxRealismLoraParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao fluxrealism para text to image
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["stablediffusion35"]
+ *                           description: Engine para Stable Diffusion 3.5 Large Text-to-Image API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/StableDiffusion35Parameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao stablediffusion35 para text to image
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["ai-product-photo-editor"]
+ *                           description: Engine para edicao de fotos de produto
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/AIProductPhotoEditorParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao ai-product-photo-editor para edicao de fotos de produto
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["videocaptioner"]
+ *                           description: Engine para geracao de captions/legendas para video
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/VideoCaptionerParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao videocaptioner para geracao de captions/legendas para video
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["videoaudiomerge"]
+ *                           description: Engine para merge de video e audio
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/VideoAudioMergeParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao videoaudiomerge para merge de video e audio
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["camila-model"]
+ *                           description: Engine para geracao de fotos da Modelo Camila
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/CamilaModelParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao camila-model para fazer a geracao das fotos de camila
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["superimposeimg"]
+ *                           description: Engine Image Superimpose API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/ImageSuperimposeParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao superimposeimg para fazer o impose das imagens
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["sd3-img2img"]
+ *                           description: Engine Stable Diffusion 3 Medium Image-to-Image API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/SD3Img2ImgParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao sd3-img2img para transformar uma imagem em outra 
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["textoverlay"]
+ *                           description: Engine Text Overlay
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/TextOverlayParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao textoverlay para efeito de textoverlay
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["consistent-character"]
+ *                           description: Engine Consistent Character API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/ConsistentCharacterParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao consistent-character para geracao consistente de personagens
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["hunyuan-video"]
+ *                           description: Engine Hunyuan AI Video Generator
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/HunyuanVideoParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao hunyuan-video para geracao de videos
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["minimax-ai"]
+ *                           description: Engine MinimaxAI para geracao de videos
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/MiniMaxAIParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao minimax-ai para geracao de videos
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["sad-talker"]
+ *                           description: Engine Sad Talker API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/SadTalkerParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao sad-talker para fazer a sincronizacao de audio com imagem
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["brainstorm-ai"]
+ *                           description: Engine para Criação de Brainstorms 
  *                         model_parameters:
  *                           $ref: '#/components/schemas/BrainstormAIModelParameters'
- *                       required: [engine, model, model_parameters]
+ *                       required: [engine, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -96,15 +528,28 @@ module.exports = {
  *                       properties:
  *                         engine:
  *                           type: string
- *                           enum: ["carousel"]
- *                           description: Engine Carousel
+ *                           enum: ["deepseek"]
+ *                           description: Engine DeepSeek
  *                         model:
  *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para Carousel
+ *                           enum: ["deepseek-chat"]
+ *                           default: deepseek-chat
+ *                           description: Modelos suportados para DeepSeek
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/DeepSeekModelParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao DeepSeek
+ *                       required: [engine, model, prompt]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["carousel"]
+ *                           description: Engine Carousel
  *                         model_parameters:
  *                           $ref: '#/components/schemas/CarouselModelParameters'
- *                       required: [engine, model, model_parameters]
+ *                       required: [engine, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -135,18 +580,50 @@ module.exports = {
  *                       properties:
  *                         engine:
  *                           type: string
+ *                           enum: ["faceswapv2"]
+ *                           description: Engine Faceswap V2 API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/FaceSwapV2Parameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao faceswapv2 para fazer swap de imagens
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["faceswapv3"]
+ *                           description: Engine Faceswap V3 API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/FaceSwapV3Parameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao faceswapv2 para fazer swap de imagens
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["videofaceswap"]
+ *                           description: Engine Videofaceswap API
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/VideoFaceSwapParameters'
+ *                         prompt:
+ *                           type: string
+ *                           description: Prompt que vai ser solicitado ao videofaceswap para fazer swap de imagens em video
+ *                       required: [engine, model_parameters]  
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
  *                           enum: ["freepikapi-text-to-image"]
  *                           description: Engine Freepik API
- *                         model:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para Freepik API
  *                         model_parameters:
  *                           $ref: '#/components/schemas/FreepikModelParameters'
  *                         prompt:
  *                           type: string
  *                           description: Prompt que vai ser solicitado ao freepik para gerar a imagem
- *                       required: [engine, model, prompt, model_parameters]
+ *                       required: [engine, prompt, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -170,65 +647,45 @@ module.exports = {
  *                           type: string
  *                           enum: ["html-to-image"]
  *                           description: Engine HTML-to-Image
- *                         model:
- *                           type: string
- *                           enum: ["nome"]
- *                           description: Modelos suportados para HTML-to-Image
  *                         model_parameters:
  *                           $ref: '#/components/schemas/HTMLToImageModelParameters'
- *                       required: [engine, model, model_parameters]
+ *                       required: [engine, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
  *                           type: string
  *                           enum: ["http-command"]
  *                           description: Engine Http-Command
- *                         model:
- *                           type: string
- *                           enum: ["nome"]
- *                           description: Modelos suportados para Http-Command
  *                         model_parameters:
  *                           $ref: '#/components/schemas/HttpCommandModelParameters'
- *                       required: [engine, model, model_parameters] 
+ *                       required: [engine, model_parameters] 
  *                     - type: object
  *                       properties:
  *                         engine:
  *                           type: string
  *                           enum: ["image-repo"]
  *                           description: Engine Image Repository
- *                         model:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para Image Repository
  *                         model_parameters:
  *                           $ref: '#/components/schemas/ImageRepoModelParameters'
- *                       required: [engine, model, model_parameters]
+ *                       required: [engine, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
  *                           type: string
  *                           enum: ["imap"]
  *                           description: Engine Imap
- *                         model:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para Imap
  *                         model_parameters:
  *                           $ref: '#/components/schemas/IMAPModelParameters'
- *                       required: [engine, model, model_parameters] 
+ *                       required: [engine, model_parameters] 
  *                     - type: object
  *                       properties:
  *                         engine:
  *                           type: string
  *                           enum: ["image-to-video"]
  *                           description: Engine VideoGeneration
- *                         model:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para VideoGeneration
  *                         model_parameters:
  *                           $ref: '#/components/schemas/VideoGenerationParameters'
- *                       required: [engine, model, model_parameters]  
+ *                       required: [engine, model_parameters]  
  *                     - type: object
  *                       properties:
  *                         engine:
@@ -254,7 +711,7 @@ module.exports = {
  *                           description: Engine Inference API Text-to-Image
  *                         model:
  *                           type: string
- *                           enum: ["black-forest-labs/FLUX.1-dev","stable-diffusion-3.5-large","fofr/flux-handwriting","stable-diffusion-v1-5/stable-diffusion-v1-5","prashanth970/flux-lora-uncensored"]
+ *                           enum: ["stabilityai/stable-diffusion-2-1","strangerzonehf/Flux-Super-Realism-LoRA","nerijs/dark-fantasy-movie-flux","stabilityai/stable-diffusion-xl-base-1.0","black-forest-labs/FLUX.1-dev","stabilityai/stable-diffusion-3.5-large","fofr/flux-handwriting","stable-diffusion-v1-5/stable-diffusion-v1-5","prashanth970/flux-lora-uncensored","user3712931729/flux-nsfw-highres"]
  *                           default: black-forest-labs/FLUX.1-dev
  *                           description: Modelos suportados para Inference API Text-to-Image
  *                         model_parameters:
@@ -303,103 +760,124 @@ module.exports = {
  *                           type: string
  *                           enum: ["instagram"]
  *                           description: Engine Instagram
- *                         model:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para Instagram
  *                         model_parameters:
  *                           $ref: '#/components/schemas/InstagramModelParameters'
- *                       required: [engine, model, model_parameters]
+ *                       required: [engine, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
  *                           type: string
  *                           enum: ["mysql"]
  *                           description: Engine Instagram
- *                         model:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para Mysql
  *                         model_parameters:
  *                           $ref: '#/components/schemas/MySQLIntegrationModelParameters'
- *                       required: [engine, model, model_parameters]
-  *                     - type: object
+ *                       required: [engine, model_parameters]
+ *                     - type: object
  *                       properties:
  *                         engine:
  *                           type: string
  *                           enum: ["pexels"]
  *                           description: Engine Pexels
- *                         model:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para Mysql
  *                         model_parameters:
  *                           $ref: '#/components/schemas/PexelsModelParameters'
- *                       required: [engine, model, model_parameters]
+ *                       required: [engine, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
  *                           type: string
  *                           enum: ["telegram"]
  *                           description: Engine Telegram
- *                         model:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para Telegram
  *                         model_parameters:
  *                           $ref: '#/components/schemas/TelegramModelParameters'
- *                       required: [engine, model, model_parameters]
+ *                       required: [engine, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
  *                           type: string
  *                           enum: ["threads"]
  *                           description: Engine Threads
- *                         model:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para Threads
  *                         model_parameters:
  *                           $ref: '#/components/schemas/ThreadsModelParameters'
- *                       required: [engine, model, model_parameters] 
+ *                       required: [engine, model_parameters] 
  *                     - type: object
  *                       properties:
  *                         engine:
  *                           type: string
  *                           enum: ["whatsapp"]
  *                           description: Engine WhatsApp
- *                         model:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para WhatsApp
  *                         model_parameters:
  *                           $ref: '#/components/schemas/WhatsappModelParameters'
- *                       required: [engine, model, model_parameters]
+ *                       required: [engine, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
  *                           type: string
  *                           enum: ["wordpress"]
  *                           description: Engine WordPress
- *                         model:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para WordPress
  *                         model_parameters:
  *                           $ref: '#/components/schemas/WordpressModelParameters'
- *                       required: [engine, model, model_parameters]
+ *                       required: [engine, model_parameters]
  *                     - type: object
  *                       properties:
  *                         engine:
  *                           type: string
  *                           enum: ["writter-ai"]
  *                           description: Engine Writter-AI
- *                         model:
- *                           type: string
- *                           enum: ["none"]
- *                           description: Modelos suportados para Writter-AI
  *                         model_parameters:
  *                           $ref: '#/components/schemas/WritterAIModelParameters'
+ *                       required: [engine, model_parameters]
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["sdx-real-dream-lightning"]
+ *                           description: Engine Sdx-Real-Dream-Lightning para geração de imagens
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/SDXLRealDreamLightningParameters'
+ *                       required: [engine, model_parameters] 
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["runway3-gen-alpha-turbo"]
+ *                           description: Engine Runway3-Gen-Alpha-Turbo para geração de videos
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/RunwayGen3AlphaTurboParameters'
+ *                       required: [engine, model_parameters]  
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["music-generation-piapi"]
+ *                           description: Engine Music Generation Piapi para geração de músicas
+ *                         model_parameters:
+ *                           $ref: '#/components/schemas/MusicGenerationPiapiParameters'
+ *                       required: [engine, model_parameters]   
+ *                     - type: object
+ *                       properties:
+ *                         engine:
+ *                           type: string
+ *                           enum: ["serpapi"]
+ *                           description: Engine SerpAPI
+ *                         model:
+ *                           type: string
+ *                           enum: ["google_search", "google_maps", "google_finance", "google_trends", "google_flights"]
+ *                           description: Modelos suportados para SerpAPI
+ *                         model_parameters:
+ *                           oneOf:
+ *                            - $ref: '#/components/schemas/SerpAPIGoogleSearchParameters'
+ *                            - $ref: '#/components/schemas/SerpAPIGoogleMapsParameters'
+ *                            - $ref: '#/components/schemas/SerpAPIGoogleFinanceParameters'
+ *                            - $ref: '#/components/schemas/SerpAPIGoogleTrendsParameters'
+ *                            - $ref: '#/components/schemas/SerpAPIGoogleFlightsParameters'
+ *                         discriminator:
+ *                           propertyName: model
+ *                           mapping:
+ *                            google_search: '#/components/schemas/SerpAPIGoogleSearchParameters'
+ *                            google_maps: '#/components/schemas/SerpAPIGoogleMapsParameters'
+ *                            google_finance: '#/components/schemas/SerpAPIGoogleFinanceParameters'
+ *                            google_trends: '#/components/schemas/SerpAPIGoogleTrendsParameters'
+ *                            google_flights: '#/components/schemas/SerpAPIGoogleFlightsParameters'
  *                       required: [engine, model, model_parameters]
  *             required: [prompts]
  *     responses:
@@ -439,7 +917,7 @@ module.exports = {
   
   async create(req, res) {
     try {
-      const { prompts, cron_expression, start_at, end_at } = req.body;
+      const { prompts, cron_expression, cron_start_at, cron_end_at } = req.body;
       
       if (!prompts || !Array.isArray(prompts)) {
         return res.status(400).json({ error: 'Prompts inválidos.' });
@@ -450,7 +928,7 @@ module.exports = {
       const solicitacaoId = await SolicitacaoRepository.createSolicitacao(protocoloUid);
       
       if (cron_expression){
-        SolicitacaoAgendamentoRepository.insertAgendamento(solicitacaoId, cron_expression, start_at, end_at);
+        SolicitacaoAgendamentoRepository.insertAgendamento(solicitacaoId, cron_expression, cron_start_at, cron_end_at);
       }
       
       for (const [index, prompt] of prompts.entries()) {
@@ -537,7 +1015,7 @@ module.exports = {
         return res.status(404).json({ error: 'Solicitação não encontrada.' });
       }
 
-      const prompts = await PromptRepository.getPromptsBySolicitacao(solicitacao.id);
+      const prompts = await PromptRepository.getPromptsBySolicitacaoWithResult(solicitacao.id);
 
       res.status(200).json({
         status: solicitacao.status,
@@ -647,13 +1125,10 @@ module.exports = {
         return res.status(404).json({ error: 'Solicitação não encontrada.' });
       }
 
-      if (solicitacao.status === 'concluido') {
-        return res.status(400).json({ error: 'Solicitação já foi concluída.' });
-      }
-
+      res.status(202).json({ message: 'Processamento retomado.' });
+      
       await ProcessingService.resume(protocoloUid);
 
-      res.status(202).json({ message: 'Processamento retomado.' });
     } catch (error) {
       console.error('Erro ao retomar solicitação:', error);
       res.status(500).json({ error: 'Erro interno do servidor.' });
@@ -789,13 +1264,23 @@ module.exports = {
         return res.status(404).json({ error: 'Solicitação não encontrada.' });
       }
 
-      await ProcessingService.process(protocoloUid);
-
       res.status(202).json({ message: 'Processamento realizado.' });
+
+      await ProcessingService.process(protocoloUid);
     } catch (error) {
       console.error('Erro ao realizar o processamento:', error);
       res.status(500).json({ error: 'Erro interno do servidor.' });
     }
   },  
+  
+  async callback(req, res) {
+    try {
+      console.log(req);
+      res.status(200).json({ message: 'Processamento realizado.' });
+    } catch (error) {
+      console.error('Erro ao realizar o processamento:', error);
+      res.status(500).json({ error: 'Erro interno do servidor.' });
+    }
+  },
   
 };

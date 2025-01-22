@@ -1,21 +1,35 @@
 const axios = require('axios');
-const ImageRepoAPI = require('../services/ImageRepoService'); // Ajuste o caminho para o arquivo da classe ImageRepoAPI
+const FtpRepoService = require('../services/FtpRepoService'); // Ajuste o caminho para o arquivo da classe FtpRepoService
+
+// Criação do axiosInstance com configurações personalizadas
+const axiosInstance = axios.create({
+  maxBodyLength: Infinity, // Permite payloads grandes
+  maxContentLength: Infinity, // Permite respostas grandes
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 module.exports = {
   async process(prompt, model, modelParameters = {}) {
+    modelParameters = modelParameters || {};
+
+    // Define a chave de resposta padrão ou usa a fornecida em modelParameters
+    const responseKey = modelParameters.responseKey || 'response';
+
+    // Remove responseKey dos parâmetros para evitar conflitos
+    delete modelParameters.responseKey;
+
     try {
       console.log('Iniciando integração com a API ElevenLabs');
 
-      modelParameters = modelParameters ? modelParameters : {};
-      
+      // Validação dos parâmetros obrigatórios
       if (!modelParameters.voice_id) {
         throw new Error('O parâmetro "voice_id" é obrigatório.');
       }
-      
       if (!model) {
         throw new Error('O parâmetro "model" é obrigatório.');
       }
-
       if (!prompt) {
         throw new Error('O parâmetro "prompt" é obrigatório.');
       }
@@ -23,50 +37,70 @@ module.exports = {
       // Configuração do endpoint e headers
       const endpoint = `https://api.elevenlabs.io/v1/text-to-speech/${modelParameters.voice_id}`;
       const headers = {
-        'xi-api-key': process.env.ELEVENLABS_API_KEY, // Substitua pela sua chave de API
+        'xi-api-key': modelParameters.api_key || process.env.ELEVENLABS_API_KEY, // Substitua pela sua chave de API
         'Content-Type': 'application/json',
       };
 
       // Corpo da requisição
-      const requestBody = { text:prompt, model_id: model };
+      const requestBody = { text: prompt, model_id: model };
 
-      // Faz a requisição POST usando axios
-      const response = await axios.post(endpoint, requestBody, {
+      // Faz a requisição POST usando axiosInstance
+      const response = await axiosInstance.post(endpoint, requestBody, {
         headers,
         responseType: 'arraybuffer', // Para receber os dados binários do áudio
       });
 
+      // Verifica o status da resposta
       if (response.status === 200) {
         // Converte a resposta binária para Base64
         const base64Audio = Buffer.from(response.data, 'binary').toString('base64');
         console.log('Tamanho do arquivo em Base64:', calculateBase64Size(base64Audio));
 
-        // Instancia o repositório de imagens (ou similar para áudio)
-        const imageRepoAPI = new ImageRepoAPI();
+        // Configuração do FTP
+        const config = {
+          ftpHost: 'ftp.travelzviagensturismo.com',
+          ftpPort: 21,
+          ftpUser: 'pddidg3z',
+          ftpPassword: 'q9VB0fdr28',
+          baseDomain: 'https://travelzviagensturismo.com',
+          rootDir: '/public_html/',
+        };
 
-        // Salva o áudio convertido em Base64 no repositório
+        // Instancia o serviço de FTP
+        const ftpRepoService = new FtpRepoService(config);
+
+        // Salva o áudio no repositório
         console.log('Enviando áudio gerado para o repositório...');
-        const savedAudio = await imageRepoAPI.createImage(
+        const savedAudio = await ftpRepoService.createImage(
           base64Audio, // Conteúdo em Base64
-          {}, // Metadados do áudio
+          { targetFolder: 'audiorepo' }, // Metadados do áudio
           '.mp3', // Extensão do arquivo
-          '73c6f20e-441e-4739-b42c-10c262138fdd', // Chave da API do Image Repo
-          1, // Configuração de FTP (se necessário)
+          null,
+          null,
           true // Define que o conteúdo está em Base64
         );
 
-        return savedAudio; // Retorna os detalhes do áudio salvo
+        // Retorna a resposta formatada com o responseKey
+        return {
+          [responseKey]: {
+            success: true,
+            data: savedAudio,
+          },
+        };
       } else {
         throw new Error(`Erro na API ElevenLabs: ${response.statusText}`);
       }
     } catch (error) {
       console.error('Erro na integração com a API ElevenLabs:', error);
 
-      if (error.response) {
-        console.error('Detalhes do erro:', error.response.data);
-      }
-
-      throw error;
+      // Retorna o erro formatado com responseKey
+      return {
+        [responseKey]: {
+          success: false,
+          error: error.message,
+          details: error.response?.data || null,
+        },
+      };
     }
 
     // Função auxiliar para calcular o tamanho do Base64 em bytes

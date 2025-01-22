@@ -1,10 +1,13 @@
 const ffmpeg = require("fluent-ffmpeg");
 const axios = require("axios");
-const ImageRepoAPI = require("../services/ImageRepoService");
+const FtpRepoService = require('../services/FtpRepoService');
 const { PassThrough } = require("stream");
 
 module.exports = {
   async process(prompt, model, modelParameters = {}) {
+    
+    modelParameters = modelParameters || {};
+    
     const { imagens, narracao, musica, tempo_por_imagem = 10, apiKey, responseKey } = modelParameters;
 
     try {
@@ -22,16 +25,13 @@ module.exports = {
         throw new Error("O parâmetro 'responseKey' é obrigatório.");
       }
 
-      // Configurando o repositório de imagens
-      const imageRepoAPI = new ImageRepoAPI();
-
       // Configurando o pipeline de vídeo no ffmpeg
       const ffmpegCommand = ffmpeg();
 
-      ffmpegCommand.input("concat:" + imagens.join("|")); // Processa a lista de imagens como vídeo
-
-      // Define o tempo por imagem
-      ffmpegCommand.inputOptions(["-loop 1", `-t ${tempo_por_imagem}`]);
+      // Adiciona cada imagem como entrada separada
+      imagens.forEach((url) => {
+        ffmpegCommand.input(url).loop(tempo_por_imagem);
+      });
 
       // Adiciona a narração, se disponível
       if (narracao) {
@@ -68,13 +68,14 @@ module.exports = {
         passThrough.on("end", async () => {
           try {
             console.log("Salvando vídeo no repositório...");
-            const savedVideo = await imageRepoAPI.createImage(
-              videoBase64, // Conteúdo do vídeo como Base64
-              { description: "Vídeo gerado automaticamente", tags: ["video"] }, // Metadados
-              ".mp4", // Extensão
-              apiKey,
-              1, // Configuração do FTP (exemplo)
-              true // Indica que é Base64
+
+            const savedVideo = await ftpRepoService.createImage(
+            videoBase64, // Conteúdo em Base64
+            {targetFolder:'videorepo'}, // Metadados da imagem
+            `.mp4`, // Extensão do arquivo
+            null, 
+            null, 
+            true // Define que o conteúdo está em Base64
             );
 
             console.log("Vídeo salvo no repositório com sucesso:", savedVideo);

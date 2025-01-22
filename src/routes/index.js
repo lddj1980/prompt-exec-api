@@ -15,7 +15,7 @@ const excludeRoutesMiddleware = (middleware, excludedPaths) => {
 };
 
 // Lista de rotas excluídas do middleware
-const excludedPaths = ['/api-docs', '/openapi.json'];
+const excludedPaths = ['/api-docs', '/openapi.json', '/callback'];
 
 // Aplicação das rotas
 router.post(
@@ -42,6 +42,12 @@ router.get(
   '/solicitacoes/:protocoloUid/result',
   excludeRoutesMiddleware(ApiKeyMiddleware, excludedPaths),
   SolicitacaoController.getResultado
+);
+
+router.get(
+  '/callback',
+  excludeRoutesMiddleware(ApiKeyMiddleware, excludedPaths),
+  SolicitacaoController.callback
 );
 
 module.exports = router;

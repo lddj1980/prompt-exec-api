@@ -38,6 +38,7 @@ module.exports = {
         model: model,
         messages: messages,
         max_tokens: modelParameters.max_tokens || 4096,
+        temperature: modelParameters.temperature || 1
       };
 
       console.log(`Enviando solicitação para ${endpoint}...`);
@@ -82,7 +83,7 @@ function extrairJSON(resposta) {
   console.log('Resposta completa:', resposta);
 
   // Regex para capturar JSON entre ```json e ```
-  const regex = /```json\s*([\s\S]*?)\s*```/;
+  const regex = /```json\s*([\s\S]*?)\s*```/;//
   const match = resposta.match(regex);
 
   if (match && match[1]) {

@@ -1,23 +1,29 @@
-const ImageRepoService = require('../services/ImageRepoService'); // Ajuste o caminho para a classe ImageRepoAPI
+const ImageRepoService = require('../services/ImageRepoService'); // Ajuste o caminho para a classe ImageRepoService
 
 module.exports = {
+  /**
+   * Processa uma solicitação para a API do Image Repo.
+   * @param {string} prompt - Descrição ou informação principal para o processamento.
+   * @param {string} model - Tipo de modelo ou integração.
+   * @param {Object} modelParameters - Parâmetros adicionais necessários para a ação.
+   * @returns {Promise<Object>} - Resposta formatada com o `responseKey`.
+   */
   async process(prompt, model, modelParameters) {
     try {
       modelParameters = modelParameters || {};
       console.log('Iniciando integração com o Image Repo API...');
 
       const apiKey = modelParameters.apiKey || null;
+      const responseKey = modelParameters.responseKey || 'response';
 
       if (!apiKey) {
         throw new Error('O parâmetro "apiKey" é obrigatório.');
       }
 
-      // Instancia o serviço ImageRepoAPI
+      // Instancia o serviço ImageRepoService
       const imageRepoAPI = new ImageRepoService(modelParameters.baseURL);
 
-      // Decide qual funcionalidade usar com base nos parâmetros
       if (modelParameters.action === 'createImage') {
-        // Cria uma imagem no repositório
         console.log('Criando imagem no repositório...');
 
         if (
@@ -27,7 +33,7 @@ module.exports = {
           !modelParameters.ftp_config_id
         ) {
           throw new Error(
-            'Os parâmetros "imageUrl", "metadata", "extension" e "ftpConfigId" são obrigatórios para criar uma imagem.'
+            'Os parâmetros "image_url", "metadata", "extension" e "ftp_config_id" são obrigatórios para criar uma imagem.'
           );
         }
 
@@ -46,8 +52,13 @@ module.exports = {
         );
 
         console.log('Imagem criada com sucesso:', result);
-        return result;
-
+        return {
+          [responseKey]: {
+            success: true,
+            action: 'createImage',
+            data: result,
+          },
+        };
       } else {
         throw new Error(
           'Nenhuma ação válida foi especificada. Use "createImage" em "modelParameters.action".'
@@ -56,11 +67,15 @@ module.exports = {
     } catch (error) {
       console.error('Erro durante a integração com o Image Repo API:', error.message);
 
-      if (error.response) {
-        console.error('Detalhes do erro:', error.response.data);
-      }
+      const responseKey = modelParameters?.responseKey || 'response';
 
-      throw error;
+      return {
+        [responseKey]: {
+          success: false,
+          error: error.message,
+          details: error.response?.data || null,
+        },
+      };
     }
   },
 };

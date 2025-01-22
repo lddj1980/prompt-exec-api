@@ -1,9 +1,13 @@
 const axios = require('axios');
 
 module.exports = {
-  async process(prompt, model, modelParameters) {
+  async process(prompt, model, modelParameters = {}) {
+    
+    
+     modelParameters = modelParameters || {};
+    const responseKey = modelParameters.responseKey || 'response';
+
     try {
-      modelParameters = modelParameters || {};
       console.log('Iniciando integração com o Threads API via ThreadsController...');
 
       const apiKey = modelParameters.api_key;
@@ -27,22 +31,31 @@ module.exports = {
         requestBody,
         {
           headers: {
-            apiKey // Cabeçalho com a API Key
+            apiKey, // Cabeçalho com a API Key
           },
         }
       );
 
       console.log('Integração concluída com sucesso:', response.data);
-      return response.data;
 
+      // Retorna a resposta encapsulada com o responseKey
+      return {
+        [responseKey]: {
+          success: true,
+          data: response.data,
+        },
+      };
     } catch (error) {
       console.error('Erro durante a integração com o Threads API via ThreadsController:', error.message);
 
-      if (error.response) {
-        console.error('Detalhes do erro:', error.response.data);
-      }
-
-      throw error;
+      // Retorna o erro encapsulado com o responseKey
+      return {
+        [responseKey]: {
+          success: false,
+          error: error.message,
+          details: error.response?.data || null,
+        },
+      };
     }
   },
 };

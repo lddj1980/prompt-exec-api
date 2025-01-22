@@ -1,7 +1,5 @@
 const axios = require('axios');
-const fs = require('fs');
-const ImageRepoAPI = require('../services/ImageRepoService'); // Ajuste o caminho para o arquivo da classe ImageRepoAPI
-const sharp = require('sharp');
+const FtpRepoService = require('../services/FtpRepoService'); // Ajuste o caminho para o arquivo da classe FtpRepoService
 
 // Criação do axiosInstance com configurações personalizadas
 const axiosInstance = axios.create({
@@ -10,81 +8,106 @@ const axiosInstance = axios.create({
   headers: {
     Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`, // Token de API do Hugging Face
     'Content-Type': 'application/json',
-    'x-wait-for-model': 'true'
+    'x-wait-for-model': 'true',
   },
 });
 
 module.exports = {
-  async process(prompt, model, modelParameters = null) {
+  async process(prompt, model, modelParameters = {}) {
+    const responseKey = modelParameters.responseKey || 'response';
+    delete modelParameters.responseKey;
     try {
-      console.log('Aqui chegou');
-      
-      if (!prompt){
-        throw new Error("O parametro 'prompt' é obrigatório");
+      console.log('Iniciando integração com a Inference API do Hugging Face...');
+
+      if (!prompt) {
+        throw new Error("O parâmetro 'prompt' é obrigatório.");
       }
 
-      if (!model){
-        throw new Error("O parametro 'model' é obrigatório");
+      if (!model) {
+        throw new Error("O parâmetro 'model' é obrigatório.");
       }
 
       // Monta o endpoint da Inference API com o modelo fornecido
       const endpoint = `https://api-inference.huggingface.co/models/${model}`;
+      const request = modelParameters
+        ? { inputs: prompt, parameters: modelParameters }
+        : { inputs: prompt };
 
-      const request = modelParameters ? {inputs: prompt, parameters: modelParameters} : {inputs: prompt};
-      // Faz a requisição para a Inference API usando axiosInstance
-      const response = await axiosInstance.post(
-        endpoint,
-        request,
-        {
-          responseType: 'arraybuffer', // Necessário para lidar com binários como imagens
+      const maxRetries = 5;
+      let retryCount = 0;
+      let response;
+
+      while (retryCount < maxRetries) {
+        try {
+          // Faz a requisição para a Inference API usando axiosInstance
+          response = await axiosInstance.post(endpoint, request, {
+            responseType: 'arraybuffer', // Necessário para lidar com binários como áudios
+          });
+
+          // Se a requisição for bem-sucedida, sai do loop
+          if (response.status === 200) {
+            break;
+          }
+        } catch (error) {
+          retryCount++;
+          console.error(`Tentativa ${retryCount} falhou. Tentando novamente...`, error.message);
+          if (retryCount >= maxRetries) {
+            throw error; // Se todas as tentativas falharem, lança o erro
+          }
+          // Aguarda um pequeno delay antes de tentar novamente
+          await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
         }
-      );
-      
+      }
       // Verifica o status da resposta
       if (response.status === 200) {
-        // Passo 2: Converter para Base64
+        // Converte a resposta para Base64
         const base64Image = Buffer.from(response.data, 'binary').toString('base64');
-        console.log('Tamanho do arquivo: ' + calculateBase64Size(base64Image));
+        console.log('Tamanho do arquivo Base64:', calculateBase64Size(base64Image));
 
-        // Instancia o repositório de imagens
-        const imageRepoAPI = new ImageRepoAPI();
+        const config = {ftpHost:'ftp.travelzviagensturismo.com',ftpPort:21,ftpUser:'pddidg3z',ftpPassword:'q9VB0fdr28',baseDomain:'https://travelzviagensturismo.com',rootDir:'/public_html/'};
+        // Instancia o serviço de FTP
+        const ftpRepoService = new FtpRepoService(config);
 
         // Salva a imagem no repositório de imagens
         console.log('Enviando imagem gerada para o Image Repo...');
-        const savedImage = await imageRepoAPI.createImage(
+
+        const savedImage = await ftpRepoService.createImage(
           base64Image, // Conteúdo em Base64
-          {}, // Metadados da imagem
-          '.wav', // Extensão do arquivo
-          '73c6f20e-441e-4739-b42c-10c262138fdd', // Chave da API do Image Repo
-          1, // Configuração do FTP
+          {targetFolder:'audiorepo'}, // Metadados da imagem
+          `.wav`, // Extensão do arquivo
+          null, 
+          null, 
           true // Define que o conteúdo está em Base64
-        );
-        return savedImage; // Processa a resposta da API
+          );
+        
+        // Retorna a resposta formatada com o responseKey
+        return {
+          [responseKey]: {
+            success: true,
+            data: savedImage,
+          },
+        };
       } else {
         throw new Error(`Erro ao processar com Inference API: ${response.statusText}`);
       }
     } catch (error) {
       console.error('Erro na integração com Inference API:', error);
 
-      if (error.response) {
-        console.error('Detalhes do erro:', error.response.data);
-      }
-
-      throw error;
+      // Retorna o erro formatado com responseKey
+      return {
+        [responseKey]: {
+          success: false,
+          error: error.message,
+          details: error.response?.data || null,
+        },
+      };
     }
 
     // Função auxiliar para calcular o tamanho do Base64 em bytes
     function calculateBase64Size(base64String) {
-      // Remove o prefixo "data:image/png;base64," ou outros cabeçalhos, se existirem
-      const base64 = base64String.split(',').pop();
-
-      // Conta os caracteres de preenchimento '='
+      const base64 = base64String.split(',').pop(); // Remove cabeçalho, se houver
       const padding = (base64.match(/=/g) || []).length;
-
-      // Calcula o tamanho em bytes
-      const sizeInBytes = (base64.length * 3) / 4 - padding;
-
-      return sizeInBytes;
+      return (base64.length * 3) / 4 - padding;
     }
   },
 };

@@ -8,6 +8,7 @@ module.exports = {
       console.log('Iniciando integração com o Brainstorm AI...');
 
       const apiKey = parametros_modelo.api_key || null;
+      const responseKey = parametros_modelo.responseKey || 'response';
 
       if (!apiKey) {
         throw new Error('O parâmetro "apiKey" é obrigatório.');
@@ -15,6 +16,8 @@ module.exports = {
 
       // Instancia o serviço BrainstormAIService
       const brainstormAIService = new BrainstormAIService();
+
+      let result;
 
       // Decide qual funcionalidade usar com base nos parâmetros
       if (parametros_modelo.action === 'execute') {
@@ -24,10 +27,9 @@ module.exports = {
           throw new Error('O parâmetro "writerId" é obrigatório para executar o script.');
         }
 
-        const result = await brainstormAIService.execute(apiKey, parametros_modelo.writer_id);
+        result = await brainstormAIService.execute(apiKey, parametros_modelo.writer_id);
 
         console.log('Script Brainstorm executado com sucesso:', result);
-        return result;
 
       } else if (parametros_modelo.action === 'getLastTitles') {
         // Obtém os últimos 10 títulos de um redator
@@ -36,10 +38,9 @@ module.exports = {
           throw new Error('O parâmetro "writerId" é obrigatório para obter os títulos.');
         }
 
-        const lastTitles = await brainstormAIService.getLastTitles(apiKey, parametros_modelo.writer_id);
+        result = await brainstormAIService.getLastTitles(apiKey, parametros_modelo.writer_id);
 
-        console.log('Últimos títulos obtidos com sucesso:', lastTitles);
-        return lastTitles;
+        console.log('Últimos títulos obtidos com sucesso:', result);
 
       } else if (parametros_modelo.action === 'createTitles') {
         // Cria novos títulos e associa ao brainstorm
@@ -50,20 +51,27 @@ module.exports = {
           );
         }
 
-        const createdTitles = await brainstormAIService.createTitles(
+        result = await brainstormAIService.createTitles(
           apiKey,
           parametros_modelo.writer_id,
           parametros_modelo.titles
         );
 
-        console.log('Novos títulos criados com sucesso:', createdTitles);
-        return createdTitles;
+        console.log('Novos títulos criados com sucesso:', result);
 
       } else {
         throw new Error(
           'Nenhuma ação válida foi especificada. Use "execute", "getLastTitles" ou "createTitles" em "parametros_modelo.action".'
         );
       }
+
+      // Retorna a resposta estruturada com responseKey
+      return {
+        [responseKey]: {
+          success: true,
+          data: result,
+        },
+      };
 
     } catch (error) {
       console.error('Erro durante a integração com o Brainstorm AI:', error.message);
@@ -72,7 +80,13 @@ module.exports = {
         console.error('Detalhes do erro:', error.response.data);
       }
 
-      throw error;
+      // Retorna erro estruturado com responseKey
+      return {
+        [parametros_modelo.responseKey || 'response']: {
+          success: false,
+          error: error.message,
+        },
+      };
     }
   },
 };

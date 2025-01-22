@@ -2,8 +2,13 @@ const axios = require('axios');
 
 module.exports = {
   async process(prompt, model, modelParameters = {}) {
+    
+    modelParameters = modelParameters || {};
+    
     try {
       console.log('Iniciando integração com o serviço de e-mail externo...');
+
+      const responseKey = modelParameters.responseKey || 'response';
 
       // Verifica e extrai os parâmetros necessários de modelParameters
       const { from, to, subject, body } = modelParameters;
@@ -27,22 +32,39 @@ module.exports = {
       if (response.status === 200 && response.data.success) {
         console.log('E-mail enviado com sucesso:', response.data);
 
+        // Retorna a resposta formatada com `responseKey`
         return {
-          success: true,
-          provider: response.data.provider || 'Desconhecido',
+          [responseKey]: {
+            success: true,
+            data: {
+              provider: response.data.provider || 'Desconhecido',
+              message: 'E-mail enviado com sucesso.',
+            },
+          },
         };
       } else {
         console.error('Falha no envio de e-mail:', response.data);
-        throw new Error('Falha ao enviar o e-mail.');
+        return {
+          [responseKey]: {
+            success: false,
+            error: response.data.error || 'Falha ao enviar o e-mail.',
+          },
+        };
       }
     } catch (error) {
-      console.error('Erro ao integrar com o serviço de e-mail:', error);
+      console.error('Erro ao integrar com o serviço de e-mail:', error.message);
 
       if (error.response) {
         console.error('Detalhes do erro:', error.response.data);
       }
 
-      throw error;
+      // Retorna o erro formatado com `responseKey`
+      return {
+        [modelParameters.responseKey || 'response']: {
+          success: false,
+          error: error.message,
+        },
+      };
     }
   },
 };

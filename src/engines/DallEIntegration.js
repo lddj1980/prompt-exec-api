@@ -1,20 +1,22 @@
 const axios = require('axios');
-const ImageRepoAPI = require('../services/ImageRepoService'); // Ajuste o caminho para a classe ImageRepoAPI
-
+const FtpRepoService = require('../services/FtpRepoService'); // Ajuste o caminho para o arquivo da classe FtpRepoService
 
 module.exports = {
-  async process(prompt, model,modelParameters) {
+  async process(prompt, model, modelParameters) {
     try {
-      
-      modelParameters = modelParameters ? modelParameters : {};
-      
+      modelParameters = modelParameters || {};
+      const responseKey = modelParameters.responseKey || 'response';
+
+      console.log('Iniciando integração com DALL-E e ImageRepo...');
+
+      // Configuração do request para DALL-E
       const response = await axios.post(
         'https://api.openai.com/v1/images/generations',
         {
           prompt: prompt,
-          n: modelParameters.n ? modelParameters.n : 1,
-          model: model ? model : 'dall-e-3',
-          size: modelParameters.size ? modelParameters.size : '1024x1024',
+          n: modelParameters.n || 1,
+          model: model || 'dall-e-3',
+          size: modelParameters.size || '1024x1024',
         },
         {
           headers: {
@@ -23,38 +25,55 @@ module.exports = {
         }
       );
 
-      
+      // Verifica a resposta de DALL-E
       if (response.status === 200 && response.data.data) {
-         
-          console.log('Imagens geradas com sucesso!');
-          // Itera sobre as imagens retornadas
-          const imageRepoAPI = new ImageRepoAPI();
-          const savedImages = [];
+        console.log('Imagens geradas com sucesso!');
         
-          for (let index = 0; index < response.data.data.length; index++) {
-              const imageUrl = response.data.data[index].url;
+        const config = {ftpHost:'ftp.travelzviagensturismo.com',ftpPort:21,ftpUser:'pddidg3z',ftpPassword:'q9VB0fdr28',baseDomain:'https://travelzviagensturismo.com',rootDir:'/public_html/'};
+        // Instancia o serviço de FTP
+        const ftpRepoService = new FtpRepoService(config);
+        const savedImages = [];
 
-            // Salva a imagem no repositório
-              console.log(`Enviando imagem ${index + 1} para o repositório de imagens...`);
-              const savedImage = await imageRepoAPI.createImage(
-                imageUrl, // url da imagem
-                {}, // Metadados adicionais
-                '.jpg', // Extensão do arquivo
-                '73c6f20e-441e-4739-b42c-10c262138fdd', // Chave da API do Image Repo
-                1, // Configuração do FTP
-                false // Conteúdo em Base64
-              );
-              savedImages.push(savedImage);
-          }
+        // Itera sobre as imagens retornadas
+        for (let index = 0; index < response.data.data.length; index++) {
+          const imageUrl = response.data.data[index].url;
 
-          console.log('Todas as imagens válidas foram salvas com sucesso!');
-          return savedImages; // Retorna as imagens salvas
+          // Salva a imagem no repositório
+          console.log(`Enviando imagem ${index + 1} para o repositório de imagens...`);
+
+          const savedImage = await ftpRepoService.createImage(
+          imageUrl, // Conteúdo em Base64
+          {targetFolder:'imagerepo'}, // Metadados da imagem
+          `.jpg`, // Extensão do arquivo
+          null, 
+          null, 
+          false // Define que o conteúdo está em Base64
+          );
+          savedImages.push(savedImage);
+        }
+
+        console.log('Todas as imagens válidas foram salvas com sucesso!');
+
+        // Retorna a resposta formatada com `responseKey`
+        return {
+          [responseKey]: {
+            success: true,
+            data: savedImages,
+          },
+        };
       } else {
         throw new Error(`Erro ao processar com DALL-E: ${response.statusText}`);
       }
     } catch (error) {
-      console.error('Erro na integração com DALL-E:', error);
-      throw error;
+      console.error('Erro na integração com DALL-E e ImageRepo:', error.message);
+
+      // Retorna erro formatado com `responseKey`
+      return {
+        [modelParameters.responseKey || 'response']: {
+          success: false,
+          error: error.message,
+        },
+      };
     }
   },
 };

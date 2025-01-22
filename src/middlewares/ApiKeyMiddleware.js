@@ -1,6 +1,6 @@
-const pool = require('../config/database');
+const pool = require('../config/database');////
 
-module.exports = async (req, res, next) => {
+module.exports = async (req, res, next) => {//
   const apiKey = req.headers['x-api-key'] ? req.headers['x-api-key'] : req.headers['api_key'];
 
   if (!apiKey) {

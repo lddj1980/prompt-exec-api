@@ -1,10 +1,14 @@
 const axios = require('axios');
-const WritterAIService = require('../services/WritterAIService'); // Ajuste o caminho para a classe WritterAiAPI
+const WritterAIService = require('../services/WritterAIService'); // Ajuste o caminho para a classe WritterAIService
 
 module.exports = {
-  async process(prompt, model, modelParameters) {
+  async process(prompt, model, modelParameters = {}) {
+    
+    modelParameters = modelParameters || {};
+    
+    const responseKey = modelParameters.responseKey || 'response';
+
     try {
-      modelParameters = modelParameters ? modelParameters : {};
       console.log('Iniciando integração com o Writter-IA...');
 
       const writerId = modelParameters.writer_id || null;
@@ -14,31 +18,38 @@ module.exports = {
         throw new Error('Os parâmetros "writerId" e "apiKey" são obrigatórios.');
       }
 
-      // Instancia o serviço WritterAiAPI
+      // Instancia o serviço WritterAIService
       const writterAiAPI = new WritterAIService();
 
       // Decide qual funcionalidade usar com base nos parâmetros
       if (modelParameters.action === 'getOldestUnusedTitle') {
-        // Obtém o título mais antigo não utilizado
         console.log('Buscando o título mais antigo não utilizado...');
         const oldestTitle = await writterAiAPI.getOldestUnusedTitle(writerId, apiKey);
 
         console.log('Título obtido com sucesso:', oldestTitle);
-        return oldestTitle;
+        return {
+          [responseKey]: {
+            success: true,
+            data: oldestTitle,
+          },
+        };
 
       } else if (modelParameters.action === 'generateContent') {
-        // Gera conteúdo baseado no título mais antigo
         console.log('Gerando conteúdo...');
         const generatedContent = await writterAiAPI.generateContent(writerId, apiKey);
 
         console.log('Conteúdo gerado com sucesso:', generatedContent);
-        return generatedContent;
+        return {
+          [responseKey]: {
+            success: true,
+            data: generatedContent,
+          },
+        };
 
       } else if (modelParameters.action === 'savePublication') {
-        // Salva a publicação associada ao título
         console.log('Salvando publicação...');
 
-        if (!modelParameters.tituloId || !modelParameters.conteudo) {
+        if (!modelParameters.titulo_id || !modelParameters.conteudo) {
           throw new Error(
             'Os parâmetros "tituloId" e "conteudo" são obrigatórios para salvar a publicação.'
           );
@@ -52,7 +63,12 @@ module.exports = {
         );
 
         console.log('Publicação salva com sucesso:', savedPublication);
-        return savedPublication;
+        return {
+          [responseKey]: {
+            success: true,
+            data: savedPublication,
+          },
+        };
 
       } else {
         throw new Error(
@@ -63,11 +79,13 @@ module.exports = {
     } catch (error) {
       console.error('Erro durante a integração com o Writter-IA:', error.message);
 
-      if (error.response) {
-        console.error('Detalhes do erro:', error.response.data);
-      }
-
-      throw error;
+      return {
+        [responseKey]: {
+          success: false,
+          error: error.message,
+          details: error.response?.data || null,
+        },
+      };
     }
   },
 };

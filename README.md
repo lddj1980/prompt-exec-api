@@ -1,44 +1,108 @@
-# Hello Node!
+# Prompt Execution Pipeline API
 
-This project includes a Node.js server script and a web page that connects to it. The front-end page presents a form the visitor can use to submit a color name, sending the submitted value to the back-end API running on the server. The server returns info to the page that allows it to update the display with the chosen color. 🎨
+This project exposes an HTTP API for creating and executing multi-step prompt pipelines that integrate a variety of AI services. It was designed to demonstrate how different generative models and external providers can be orchestrated in a single workflow.
 
-[Node.js](https://nodejs.org/en/about/) is a popular runtime that lets you run server-side JavaScript. This project uses the [Fastify](https://www.fastify.io/) framework and explores basic templating with [Handlebars](https://handlebarsjs.com/).
+## Features
 
-_Last updated: 14 August 2023_
+- **Pipeline definition**: Submit a list of prompts where each prompt targets a specific engine (OpenAI, DALL‑E, Gemini, etc.). Results from previous steps can be referenced in later prompts using `{{placeholder}}` notation.
+- **Scheduling**: Pipelines may run immediately or be scheduled using cron expressions.
+- **Progress tracking**: Query the execution progress and fetch individual step outputs.
+- **Extensible integrations**: Engines are implemented as independent modules so new providers can be added easily.
+- **Swagger documentation**: API endpoints are documented via OpenAPI and served at `/api-docs`.
 
-## Prerequisites
+## Architecture
 
-You'll get best use out of this project if you're familiar with basic JavaScript. If you've written JavaScript for client-side web pages this is a little different because it uses server-side JS, but the syntax is the same!
+```mermaid
+flowchart TD
+  subgraph Client
+    A[HTTP requests]
+  end
+  A -->|create/process| B(Express Router)
+  B --> C[SolicitacaoController]
+  C --> D[ProcessingService]
+  D --> E[PromptProcessorService]
+  E --> F[Engine Integrations]
+  F --> G[External AI APIs]
+  D --> H[(MySQL)]
+  H -->|store results| D
+```
 
-## What's in this project?
+1. **SolicitacaoController** receives API requests and validates input.
+2. **ProcessingService** loads the pipeline definition from MySQL and iterates through prompts.
+3. **PromptProcessorService** selects the correct integration module based on the engine name.
+4. **Engine Integrations** call external APIs (OpenAI, DALL‑E, etc.) and return structured responses.
+5. Results are persisted so they can be used as placeholders in later steps or queried via the API.
 
-← `README.md`: That’s this file, where you can tell people what your cool website does and how you built it.
+A monthly cron job cleans old data to prevent uncontrolled growth.
 
-← `public/style.css`: The styling rules for the pages in your site.
+## Setup
 
-← `server.js`: The **Node.js** server script for your new site. The JavaScript defines the endpoints in the site back-end, one to return the homepage and one to update with the submitted color. Each one sends data to a Handlebars template which builds these parameter values into the web page the visitor sees.
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Set the required environment variables:
+   ```bash
+   # Database
+   export DB_HOST=localhost
+   export DB_USER=myuser
+   export DB_PASSWORD=mypassword
+   export DB_NAME=promptexec
 
-← `package.json`: The NPM packages for your project's dependencies.
+   # Example AI providers
+   export OPENAI_API_KEY=...      # for OpenAIIntegration
+   export DALLE_API_KEY=...       # for DallEIntegration
+   export HUGGINGFACE_API_KEY=... # for Inference API integrations
+   export GEMINI_API_KEY=...      # for GeminiIntegration
+   export ELEVENLABS_API_KEY=...  # for ElevenLabsTextToSpeechIntegration
+   ```
+   Other integrations may require additional variables or parameters at runtime.
+3. Start the server:
+   ```bash
+   npm start
+   ```
+   The API will listen on port `3000` by default.
 
-← `src/`: This folder holds the site template along with some basic data files.
+## API Overview
 
-← `src/pages/index.hbs`: This is the main page template for your site. The template receives parameters from the server script, which it includes in the page HTML. The page sends the user submitted color value in the body of a request, or as a query parameter to choose a random color.
+The main endpoints are:
 
-← `src/colors.json`: A collection of CSS color names. We use this in the server script to pick a random color, and to match searches against color names.
+- `POST /solicitacoes` – create a new pipeline. Optionally include a cron expression to schedule execution.
+- `POST /solicitacoes/{protocolo}/process` – manually start or restart processing for a pipeline.
+- `POST /solicitacoes/{protocolo}/resume` – resume a partially completed pipeline.
+- `GET /solicitacoes/{protocolo}/progress` – retrieve progress information.
+- `GET /solicitacoes/{protocolo}/result` – fetch the final result once processing is complete.
 
-← `src/seo.json`: When you're ready to share your new site or add a custom domain, change SEO/meta settings in here.
+Refer to `/api-docs` for the full OpenAPI specification containing all parameters and examples.
 
-## Try this next 🏗️
+## Example Pipeline
 
-Take a look in `TODO.md` for next steps you can try out in your new site!
+```json
+{
+  "cron_expression": "*/5 * * * *", 
+  "prompts": [
+    {
+      "engine": "openai",
+      "model": "gpt-4o",
+      "prompt": "Generate a product description for {{product}}"
+    },
+    {
+      "engine": "dall-e",
+      "model": "dall-e-3",
+      "prompt": "Create an image based on {{0.result.data.description}}"
+    }
+  ]
+}
+```
 
-___Want a minimal version of this project to build your own Node.js app? Check out [Blank Node](https://glitch.com/edit/#!/remix/glitch-blank-node)!___
+The second prompt references the JSON path from the first step's result, allowing information to flow through the pipeline.
 
-![Glitch](https://cdn.glitch.com/a9975ea6-8949-4bab-addb-8a95021dc2da%2FLogo_Color.svg?v=1602781328576)
+## Development Notes
 
-## You built this with Glitch!
+- Database configuration lives in [`src/config/database.js`](src/config/database.js) and relies on environment variables to avoid committing credentials.
+- Each engine under [`src/engines`](src/engines) exposes a `process(prompt, model, parameters)` method returning a consistent JSON structure.
+- Cron tasks are defined in [`src/app.js`](src/app.js) using `node-cron`.
 
-[Glitch](https://glitch.com) is a friendly community where millions of people come together to build web apps and websites.
+## License
 
-- Need more help? [Check out our Help Center](https://help.glitch.com/) for answers to any common questions.
-- Ready to make it official? [Become a paid Glitch member](https://glitch.com/pricing) to boost your app with private sharing, more storage and memory, domains and more.
+This project is licensed under the MIT License. See [`LICENSE`](LICENSE) for details.
